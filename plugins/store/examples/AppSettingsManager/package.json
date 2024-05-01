@@ -1,15 +1,11 @@
 {
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
-  },
-  "devDependencies": {
-    "@tauri-apps/cli": "1.5.11",
-    "vite": "^5.0.12",
-    "typescript": "^5.3.3"
-  }
+	"devDependencies": {
+		"@tauri-apps/cli": "1.5.11"
+	},
+	"scripts": {
+		"build": "tsc && vite build",
+		"dev": "vite",
+		"preview": "vite preview",
+		"tauri": "tauri"
+	}
 }
