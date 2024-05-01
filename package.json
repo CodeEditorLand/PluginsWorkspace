@@ -1,9 +1,24 @@
 {
+	"author": {
+		"email": "Land@PlayForm.Cloud",
+		"name": "🌆 — Land —",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"bugs": {
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace/issues"
+	},
 	"devDependencies": {
+		"@playform/build": "0.0.7",
+		"@playform/document": "0.0.6",
 		"covector": "^0.10.2",
 		"eslint-config-love": "47.0.0",
 		"tslib": "2.6.2"
 	},
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace#readme",
+	"keywords": [
+		"land"
+	],
+	"license": "SEE LICENSE IN LICENSE",
 	"name": "plugins-workspace",
 	"pnpm": {
 		"auditConfig": {
@@ -12,11 +27,23 @@
 			]
 		}
 	},
+	"private": false,
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/PluginsWorkspace.git"
+	},
 	"resolutions": {
 		"optionator": ">=0.9.3",
 		"semver": ">=7.5.2"
 	},
 	"scripts": {
-		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
-	}
+		"Document": "Document 'Source/**/*.ts'",
+		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
+	},
+	"type": "module",
+	"version": "0.0.1"
 }
