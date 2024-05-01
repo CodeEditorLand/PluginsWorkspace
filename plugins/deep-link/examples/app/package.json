@@ -1,11 +1,32 @@
 {
-	"author": {
-		"email": "Land@PlayForm.Cloud",
-		"name": "🌆 — Land —",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
+	"name": "deep-link-example",
+	"version": "0.0.1",
+	"private": false,
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace#readme",
 	"bugs": {
 		"url": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/PluginsWorkspace.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"build": "tsc && vite build",
+		"dev": "vite",
+		"prepublishOnly": "Build 'Source/**/*.ts'",
+		"preview": "vite preview",
+		"tauri": "tauri"
 	},
 	"dependencies": {
 		"@tauri-apps/api": "2.0.0-beta.8",
@@ -17,28 +38,7 @@
 		"@tauri-apps/cli": "2.0.0-beta.13",
 		"internal-ip": "^8.0.0"
 	},
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace#readme",
-	"keywords": [
-		"land"
-	],
-	"license": "SEE LICENSE IN LICENSE",
-	"name": "deep-link-example",
-	"private": false,
 	"publishConfig": {
 		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/PluginsWorkspace.git"
-	},
-	"scripts": {
-		"Document": "Document 'Source/**/*.ts'",
-		"build": "tsc && vite build",
-		"dev": "vite",
-		"prepublishOnly": "Build 'Source/**/*.ts'",
-		"preview": "vite preview",
-		"tauri": "tauri"
-	},
-	"type": "module",
-	"version": "0.0.1"
+	}
 }

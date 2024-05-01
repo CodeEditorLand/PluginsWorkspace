@@ -1,11 +1,33 @@
 {
-	"author": {
-		"email": "Land@PlayForm.Cloud",
-		"name": "🌆 — Land —",
-		"url": "HTTPS://Land.PlayForm.Cloud"
-	},
+	"name": "plugins-workspace",
+	"version": "0.0.1",
+	"private": false,
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace#readme",
 	"bugs": {
 		"url": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+HTTPS://github.com/CodeEditorLand/PluginsWorkspace.git"
+	},
+	"license": "SEE LICENSE IN LICENSE",
+	"author": {
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
+	},
+	"type": "module",
+	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
+		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build",
+		"prepublishOnly": "Build 'Source/**/*.ts'"
+	},
+	"resolutions": {
+		"optionator": ">=0.9.3",
+		"semver": ">=7.5.2"
 	},
 	"devDependencies": {
 		"@playform/build": "0.0.7",
@@ -14,36 +36,14 @@
 		"eslint-config-love": "47.0.0",
 		"tslib": "2.6.2"
 	},
-	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/PluginsWorkspace#readme",
-	"keywords": [
-		"land"
-	],
-	"license": "SEE LICENSE IN LICENSE",
-	"name": "plugins-workspace",
+	"publishConfig": {
+		"access": "public"
+	},
 	"pnpm": {
 		"auditConfig": {
 			"ignoreCves": [
 				"CVE-2023-46115"
 			]
 		}
-	},
-	"private": false,
-	"publishConfig": {
-		"access": "public"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+HTTPS://github.com/CodeEditorLand/PluginsWorkspace.git"
-	},
-	"resolutions": {
-		"optionator": ">=0.9.3",
-		"semver": ">=7.5.2"
-	},
-	"scripts": {
-		"Document": "Document 'Source/**/*.ts'",
-		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build",
-		"prepublishOnly": "Build 'Source/**/*.ts'"
-	},
-	"type": "module",
-	"version": "0.0.1"
+	}
 }
