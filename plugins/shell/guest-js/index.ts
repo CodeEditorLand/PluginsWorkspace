@@ -80,7 +80,7 @@ interface SpawnOptions {
   encoding?: string;
 }
 
-/** @ignore */
+
 interface InternalSpawnOptions extends SpawnOptions {
   sidecar?: boolean;
 }
@@ -137,7 +137,7 @@ async function execute<O extends IOPayload>(
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 class EventEmitter<E extends Record<string, any>> {
-  /** @ignore */
+  
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
   private eventListeners: Record<keyof E, Array<(arg: any) => void>> =
     Object.create(null);
@@ -408,11 +408,11 @@ interface OutputEvents<O extends IOPayload> {
  *
  */
 class Command<O extends IOPayload> extends EventEmitter<CommandEvents> {
-  /** @ignore Program to execute. */
+  
   private readonly program: string;
-  /** @ignore Program arguments */
+  
   private readonly args: string[];
-  /** @ignore Spawn options. */
+  
   private readonly options: InternalSpawnOptions;
   /** Event emitter for the `stdout`. Emits the `data` event. */
   readonly stdout = new EventEmitter<OutputEvents<O>>();
@@ -578,7 +578,7 @@ class Command<O extends IOPayload> extends EventEmitter<CommandEvents> {
     });
   }
 
-  /** @ignore */
+  
   private collectOutput(events: O[]): string | Uint8Array {
     if (this.options.encoding === "raw") {
       return events.reduce<Uint8Array>((p, c) => {

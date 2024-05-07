@@ -10,7 +10,7 @@
 
 import { invoke } from "@tauri-apps/api/core";
 
-/** @ignore */
+
 declare global {
   interface Window {
     __TAURI_OS_PLUGIN_INTERNALS__: {
