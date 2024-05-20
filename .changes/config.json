@@ -1,0 +1,325 @@
+{
+  "gitSiteUrl": "https://github.com/tauri-apps/plugins-workspace/",
+  "pkgManagers": {
+    "javascript": {
+      "version": true,
+      "getPublishedVersion": "node ../../.scripts/covector/package-latest-version.cjs npm ${ pkgFile.pkg.name } ${ pkgFile.pkg.version }",
+      "publish": ["pnpm build", "pnpm publish --access public --no-git-checks"]
+    },
+    "rust": {
+      "version": true,
+      "getPublishedVersion": "node ../../.scripts/covector/package-latest-version.cjs cargo ${ pkgFile.pkg.package.name } ${ pkgFile.pkg.package.version }",
+      "publish": [
+        {
+          "command": "cargo package --no-verify",
+          "dryRunCommand": true
+        },
+        {
+          "command": "echo '<details>\n<summary><em><h4>Cargo Publish</h4></em></summary>\n\n```'",
+          "dryRunCommand": true,
+          "pipe": true
+        },
+        {
+          "command": "cargo publish",
+          "dryRunCommand": "cargo publish --dry-run",
+          "pipe": true
+        },
+        {
+          "command": "echo '```\n\n</details>\n'",
+          "dryRunCommand": true,
+          "pipe": true
+        }
+      ]
+    }
+  },
+  "packages": {
+    "api-example": {
+      "path": "./examples/api/src-tauri",
+      "manager": "rust",
+      "publish": false,
+      "dependencies": [
+        "barcode-scanner",
+        "biometric",
+        "log-plugin",
+        "cli",
+        "clipboard-manager",
+        "dialog",
+        "fs",
+        "global-shortcut",
+        "http",
+        "nfc",
+        "notification",
+        "os",
+        "process",
+        "shell",
+        "updater"
+      ]
+    },
+    "api-example-js": {
+      "path": "./examples/api",
+      "manager": "javascript",
+      "publish": false,
+      "dependencies": [
+        "barcode-scanner-js",
+        "biometric-js",
+        "log-js",
+        "cli-js",
+        "clipboard-manager-js",
+        "dialog-js",
+        "fs-js",
+        "global-shortcut-js",
+        "http-js",
+        "nfc-js",
+        "notification-js",
+        "os-js",
+        "process-js",
+        "shell-js",
+        "updater-js"
+      ],
+      "postversion": "pnpm install --no-frozen-lockfile"
+    },
+    "deep-link-example-js": {
+      "path": "./plugins/deep-link/examples/app",
+      "manager": "javascript",
+      "publish": false,
+      "dependencies": ["deep-link-js"],
+      "postversion": "pnpm install --no-frozen-lockfile"
+    },
+    "authenticator": {
+      "path": "./plugins/authenticator",
+      "manager": "rust"
+    },
+    "authenticator-js": {
+      "path": "./plugins/authenticator",
+      "manager": "javascript"
+    },
+    "autostart": {
+      "path": "./plugins/autostart",
+      "manager": "rust"
+    },
+    "autostart-js": {
+      "path": "./plugins/autostart",
+      "manager": "javascript"
+    },
+    "barcode-scanner": {
+      "path": "./plugins/barcode-scanner",
+      "manager": "rust"
+    },
+    "barcode-scanner-js": {
+      "path": "./plugins/barcode-scanner",
+      "manager": "javascript"
+    },
+    "biometric": {
+      "path": "./plugins/biometric",
+      "manager": "rust"
+    },
+    "biometric-js": {
+      "path": "./plugins/biometric",
+      "manager": "javascript"
+    },
+    "cli": {
+      "path": "./plugins/cli",
+      "manager": "rust"
+    },
+    "cli-js": {
+      "path": "./plugins/cli",
+      "manager": "javascript"
+    },
+    "clipboard-manager": {
+      "path": "./plugins/clipboard-manager",
+      "manager": "rust"
+    },
+    "clipboard-manager-js": {
+      "path": "./plugins/clipboard-manager",
+      "manager": "javascript"
+    },
+    "deep-link": {
+      "path": "./plugins/deep-link",
+      "manager": "rust"
+    },
+    "deep-link-js": {
+      "path": "./plugins/deep-link",
+      "manager": "javascript"
+    },
+    "fs": {
+      "path": "./plugins/fs",
+      "manager": "rust"
+    },
+    "fs-js": {
+      "path": "./plugins/fs",
+      "manager": "javascript"
+    },
+    "dialog": {
+      "path": "./plugins/dialog",
+      "manager": "rust",
+      "dependencies": ["fs"]
+    },
+    "dialog-js": {
+      "path": "./plugins/dialog",
+      "manager": "javascript"
+    },
+    "global-shortcut": {
+      "path": "./plugins/global-shortcut",
+      "manager": "rust"
+    },
+    "global-shortcut-js": {
+      "path": "./plugins/global-shortcut",
+      "manager": "javascript"
+    },
+    "http": {
+      "path": "./plugins/http",
+      "manager": "rust",
+      "dependencies": ["fs"]
+    },
+    "http-js": {
+      "path": "./plugins/http",
+      "manager": "javascript"
+    },
+    "localhost": {
+      "path": "./plugins/localhost",
+      "manager": "rust"
+    },
+    "log-plugin": {
+      "path": "./plugins/log",
+      "manager": "rust"
+    },
+    "log-js": {
+      "path": "./plugins/log",
+      "manager": "javascript"
+    },
+    "nfc": {
+      "path": "./plugins/nfc",
+      "manager": "rust"
+    },
+    "nfc-js": {
+      "path": "./plugins/nfc",
+      "manager": "javascript"
+    },
+    "notification": {
+      "path": "./plugins/notification",
+      "manager": "rust"
+    },
+    "notification-js": {
+      "path": "./plugins/notification",
+      "manager": "javascript"
+    },
+    "os": {
+      "path": "./plugins/os",
+      "manager": "rust"
+    },
+    "os-js": {
+      "path": "./plugins/os",
+      "manager": "javascript"
+    },
+    "persisted-scope": {
+      "path": "./plugins/persisted-scope",
+      "manager": "rust",
+      "dependencies": ["fs"]
+    },
+    "positioner": {
+      "path": "./plugins/positioner",
+      "manager": "rust"
+    },
+    "positioner-js": {
+      "path": "./plugins/positioner",
+      "manager": "javascript"
+    },
+    "process": {
+      "path": "./plugins/process",
+      "manager": "rust"
+    },
+    "process-js": {
+      "path": "./plugins/process",
+      "manager": "javascript"
+    },
+    "shell": {
+      "path": "./plugins/shell",
+      "manager": "rust"
+    },
+    "shell-js": {
+      "path": "./plugins/shell",
+      "manager": "javascript"
+    },
+    "single-instance": {
+      "path": "./plugins/single-instance",
+      "manager": "rust"
+    },
+    "sql": {
+      "path": "./plugins/sql",
+      "manager": "rust",
+      "publish": [
+        {
+          "command": "cargo package --no-verify",
+          "dryRunCommand": true
+        },
+        {
+          "command": "echo '<details>\n<summary><em><h4>Cargo Publish</h4></em></summary>\n\n```'",
+          "dryRunCommand": true,
+          "pipe": true
+        },
+        {
+          "command": "cargo publish --features sqlite",
+          "dryRunCommand": "cargo publish --features sqlite --dry-run",
+          "pipe": true
+        },
+        {
+          "command": "echo '```\n\n</details>\n'",
+          "dryRunCommand": true,
+          "pipe": true
+        }
+      ]
+    },
+    "sql-js": {
+      "path": "./plugins/sql",
+      "manager": "javascript"
+    },
+    "store": {
+      "path": "./plugins/store",
+      "manager": "rust"
+    },
+    "store-js": {
+      "path": "./plugins/store",
+      "manager": "javascript"
+    },
+    "stronghold": {
+      "path": "./plugins/stronghold",
+      "manager": "rust"
+    },
+    "stronghold-js": {
+      "path": "./plugins/stronghold",
+      "manager": "javascript"
+    },
+    "updater": {
+      "path": "./plugins/updater",
+      "manager": "rust"
+    },
+    "updater-js": {
+      "path": "./plugins/updater",
+      "manager": "javascript"
+    },
+    "upload": {
+      "path": "./plugins/upload",
+      "manager": "rust"
+    },
+    "upload-js": {
+      "path": "./plugins/upload",
+      "manager": "javascript"
+    },
+    "websocket": {
+      "path": "./plugins/websocket",
+      "manager": "rust"
+    },
+    "websocket-js": {
+      "path": "./plugins/websocket",
+      "manager": "javascript"
+    },
+    "window-state": {
+      "path": "./plugins/window-state",
+      "manager": "rust"
+    },
+    "window-state-js": {
+      "path": "./plugins/window-state",
+      "manager": "javascript"
+    }
+  }
+}
