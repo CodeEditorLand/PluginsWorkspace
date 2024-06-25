@@ -1,11 +1,11 @@
 {
-	"description": "",
-	"devDependencies": {
-		"@tauri-apps/cli": "2.0.0-beta.20"
-	},
-	"main": "index.js",
 	"name": "app",
+	"description": "",
+	"main": "index.js",
 	"scripts": {
 		"tauri": "tauri"
+	},
+	"devDependencies": {
+		"@tauri-apps/cli": "2.0.0-beta.20"
 	}
 }
