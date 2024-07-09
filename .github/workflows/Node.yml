@@ -51,6 +51,7 @@ jobs:
             STNOUPGRADE: 1
             STRIPE_CLI_TELEMETRY_OPTOUT: 1
             TELEMETRY_DISABLED: 1
+            TERRAFORM_TELEMETRY: 0
 
         strategy:
             matrix:
@@ -86,7 +87,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-examples-api-Node-${{ matrix.node-version }}-Target
                   path: ./examples/api/Target
@@ -103,7 +104,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-Node-${{ matrix.node-version }}-Target
                   path: ./Target
@@ -120,7 +121,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-authenticator-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/authenticator/Target
@@ -137,7 +138,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-autostart-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/autostart/Target
@@ -154,7 +155,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-barcode-scanner-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/barcode-scanner/Target
@@ -171,7 +172,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-biometric-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/biometric/Target
@@ -188,7 +189,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-cli-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/cli/Target
@@ -205,7 +206,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-clipboard-manager-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/clipboard-manager/Target
@@ -222,7 +223,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-deep-link-examples-app-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/deep-link/examples/app/Target
@@ -239,7 +240,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-deep-link-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/deep-link/Target
@@ -256,7 +257,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-dialog-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/dialog/Target
@@ -273,7 +274,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-fs-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/fs/Target
@@ -290,7 +291,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-global-shortcut-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/global-shortcut/Target
@@ -307,7 +308,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-http-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/http/Target
@@ -324,7 +325,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-log-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/log/Target
@@ -341,7 +342,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-nfc-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/nfc/Target
@@ -358,7 +359,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-notification-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/notification/Target
@@ -375,7 +376,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-os-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/os/Target
@@ -392,7 +393,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-positioner-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/positioner/Target
@@ -409,7 +410,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-process-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/process/Target
@@ -426,7 +427,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-shell-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/shell/Target
@@ -452,7 +453,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-sql-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/sql/Target
@@ -469,7 +470,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-store-examples-AppSettingsManager-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/store/examples/AppSettingsManager/Target
@@ -486,7 +487,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-store-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/store/Target
@@ -503,7 +504,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-stronghold-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/stronghold/Target
@@ -520,7 +521,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-updater-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/updater/Target
@@ -537,7 +538,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-upload-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/upload/Target
@@ -554,7 +555,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-websocket-examples-tauri-app-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/websocket/examples/tauri-app/Target
@@ -571,7 +572,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-websocket-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/websocket/Target
@@ -588,7 +589,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-plugins-window-state-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/window-state/Target
@@ -605,7 +606,7 @@ jobs:
             - run: pnpm run build
               working-directory: .
 
-            - uses: actions/upload-artifact@v4.3.3
+            - uses: actions/upload-artifact@v4.3.4
               with:
                   name: .-shared-template-Node-${{ matrix.node-version }}-Target
                   path: ./shared/template/Target
