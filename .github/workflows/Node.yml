@@ -75,7 +75,7 @@ jobs:
                           --unsafe-perm=true
                         ]
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -92,7 +92,7 @@ jobs:
                   name: .-examples-api-Node-${{ matrix.node-version }}-Target
                   path: ./examples/api/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -109,7 +109,7 @@ jobs:
                   name: .-Node-${{ matrix.node-version }}-Target
                   path: ./Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -126,7 +126,7 @@ jobs:
                   name: .-plugins-authenticator-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/authenticator/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -143,7 +143,7 @@ jobs:
                   name: .-plugins-autostart-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/autostart/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -160,7 +160,7 @@ jobs:
                   name: .-plugins-barcode-scanner-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/barcode-scanner/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -177,7 +177,7 @@ jobs:
                   name: .-plugins-biometric-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/biometric/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -194,7 +194,7 @@ jobs:
                   name: .-plugins-cli-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/cli/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -211,7 +211,7 @@ jobs:
                   name: .-plugins-clipboard-manager-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/clipboard-manager/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -228,7 +228,7 @@ jobs:
                   name: .-plugins-deep-link-examples-app-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/deep-link/examples/app/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -245,7 +245,7 @@ jobs:
                   name: .-plugins-deep-link-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/deep-link/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -262,7 +262,7 @@ jobs:
                   name: .-plugins-dialog-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/dialog/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -279,7 +279,7 @@ jobs:
                   name: .-plugins-fs-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/fs/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -296,7 +296,7 @@ jobs:
                   name: .-plugins-global-shortcut-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/global-shortcut/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -313,7 +313,7 @@ jobs:
                   name: .-plugins-http-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/http/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -330,7 +330,7 @@ jobs:
                   name: .-plugins-log-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/log/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -347,7 +347,7 @@ jobs:
                   name: .-plugins-nfc-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/nfc/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -364,7 +364,7 @@ jobs:
                   name: .-plugins-notification-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/notification/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -381,7 +381,7 @@ jobs:
                   name: .-plugins-os-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/os/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -398,7 +398,7 @@ jobs:
                   name: .-plugins-positioner-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/positioner/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -415,7 +415,7 @@ jobs:
                   name: .-plugins-process-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/process/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -432,7 +432,7 @@ jobs:
                   name: .-plugins-shell-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/shell/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -441,7 +441,7 @@ jobs:
             - run: pnpm install
               working-directory: ./plugins/single-instance/examples/vanilla
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -458,7 +458,7 @@ jobs:
                   name: .-plugins-sql-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/sql/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -475,7 +475,7 @@ jobs:
                   name: .-plugins-store-examples-AppSettingsManager-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/store/examples/AppSettingsManager/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -492,7 +492,7 @@ jobs:
                   name: .-plugins-store-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/store/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -509,7 +509,7 @@ jobs:
                   name: .-plugins-stronghold-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/stronghold/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -526,7 +526,7 @@ jobs:
                   name: .-plugins-updater-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/updater/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -543,7 +543,7 @@ jobs:
                   name: .-plugins-upload-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/upload/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -560,7 +560,7 @@ jobs:
                   name: .-plugins-websocket-examples-tauri-app-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/websocket/examples/tauri-app/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -577,7 +577,7 @@ jobs:
                   name: .-plugins-websocket-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/websocket/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
@@ -594,7 +594,7 @@ jobs:
                   name: .-plugins-window-state-Node-${{ matrix.node-version }}-Target
                   path: ./plugins/window-state/Target
 
-            - uses: actions/setup-node@v4.0.2
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version: ${{ matrix.node-version }}
                   cache: "pnpm"
