@@ -23,11 +23,11 @@
 		"@tauri-apps/plugin-updater": "2.0.0-beta.7"
 	},
 	"devDependencies": {
-		"@iconify-json/codicon": "^1.1.37",
-		"@iconify-json/ph": "^1.1.8",
+		"@iconify-json/codicon": "1.1.50",
+		"@iconify-json/ph": "1.1.13",
 		"@tauri-apps/cli": "2.0.0-beta.22",
-		"@unocss/extractor-svelte": "^0.61.0",
-		"internal-ip": "7.0.0",
-		"unocss": "^0.61.0"
+		"@unocss/extractor-svelte": "0.61.5",
+		"internal-ip": "8.0.0",
+		"unocss": "0.61.5"
 	}
 }
