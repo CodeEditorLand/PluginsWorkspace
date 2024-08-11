@@ -29,10 +29,13 @@ export function createConfig(options = {}) {
 	// eslint-disable-next-line security/detect-non-literal-fs-filename
 	const pkg = JSON.parse(readFileSync(join(cwd(), "package.json"), "utf8"));
 
-	const pluginJsName = pkg.name
-		.replace("@tauri-apps/plugin-", "")
-		.replace(/-./g, (x) => x[1].toUpperCase());
-	const iifeVarName = `__TAURI_PLUGIN_${pluginJsName.toUpperCase()}__`;
+  const pluginJsName = pkg.name
+    .replace("@tauri-apps/plugin-", "")
+    .replace(/-./g, (x) => x[1].toUpperCase());
+  const iifeVarName = `__TAURI_PLUGIN_${pkg.name
+    .replace("@tauri-apps/plugin-", "")
+    .replace("-", (x) => "_")
+    .toUpperCase()}__`;
 
 	return [
 		{
