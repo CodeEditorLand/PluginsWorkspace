@@ -1,15 +1,35 @@
 {
-	"devDependencies": {
-		"@types/eslint__js": "8.42.3",
-		"covector": "0.12.3",
-		"tslib": "2.6.3"
-	},
-	"name": "plugins-workspace",
-	"resolutions": {
-		"optionator": ">=0.9.3",
-		"semver": ">=7.5.2"
-	},
-	"scripts": {
-		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
-	}
+  "name": "plugins-workspace",
+  "private": true,
+  "license": "MIT or APACHE-2.0",
+  "type": "module",
+  "scripts": {
+    "build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build",
+    "lint": "eslint .",
+    "format": "prettier --write \"./**/*.{cjs,mjs,js,jsx,mts,ts,tsx,html,css,json}\" --ignore-path .prettierignore",
+    "format-check": "prettier --check \"./**/*.{cjs,mjs,js,jsx,mts,ts,tsx,html,css,json}\" --ignore-path .prettierignore"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.9.0",
+    "@rollup/plugin-node-resolve": "15.2.3",
+    "@rollup/plugin-terser": "0.4.4",
+    "@rollup/plugin-typescript": "11.1.6",
+    "@types/eslint__js": "8.42.3",
+    "covector": "^0.12.0",
+    "eslint": "9.9.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-security": "3.0.1",
+    "prettier": "3.3.3",
+    "rollup": "4.21.0",
+    "tslib": "2.6.3",
+    "typescript": "5.5.4",
+    "typescript-eslint": "8.1.0"
+  },
+  "resolutions": {
+    "semver": ">=7.5.2",
+    "optionator": ">=0.9.3"
+  },
+  "engines": {
+    "pnpm": "^9.0.0"
+  }
 }
