@@ -1,8 +1,8 @@
 {
 	"devDependencies": {
 		"@types/eslint__js": "8.42.3",
-		"covector": "0.12.0",
-		"tslib": "2.6.3"
+		"covector": "0.12.3",
+		"tslib": "2.7.0"
 	},
 	"name": "plugins-workspace",
 	"resolutions": {
