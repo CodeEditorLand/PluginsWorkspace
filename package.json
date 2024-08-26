@@ -6,8 +6,8 @@
 	},
 	"name": "plugins-workspace",
 	"resolutions": {
-		"optionator": ">=0.9.3",
-		"semver": ">=7.5.2"
+		"optionator": "0.9.3",
+		"semver": "7.5.2"
 	},
 	"scripts": {
 		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
