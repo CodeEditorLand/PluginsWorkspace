@@ -17,7 +17,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-updater",
+	"name": "@plugins-workspace/plugin-updater",
 	"scripts": {
 		"build": "rollup -c"
 	},

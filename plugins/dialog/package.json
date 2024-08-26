@@ -17,7 +17,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-dialog",
+	"name": "@plugins-workspace/plugin-dialog",
 	"scripts": {
 		"build": "rollup -c"
 	},

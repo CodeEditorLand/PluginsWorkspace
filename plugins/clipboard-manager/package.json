@@ -17,7 +17,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-clipboard-manager",
+	"name": "@plugins-workspace/plugin-clipboard-manager",
 	"scripts": {
 		"build": "rollup -c"
 	},

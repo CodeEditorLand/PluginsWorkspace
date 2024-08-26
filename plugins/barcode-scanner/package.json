@@ -18,7 +18,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-barcode-scanner",
+	"name": "@plugins-workspace/plugin-barcode-scanner",
 	"scripts": {
 		"build": "rollup -c"
 	},

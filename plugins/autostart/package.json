@@ -17,7 +17,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-autostart",
+	"name": "@plugins-workspace/plugin-autostart",
 	"scripts": {
 		"build": "rollup -c"
 	},

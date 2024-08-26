@@ -18,7 +18,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-sql",
+	"name": "@plugins-workspace/plugin-sql",
 	"scripts": {
 		"build": "rollup -c"
 	},

@@ -17,7 +17,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-haptics",
+	"name": "@plugins-workspace/plugin-haptics",
 	"scripts": {
 		"build": "rollup -c"
 	},

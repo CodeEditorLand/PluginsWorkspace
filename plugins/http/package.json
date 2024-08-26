@@ -17,7 +17,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-http",
+	"name": "@plugins-workspace/tauri-apps-plugin-http",
 	"scripts": {
 		"build": "rollup -c"
 	},
