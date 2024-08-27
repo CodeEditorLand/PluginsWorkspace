@@ -43,7 +43,7 @@ npm add https://github.com/tauri-apps/tauri-plugin-upload#v2
 yarn add https://github.com/tauri-apps/tauri-plugin-upload#v2
 ```
 
-## Usage
+## 🛠️ Usage
 
 First you need to register the core plugin with Tauri:
 

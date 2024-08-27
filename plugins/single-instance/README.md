@@ -23,7 +23,7 @@ tauri-plugin-single-instance = "2.0.0-rc"
 tauri-plugin-single-instance = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
 
-## Usage
+## 🛠️ Usage
 
 First you need to register the core plugin with Tauri:
 

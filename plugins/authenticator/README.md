@@ -48,7 +48,7 @@ npm add https://github.com/tauri-apps/tauri-plugin-authenticator#v2
 yarn add https://github.com/tauri-apps/tauri-plugin-authenticator#v2
 ```
 
-## Usage
+## 🛠️ Usage
 
 First, you need to register the authenticator plugin with Tauri:
 

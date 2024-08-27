@@ -23,7 +23,7 @@ tauri-plugin-persisted-scope = "2.0.0-rc"
 tauri-plugin-persisted-scope = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
 
-## Usage
+## 🛠️ Usage
 
 First you need to register the core plugin with Tauri:
 
