@@ -1,7 +1,7 @@
 {
 	"dependencies": {
 		"@tauri-apps/api": "2.0.0-rc.3",
-		"@tauri-apps/plugin-deep-link": "2.0.0-rc.0"
+		"@tauri-apps/plugin-deep-link": "2.0.0-rc.1"
 	},
 	"devDependencies": {
 		"@tauri-apps/cli": "2.0.0-rc.7"
