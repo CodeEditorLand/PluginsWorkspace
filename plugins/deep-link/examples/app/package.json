@@ -1,16 +1,21 @@
 {
-	"dependencies": {
-		"@tauri-apps/api": "2.0.0-rc.4",
-		"@tauri-apps/plugin-deep-link": "2.0.0-rc.1"
-	},
-	"devDependencies": {
-		"@tauri-apps/cli": "2.0.0-rc.10"
-	},
-	"name": "deep-link-example",
-	"scripts": {
-		"build": "tsc && vite build",
-		"dev": "vite",
-		"preview": "vite preview",
-		"tauri": "tauri"
-	}
+  "name": "deep-link-example",
+  "private": true,
+  "version": "2.0.0-rc.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "2.0.0-rc.4",
+    "@tauri-apps/plugin-deep-link": "2.0.0-rc.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "2.0.0-rc.11",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.13"
+  }
 }
