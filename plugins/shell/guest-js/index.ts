@@ -33,7 +33,7 @@
  *
  * #### Example scope configuration
  *
- * CLI: `git ecommit -m "the commit message"`
+ * CLI: `git commit -m "the commit message"`
  *
  * Capability:
  * ```json

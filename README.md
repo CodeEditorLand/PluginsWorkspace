@@ -50,6 +50,4 @@ PRs accepted. Please make sure to read the [Contributing Guide](https://github.c
   </tbody>
 </table>
 
-For the complete list of sponsors please visit our
-[website](https://tauri.app#sponsors) and
-[Open Collective](https://opencollective.com/tauri).
+For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).

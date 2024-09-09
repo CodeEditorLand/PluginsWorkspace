@@ -121,7 +121,7 @@ Under `tauri.conf.json > plugins > deep-link`, configure the domains (mobile) an
 }
 ```
 
-## 🛠️ Usage
+## Usage
 
 First you need to register the core plugin with Tauri:
 

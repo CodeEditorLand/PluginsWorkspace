@@ -69,7 +69,7 @@ If your app requires GPS functionality to function, **you** should add the follo
 
 The Google Play Store uses this property to decide whether it should show the app to devices without GPS capabilities.
 
-## 🛠️ Usage
+## Usage
 
 First you need to register the core plugin with Tauri:
 
