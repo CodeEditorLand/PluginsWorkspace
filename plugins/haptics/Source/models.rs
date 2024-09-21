@@ -8,27 +8,27 @@ use specta::Type;
 #[derive(Debug, Clone, Default, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
 pub struct HapticsOptions {
-    // TODO: support array to match web api
-    pub duration: u32,
+	// TODO: support array to match web api
+	pub duration: u32,
 }
  */
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
 pub enum ImpactFeedbackStyle {
-    Light,
-    #[default]
-    Medium,
-    Heavy,
-    Soft,
-    Rigid,
+	Light,
+	#[default]
+	Medium,
+	Heavy,
+	Soft,
+	Rigid,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
 pub enum NotificationFeedbackType {
-    #[default]
-    Success,
-    Warning,
-    Error,
+	#[default]
+	Success,
+	Warning,
+	Error,
 }

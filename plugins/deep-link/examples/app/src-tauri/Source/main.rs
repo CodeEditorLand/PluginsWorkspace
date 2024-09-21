@@ -6,6 +6,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    #[cfg(desktop)]
-    deep_link_example::run();
+	#[cfg(desktop)]
+	deep_link_example::run();
 }

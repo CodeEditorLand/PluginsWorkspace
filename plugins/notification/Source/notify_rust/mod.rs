@@ -67,21 +67,21 @@
 //!
 
 #![deny(
-    missing_copy_implementations,
-    trivial_casts,
-    trivial_numeric_casts,
-    unsafe_code,
-    unused_import_braces,
-    unused_qualifications
+	missing_copy_implementations,
+	trivial_casts,
+	trivial_numeric_casts,
+	unsafe_code,
+	unused_import_braces,
+	unused_qualifications
 )]
 #![warn(
-    missing_docs,
-    clippy::doc_markdown,
-    clippy::semicolon_if_nothing_returned,
-    clippy::single_match_else,
-    clippy::inconsistent_struct_constructor,
-    clippy::map_unwrap_or,
-    clippy::match_same_arms
+	missing_docs,
+	clippy::doc_markdown,
+	clippy::semicolon_if_nothing_returned,
+	clippy::single_match_else,
+	clippy::inconsistent_struct_constructor,
+	clippy::map_unwrap_or,
+	clippy::match_same_arms
 )]
 
 #[cfg(all(feature = "dbus", unix, not(target_os = "macos")))]
@@ -125,14 +125,10 @@ pub use mac_notification_sys::{get_bundle_identifier_or_default, set_application
 #[cfg(target_os = "macos")]
 pub use macos::NotificationHandle;
 
-#[cfg(all(
-    any(feature = "dbus", feature = "zbus"),
-    unix,
-    not(target_os = "macos")
-))]
+#[cfg(all(any(feature = "dbus", feature = "zbus"), unix, not(target_os = "macos")))]
 pub use xdg::{
-    dbus_stack, get_capabilities, get_server_information, handle_action, ActionResponse,
-    CloseHandler, CloseReason, DbusStack, NotificationHandle,
+	dbus_stack, get_capabilities, get_server_information, handle_action, ActionResponse,
+	CloseHandler, CloseReason, DbusStack, NotificationHandle,
 };
 
 #[cfg(all(feature = "server", unix, not(target_os = "macos")))]
@@ -143,31 +139,29 @@ pub use hints::Hint;
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 pub use image::{Image, ImageError};
 
-#[cfg_attr(
-    target_os = "macos",
-    deprecated(note = "Urgency is not supported on macOS")
-)]
+#[cfg_attr(target_os = "macos", deprecated(note = "Urgency is not supported on macOS"))]
 pub use urgency::Urgency;
 
-pub use {notification::Notification, timeout::Timeout};
+pub use notification::Notification;
+pub use timeout::Timeout;
 
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 lazy_static! {
-    /// Read once at runtime. Needed for Images
-    pub static ref SPEC_VERSION: miniver::Version =
-        get_server_information()
-        .and_then(|info| info.spec_version.parse::<miniver::Version>())
-        .unwrap_or_else(|_| miniver::Version::new(1,1));
+	/// Read once at runtime. Needed for Images
+	pub static ref SPEC_VERSION: miniver::Version =
+		get_server_information()
+		.and_then(|info| info.spec_version.parse::<miniver::Version>())
+		.unwrap_or_else(|_| miniver::Version::new(1,1));
 }
 /// Return value of `get_server_information()`.
 #[derive(Debug)]
 pub struct ServerInformation {
-    /// The product name of the server.
-    pub name: String,
-    /// The vendor name.
-    pub vendor: String,
-    /// The server's version string.
-    pub version: String,
-    /// The specification version the server is compliant with.
-    pub spec_version: String,
+	/// The product name of the server.
+	pub name: String,
+	/// The vendor name.
+	pub vendor: String,
+	/// The server's version string.
+	pub version: String,
+	/// The specification version the server is compliant with.
+	pub spec_version: String,
 }
