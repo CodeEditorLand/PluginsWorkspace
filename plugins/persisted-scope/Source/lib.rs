@@ -7,25 +7,25 @@
 //! Save filesystem and asset scopes and restore them when the app is reopened.
 
 #![doc(
-	html_logo_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png",
-	html_favicon_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png"
+    html_logo_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png",
+    html_favicon_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png"
 )]
 
 use aho_corasick::AhoCorasick;
 use serde::{Deserialize, Serialize};
 
 use tauri::{
-	plugin::{Builder, TauriPlugin},
-	scope::fs::Pattern as GlobPattern,
-	Manager, Runtime,
+    plugin::{Builder, TauriPlugin},
+    scope::fs::Pattern as GlobPattern,
+    Manager, Runtime,
 };
 use tauri_plugin_fs::FsExt;
 
 use std::{
-	collections::HashSet,
-	fs::{create_dir_all, File},
-	io::Write,
-	path::Path,
+    collections::HashSet,
+    fs::{create_dir_all, File},
+    io::Write,
+    path::Path,
 };
 
 // Using 2 separate files so that we don't have to think about write conflicts and not break backwards compat.
@@ -35,188 +35,211 @@ const ASSET_SCOPE_STATE_FILENAME: &str = ".persisted-scope-asset";
 
 // Most of these patterns are just added to try to fix broken files in the wild.
 // After a while we can hopefully reduce it to something like [r"[?]", r"[*]", r"\\?\\\?\"]
-const PATTERNS: &[&str] = &[r"[[]", r"[]]", r"[?]", r"[*]", r"\?\?", r"\\?\\?\", r"\\?\\\?\"];
+const PATTERNS: &[&str] = &[
+    r"[[]",
+    r"[]]",
+    r"[?]",
+    r"[*]",
+    r"\?\?",
+    r"\\?\\?\",
+    r"\\?\\\?\",
+];
 const REPLACE_WITH: &[&str] = &[r"[", r"]", r"?", r"*", r"\?", r"\\?\", r"\\?\"];
 
 trait ScopeExt {
-	type Pattern: ToString;
+    type Pattern: ToString;
 
-	fn allow_file(&self, path: &Path);
-	fn allow_directory(&self, path: &Path, recursive: bool);
+    fn allow_file(&self, path: &Path);
+    fn allow_directory(&self, path: &Path, recursive: bool);
 
-	fn forbid_file(&self, path: &Path);
-	fn forbid_directory(&self, path: &Path, recursive: bool);
+    fn forbid_file(&self, path: &Path);
+    fn forbid_directory(&self, path: &Path, recursive: bool);
 
-	fn allowed_patterns(&self) -> HashSet<Self::Pattern>;
-	fn forbidden_patterns(&self) -> HashSet<Self::Pattern>;
+    fn allowed_patterns(&self) -> HashSet<Self::Pattern>;
+    fn forbidden_patterns(&self) -> HashSet<Self::Pattern>;
 }
 
 impl ScopeExt for tauri::scope::fs::Scope {
-	type Pattern = GlobPattern;
+    type Pattern = GlobPattern;
 
-	fn allow_file(&self, path: &Path) {
-		let _ = tauri::scope::fs::Scope::allow_file(self, path);
-	}
+    fn allow_file(&self, path: &Path) {
+        let _ = tauri::scope::fs::Scope::allow_file(self, path);
+    }
 
-	fn allow_directory(&self, path: &Path, recursive: bool) {
-		let _ = tauri::scope::fs::Scope::allow_directory(self, path, recursive);
-	}
+    fn allow_directory(&self, path: &Path, recursive: bool) {
+        let _ = tauri::scope::fs::Scope::allow_directory(self, path, recursive);
+    }
 
-	fn forbid_file(&self, path: &Path) {
-		let _ = tauri::scope::fs::Scope::forbid_file(self, path);
-	}
+    fn forbid_file(&self, path: &Path) {
+        let _ = tauri::scope::fs::Scope::forbid_file(self, path);
+    }
 
-	fn forbid_directory(&self, path: &Path, recursive: bool) {
-		let _ = tauri::scope::fs::Scope::forbid_directory(self, path, recursive);
-	}
+    fn forbid_directory(&self, path: &Path, recursive: bool) {
+        let _ = tauri::scope::fs::Scope::forbid_directory(self, path, recursive);
+    }
 
-	fn allowed_patterns(&self) -> HashSet<Self::Pattern> {
-		tauri::scope::fs::Scope::allowed_patterns(self)
-	}
+    fn allowed_patterns(&self) -> HashSet<Self::Pattern> {
+        tauri::scope::fs::Scope::allowed_patterns(self)
+    }
 
-	fn forbidden_patterns(&self) -> HashSet<Self::Pattern> {
-		tauri::scope::fs::Scope::forbidden_patterns(self)
-	}
+    fn forbidden_patterns(&self) -> HashSet<Self::Pattern> {
+        tauri::scope::fs::Scope::forbidden_patterns(self)
+    }
 }
 
 impl ScopeExt for tauri_plugin_fs::Scope {
-	type Pattern = String;
+    type Pattern = String;
 
-	fn allow_file(&self, path: &Path) {
-		tauri_plugin_fs::Scope::allow_file(self, path);
-	}
+    fn allow_file(&self, path: &Path) {
+        tauri_plugin_fs::Scope::allow_file(self, path);
+    }
 
-	fn allow_directory(&self, path: &Path, recursive: bool) {
-		tauri_plugin_fs::Scope::allow_directory(self, path, recursive);
-	}
+    fn allow_directory(&self, path: &Path, recursive: bool) {
+        tauri_plugin_fs::Scope::allow_directory(self, path, recursive);
+    }
 
-	fn forbid_file(&self, path: &Path) {
-		tauri_plugin_fs::Scope::forbid_file(self, path);
-	}
+    fn forbid_file(&self, path: &Path) {
+        tauri_plugin_fs::Scope::forbid_file(self, path);
+    }
 
-	fn forbid_directory(&self, path: &Path, recursive: bool) {
-		tauri_plugin_fs::Scope::forbid_directory(self, path, recursive);
-	}
+    fn forbid_directory(&self, path: &Path, recursive: bool) {
+        tauri_plugin_fs::Scope::forbid_directory(self, path, recursive);
+    }
 
-	fn allowed_patterns(&self) -> HashSet<Self::Pattern> {
-		self.allowed().into_iter().map(|p| p.to_string_lossy().to_string()).collect()
-	}
+    fn allowed_patterns(&self) -> HashSet<Self::Pattern> {
+        self.allowed()
+            .into_iter()
+            .map(|p| p.to_string_lossy().to_string())
+            .collect()
+    }
 
-	fn forbidden_patterns(&self) -> HashSet<Self::Pattern> {
-		self.forbidden().into_iter().map(|p| p.to_string_lossy().to_string()).collect()
-	}
+    fn forbidden_patterns(&self) -> HashSet<Self::Pattern> {
+        self.forbidden()
+            .into_iter()
+            .map(|p| p.to_string_lossy().to_string())
+            .collect()
+    }
 }
 
 #[derive(Debug, thiserror::Error)]
 enum Error {
-	#[error(transparent)]
-	Io(#[from] std::io::Error),
-	#[error(transparent)]
-	Tauri(#[from] tauri::Error),
-	#[error(transparent)]
-	Bincode(#[from] Box<bincode::ErrorKind>),
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+    #[error(transparent)]
+    Tauri(#[from] tauri::Error),
+    #[error(transparent)]
+    Bincode(#[from] Box<bincode::ErrorKind>),
 }
 
 #[derive(Debug, Default, Deserialize, Serialize, Eq, PartialEq, Hash)]
 enum TargetType {
-	#[default]
-	File,
-	Directory,
-	RecursiveDirectory,
+    #[default]
+    File,
+    Directory,
+    RecursiveDirectory,
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 struct Scope {
-	allowed_paths: Vec<String>,
-	forbidden_patterns: Vec<String>,
+    allowed_paths: Vec<String>,
+    forbidden_patterns: Vec<String>,
 }
 
 fn fix_pattern(ac: &AhoCorasick, s: &str) -> String {
-	let s = ac.replace_all(s, REPLACE_WITH);
+    let s = ac.replace_all(s, REPLACE_WITH);
 
-	if ac.find(&s).is_some() {
-		return fix_pattern(ac, &s);
-	}
+    if ac.find(&s).is_some() {
+        return fix_pattern(ac, &s);
+    }
 
-	s
+    s
 }
 
 const RESURSIVE_DIRECTORY_SUFFIX: &str = "**";
 const DIRECTORY_SUFFIX: &str = "*";
 
 fn detect_scope_type(scope_state_path: &str) -> TargetType {
-	if scope_state_path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
-		TargetType::RecursiveDirectory
-	} else if scope_state_path.ends_with(DIRECTORY_SUFFIX) {
-		TargetType::Directory
-	} else {
-		TargetType::File
-	}
+    if scope_state_path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
+        TargetType::RecursiveDirectory
+    } else if scope_state_path.ends_with(DIRECTORY_SUFFIX) {
+        TargetType::Directory
+    } else {
+        TargetType::File
+    }
 }
 
 fn fix_directory(path_str: &str) -> &Path {
-	let mut path = Path::new(path_str);
+    let mut path = Path::new(path_str);
 
-	if path.ends_with(DIRECTORY_SUFFIX) || path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
-		path = match path.parent() {
-			Some(value) => value,
-			None => return path,
-		};
-	}
+    if path.ends_with(DIRECTORY_SUFFIX) || path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
+        path = match path.parent() {
+            Some(value) => value,
+            None => return path,
+        };
+    }
 
-	path
+    path
 }
 
 fn allow_path(scope: &impl ScopeExt, path: &str) {
-	let target_type = detect_scope_type(path);
+    let target_type = detect_scope_type(path);
 
-	match target_type {
-		TargetType::File => {
-			scope.allow_file(Path::new(path));
-		}
-		TargetType::Directory => {
-			// We remove the '*' at the end of it, else it will be escaped by the pattern.
-			scope.allow_directory(fix_directory(path), false);
-		}
-		TargetType::RecursiveDirectory => {
-			// We remove the '**' at the end of it, else it will be escaped by the pattern.
-			scope.allow_directory(fix_directory(path), true);
-		}
-	}
+    match target_type {
+        TargetType::File => {
+            scope.allow_file(Path::new(path));
+        }
+        TargetType::Directory => {
+            // We remove the '*' at the end of it, else it will be escaped by the pattern.
+            scope.allow_directory(fix_directory(path), false);
+        }
+        TargetType::RecursiveDirectory => {
+            // We remove the '**' at the end of it, else it will be escaped by the pattern.
+            scope.allow_directory(fix_directory(path), true);
+        }
+    }
 }
 
 fn forbid_path(scope: &impl ScopeExt, path: &str) {
-	let target_type = detect_scope_type(path);
+    let target_type = detect_scope_type(path);
 
-	match target_type {
-		TargetType::File => {
-			scope.forbid_file(Path::new(path));
-		}
-		TargetType::Directory => {
-			scope.forbid_directory(fix_directory(path), false);
-		}
-		TargetType::RecursiveDirectory => {
-			scope.forbid_directory(fix_directory(path), true);
-		}
-	}
+    match target_type {
+        TargetType::File => {
+            scope.forbid_file(Path::new(path));
+        }
+        TargetType::Directory => {
+            scope.forbid_directory(fix_directory(path), false);
+        }
+        TargetType::RecursiveDirectory => {
+            scope.forbid_directory(fix_directory(path), true);
+        }
+    }
 }
 
 fn save_scopes(scope: &impl ScopeExt, app_dir: &Path, scope_state_path: &Path) {
-	let scope = Scope {
-		allowed_paths: scope.allowed_patterns().into_iter().map(|p| p.to_string()).collect(),
-		forbidden_patterns: scope.forbidden_patterns().into_iter().map(|p| p.to_string()).collect(),
-	};
+    let scope = Scope {
+        allowed_paths: scope
+            .allowed_patterns()
+            .into_iter()
+            .map(|p| p.to_string())
+            .collect(),
+        forbidden_patterns: scope
+            .forbidden_patterns()
+            .into_iter()
+            .map(|p| p.to_string())
+            .collect(),
+    };
 
-	let _ = create_dir_all(app_dir)
-		.and_then(|_| File::create(scope_state_path))
-		.map_err(Error::Io)
-		.and_then(|mut f| {
-			f.write_all(&bincode::serialize(&scope).map_err(Error::from)?).map_err(Into::into)
-		});
+    let _ = create_dir_all(app_dir)
+        .and_then(|_| File::create(scope_state_path))
+        .map_err(Error::Io)
+        .and_then(|mut f| {
+            f.write_all(&bincode::serialize(&scope).map_err(Error::from)?)
+                .map_err(Into::into)
+        });
 }
 
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
-	Builder::new("persisted-scope")
+    Builder::new("persisted-scope")
         .setup(|app, _api| {
             let fs_scope = app.try_fs_scope();
             #[cfg(feature = "protocol-asset")]

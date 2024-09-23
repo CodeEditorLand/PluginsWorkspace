@@ -4,10 +4,10 @@
 
 #[tauri::command]
 pub fn locale() -> Option<String> {
-	crate::locale()
+    crate::locale()
 }
 
 #[tauri::command]
 pub fn hostname() -> String {
-	crate::hostname()
+    crate::hostname()
 }
