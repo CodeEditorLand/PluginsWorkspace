@@ -1,5 +1,8 @@
 {
 	"name": "svelte-app",
+	"version": "2.0.0-rc.4",
+	"private": true,
+	"type": "module",
 	"scripts": {
 		"build": "vite build",
 		"dev": "vite --clearScreen false",
@@ -10,7 +13,7 @@
 		"@tauri-apps/plugin-barcode-scanner": "2.0.0-rc.2",
 		"@tauri-apps/plugin-biometric": "2.0.0-rc.1",
 		"@tauri-apps/plugin-cli": "2.0.0-rc.1",
-		"@tauri-apps/plugin-clipboard-manager": "2.0.0-rc.2",
+		"@tauri-apps/plugin-clipboard-manager": "2.1.0-beta.6",
 		"@tauri-apps/plugin-dialog": "2.0.0-rc.1",
 		"@tauri-apps/plugin-fs": "2.0.0-rc.2",
 		"@tauri-apps/plugin-geolocation": "2.0.0-rc.2",
@@ -23,12 +26,15 @@
 		"@tauri-apps/plugin-process": "2.0.0-rc.1",
 		"@tauri-apps/plugin-shell": "2.0.0-rc.1",
 		"@tauri-apps/plugin-store": "2.0.0-rc.1",
-		"@tauri-apps/plugin-updater": "2.0.0-rc.2"
+		"@tauri-apps/plugin-updater": "2.0.0-rc.2",
+		"@zerodevx/svelte-json-view": "1.0.11"
 	},
 	"devDependencies": {
-		"@iconify-json/codicon": "1.1.37",
-		"@iconify-json/ph": "1.1.8",
+		"@iconify-json/codicon": "1.2.1",
+		"@iconify-json/ph": "1.2.0",
+		"@sveltejs/vite-plugin-svelte": "3.1.2",
 		"@tauri-apps/cli": "2.0.0-rc.16",
+<<<<<<< HEAD
 		"@unocss/extractor-svelte": "0.62.0",
 		"unocss": "0.62.0"
 
@@ -45,5 +51,11 @@
 		"build": "vite build",
 		"dev": "vite --clearScreen false",
 		"serve": "vite preview"
+=======
+		"@unocss/extractor-svelte": "0.62.4",
+		"svelte": "4.2.19",
+		"unocss": "0.62.4",
+		"vite": "5.4.8"
+>>>>>>> 09363a035680e032d967a5e4d961831f18faf0a1
 	}
 }

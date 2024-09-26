@@ -1,10 +1,17 @@
 {
 	"name": "@tauri-apps/plugin-deep-link",
+<<<<<<< HEAD
+=======
+	"version": "2.0.0-rc.2",
+>>>>>>> 09363a035680e032d967a5e4d961831f18faf0a1
 	"description": "Set your Tauri application as the default handler for an URL",
+	"repository": "https://github.com/tauri-apps/plugins-workspace",
+	"license": "MIT or APACHE-2.0",
+	"type": "module",
 	"exports": {
+		"types": "./dist-js/index.d.ts",
 		"import": "./dist-js/index.js",
-		"require": "./dist-js/index.cjs",
-		"types": "./dist-js/index.d.ts"
+		"require": "./dist-js/index.cjs"
 	},
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
