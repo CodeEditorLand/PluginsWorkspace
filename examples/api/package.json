@@ -20,11 +20,16 @@
 		"@tauri-apps/plugin-updater": "2.0.0-rc.2"
 	},
 	"devDependencies": {
-		"@iconify-json/codicon": "1.1.37",
-		"@iconify-json/ph": "1.1.8",
+		"@iconify-json/codicon": "^1.1.37",
+		"@iconify-json/ph": "^1.1.8",
 		"@tauri-apps/cli": "2.0.0-rc.16",
+<<<<<<< HEAD
 		"@unocss/extractor-svelte": "0.62.0",
 		"unocss": "0.62.0"
+=======
+		"@unocss/extractor-svelte": "^0.62.0",
+		"unocss": "^0.62.0"
+>>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
 	},
 	"name": "svelte-app",
 	"scripts": {

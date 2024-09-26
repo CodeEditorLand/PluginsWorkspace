@@ -21,15 +21,15 @@ tiny_http = "0.12"
 log = { workspace = true }
 tauri-plugin-log = { path = "../../../plugins/log", version = "2.0.0-rc.2" }
 tauri-plugin-fs = { path = "../../../plugins/fs", version = "2.0.0-rc.5", features = [
-	"watch",
+  "watch",
 ] }
 tauri-plugin-clipboard-manager = { path = "../../../plugins/clipboard-manager", version = "2.0.0-rc.4" }
 tauri-plugin-dialog = { path = "../../../plugins/dialog", version = "2.0.0-rc.7" }
 tauri-plugin-http = { path = "../../../plugins/http", features = [
-	"multipart",
+  "multipart",
 ], version = "2.0.0-rc.5" }
 tauri-plugin-notification = { path = "../../../plugins/notification", version = "2.0.0-rc.5", features = [
-	"windows7-compat",
+  "windows7-compat",
 ] }
 tauri-plugin-os = { path = "../../../plugins/os", version = "2.0.0-rc.1" }
 tauri-plugin-process = { path = "../../../plugins/process", version = "2.0.0-rc.1" }
@@ -39,14 +39,14 @@ tauri-plugin-store = { path = "../../../plugins/store", version = "2.0.0-rc.3" }
 [dependencies.tauri]
 workspace = true
 features = [
-	"wry",
-	"compression",
-	"image-ico",
-	"image-png",
-	"isolation",
-	"macos-private-api",
-	"tray-icon",
-	"protocol-asset",
+  "wry",
+  "compression",
+  "image-ico",
+  "image-png",
+  "isolation",
+  "macos-private-api",
+  "tray-icon",
+  "protocol-asset",
 ]
 
 [target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\", target_os = \"dragonfly\", target_os = \"freebsd\", target_os = \"openbsd\", target_os = \"netbsd\"))".dependencies]
