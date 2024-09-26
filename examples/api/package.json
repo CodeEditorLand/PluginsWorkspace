@@ -1,4 +1,10 @@
 {
+	"name": "svelte-app",
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite --clearScreen false",
+		"serve": "vite preview"
+	},
 	"dependencies": {
 		"@tauri-apps/api": "2.0.0-rc.5",
 		"@tauri-apps/plugin-barcode-scanner": "2.0.0-rc.2",
@@ -25,11 +31,5 @@
 		"@tauri-apps/cli": "2.0.0-rc.16",
 		"@unocss/extractor-svelte": "0.62.0",
 		"unocss": "0.62.0"
-	},
-	"name": "svelte-app",
-	"scripts": {
-		"build": "vite build",
-		"dev": "vite --clearScreen false",
-		"serve": "vite preview"
 	}
 }
