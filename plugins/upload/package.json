@@ -3,7 +3,15 @@
 		"Tauri Programme within The Commons Conservancy"
 	],
 	"dependencies": {
+<<<<<<< HEAD
 		"@tauri-apps/api": "2.0.0-rc.4"
+=======
+<<<<<<< HEAD
+		"@tauri-apps/api": "2.0.0-rc.4"
+=======
+		"@tauri-apps/api": "^2.0.0-rc.4"
+>>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
+>>>>>>> 67263402100bade70099489570a842302ad220c7
 	},
 	"description": "Upload files from disk to a remote server over HTTP.",
 	"exports": {

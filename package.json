@@ -1,7 +1,15 @@
 {
 	"devDependencies": {
 		"@types/eslint__js": "8.42.3",
+<<<<<<< HEAD
 		"covector": "0.12.3",
+=======
+<<<<<<< HEAD
+		"covector": "0.12.3",
+=======
+		"covector": "^0.12.3",
+>>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
+>>>>>>> 67263402100bade70099489570a842302ad220c7
 		"tslib": "2.7.0"
 	},
 	"name": "plugins-workspace",
