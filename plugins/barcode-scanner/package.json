@@ -1,5 +1,24 @@
 {
+<<<<<<< HEAD
 	"name": "@tauri-apps/plugin-barcode-scanner",
+=======
+	"authors": [
+		"Tauri Programme within The Commons Conservancy"
+	],
+	"dependencies": {
+		"@tauri-apps/api": "2.0.0-rc.4"
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+		"@tauri-apps/api": "2.0.0-rc.4"
+=======
+		"@tauri-apps/api": "^2.0.0-rc.4"
+>>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
+>>>>>>> 67263402100bade70099489570a842302ad220c7
+=======
+>>>>>>> 1dcaab5cbcbb9b66ebdd41e61ea5f9afc3be709a
+	},
+>>>>>>> d7438fc76f542818f8a27978e52d386404ddf70e
 	"description": "Scan QR codes, EAN-13 and other kinds of barcodes on Android and iOS",
 	"exports": {
 		"import": "./dist-js/index.js",
