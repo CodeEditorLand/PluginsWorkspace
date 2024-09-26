@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"devDependencies": {
 		"@types/eslint__js": "8.42.3",
 <<<<<<< HEAD
@@ -12,12 +13,19 @@
 >>>>>>> 67263402100bade70099489570a842302ad220c7
 		"tslib": "2.7.0"
 	},
+=======
+>>>>>>> 1dcaab5cbcbb9b66ebdd41e61ea5f9afc3be709a
 	"name": "plugins-workspace",
+	"scripts": {
+		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
+	},
 	"resolutions": {
 		"optionator": ">=0.9.3",
 		"semver": ">=7.5.2"
 	},
-	"scripts": {
-		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
+	"devDependencies": {
+		"@types/eslint__js": "8.42.3",
+		"covector": "0.12.3",
+		"tslib": "2.7.0"
 	}
 }
