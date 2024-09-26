@@ -37,8 +37,8 @@
 
 		"@unocss/extractor-svelte": "0.62.0",
 		"unocss": "0.62.0"
-		"@unocss/extractor-svelte": "^0.62.0",
-		"unocss": "^0.62.0"
+		"@unocss/extractor-svelte": "0.62.0",
+		"unocss": "0.62.0"
 	},
 	"name": "svelte-app",
 	"scripts": {

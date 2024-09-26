@@ -1,13 +1,4 @@
 {
-
-
-	"name": "@tauri-apps/plugin-stronghold",
-	"authors": [
-		"Tauri Programme within The Commons Conservancy"
-	],
-	"dependencies": {
-		"@tauri-apps/api": "2.0.0-rc.4"
-	},
 	"name": "@tauri-apps/plugin-stronghold",
 	"description": "Store secrets and keys using the IOTA Stronghold encrypted database.",
 	"exports": {
@@ -27,7 +18,7 @@
 		"build": "rollup -c"
 	},
 	"dependencies": {
-		"@tauri-apps/api": "2.0.0-rc.4"
+		"@tauri-apps/api": "2.0.0-rc.5"
 	},
 	"authors": [
 		"Tauri Programme within The Commons Conservancy"
