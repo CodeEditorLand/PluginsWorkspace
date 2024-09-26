@@ -1,48 +1,29 @@
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
-	"name": "@tauri-apps/plugin-websocket",
-=======
-	"authors": [
-		"Tauri Programme within The Commons Conservancy"
-	],
-	"dependencies": {
-		"@tauri-apps/api": "2.0.0-rc.4"
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-		"@tauri-apps/api": "2.0.0-rc.4"
-=======
-		"@tauri-apps/api": "^2.0.0-rc.4"
->>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
->>>>>>> 67263402100bade70099489570a842302ad220c7
-=======
->>>>>>> 1dcaab5cbcbb9b66ebdd41e61ea5f9afc3be709a
-	},
->>>>>>> d7438fc76f542818f8a27978e52d386404ddf70e
-=======
-	"name": "@tauri-apps/plugin-websocket",
->>>>>>> 570d2066f79d18d950ddf1bfca9984d19fb968a7
-	"exports": {
-		"import": "./dist-js/index.js",
-		"require": "./dist-js/index.cjs",
-		"types": "./dist-js/index.d.ts"
-	},
-	"main": "./dist-js/index.cjs",
-	"module": "./dist-js/index.js",
-	"types": "./dist-js/index.d.ts",
-	"files": [
-		"dist-js",
-		"README.md",
-		"LICENSE"
-	],
-	"scripts": {
-		"build": "rollup -c"
-	},
-	"dependencies": {
-		"@tauri-apps/api": "2.0.0-rc.4"
-	},
-	"authors": [
-		"Tauri Programme within The Commons Conservancy"
-	]
+  "name": "@tauri-apps/plugin-websocket",
+  "version": "2.0.0-rc.1",
+  "license": "MIT or APACHE-2.0",
+  "authors": [
+    "Tauri Programme within The Commons Conservancy"
+  ],
+  "repository": "https://github.com/tauri-apps/plugins-workspace",
+  "type": "module",
+  "types": "./dist-js/index.d.ts",
+  "main": "./dist-js/index.cjs",
+  "module": "./dist-js/index.js",
+  "exports": {
+    "types": "./dist-js/index.d.ts",
+    "import": "./dist-js/index.js",
+    "require": "./dist-js/index.cjs"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "files": [
+    "dist-js",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0-rc.4"
+  }
 }
