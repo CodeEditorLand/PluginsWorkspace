@@ -1,19 +1,15 @@
 {
-	"devDependencies": {
-		"@types/eslint__js": "8.42.3",
-<<<<<<< HEAD
-		"covector": "0.12.3",
-=======
-		"covector": "^0.12.3",
->>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
-		"tslib": "2.7.0"
-	},
 	"name": "plugins-workspace",
+	"scripts": {
+		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
+	},
 	"resolutions": {
 		"optionator": ">=0.9.3",
 		"semver": ">=7.5.2"
 	},
-	"scripts": {
-		"build": "pnpm run -r --parallel --filter !plugins-workspace --filter !\"./plugins/*/examples/**\" --filter !\"./examples/*\" build"
+	"devDependencies": {
+		"@types/eslint__js": "8.42.3",
+		"covector": "0.12.3",
+		"tslib": "2.7.0"
 	}
 }
