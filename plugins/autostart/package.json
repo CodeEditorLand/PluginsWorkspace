@@ -1,22 +1,5 @@
 {
-<<<<<<< HEAD
-	"authors": [
-		"Tauri Programme within The Commons Conservancy"
-	],
-	"dependencies": {
-<<<<<<< HEAD
-		"@tauri-apps/api": "2.0.0-rc.4"
-=======
-<<<<<<< HEAD
-		"@tauri-apps/api": "2.0.0-rc.4"
-=======
-		"@tauri-apps/api": "^2.0.0-rc.4"
->>>>>>> 01c7500b66effdc6cec5f0566059365f0a920aa6
->>>>>>> 67263402100bade70099489570a842302ad220c7
-	},
-=======
 	"name": "@tauri-apps/plugin-autostart",
->>>>>>> 1dcaab5cbcbb9b66ebdd41e61ea5f9afc3be709a
 	"exports": {
 		"import": "./dist-js/index.js",
 		"require": "./dist-js/index.cjs",
