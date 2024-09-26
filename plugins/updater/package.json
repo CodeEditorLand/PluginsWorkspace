@@ -1,5 +1,6 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"name": "@tauri-apps/plugin-updater",
 =======
 	"authors": [
@@ -19,6 +20,9 @@
 >>>>>>> 1dcaab5cbcbb9b66ebdd41e61ea5f9afc3be709a
 	},
 >>>>>>> d7438fc76f542818f8a27978e52d386404ddf70e
+=======
+	"name": "@tauri-apps/plugin-updater",
+>>>>>>> 570d2066f79d18d950ddf1bfca9984d19fb968a7
 	"exports": {
 		"import": "./dist-js/index.js",
 		"require": "./dist-js/index.cjs",

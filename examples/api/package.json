@@ -32,6 +32,7 @@
 		"@unocss/extractor-svelte": "0.62.0",
 		"unocss": "0.62.0"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 =======
@@ -52,5 +53,7 @@
 		"dev": "vite --clearScreen false",
 		"serve": "vite preview"
 >>>>>>> d7438fc76f542818f8a27978e52d386404ddf70e
+=======
+>>>>>>> 570d2066f79d18d950ddf1bfca9984d19fb968a7
 	}
 }
