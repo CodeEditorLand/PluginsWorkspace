@@ -44,6 +44,7 @@ impl U2f {
 		let utc: DateTime<Utc> = Utc::now();
 
 		let challenge_bytes = generate_challenge(32)?;
+
 		let challenge = Challenge {
 			challenge: URL_SAFE_NO_PAD.encode(challenge_bytes),
 			timestamp: format!("{:?}", utc),
@@ -90,6 +91,7 @@ impl U2f {
 
 		let registration_data: Vec<u8> =
 			URL_SAFE_NO_PAD.decode(&response.registration_data[..]).unwrap();
+
 		let client_data: Vec<u8> = URL_SAFE_NO_PAD.decode(&response.client_data[..]).unwrap();
 
 		parse_registration(challenge.app_id, client_data, registration_data)
@@ -146,6 +148,7 @@ impl U2f {
 		let client_data: Vec<u8> = URL_SAFE_NO_PAD
 			.decode(&sign_resp.client_data[..])
 			.map_err(|_e| U2fError::InvalidClientData)?;
+
 		let sign_data: Vec<u8> = URL_SAFE_NO_PAD
 			.decode(&sign_resp.signature_data[..])
 			.map_err(|_e| U2fError::InvalidSignatureData)?;

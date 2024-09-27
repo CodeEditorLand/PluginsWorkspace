@@ -60,6 +60,7 @@ impl X509PublicKey {
 		let cert = &self.pubk;
 
 		let subject = cert.subject_name();
+
 		let common = subject
 			.entries_by_nid(openssl::nid::Nid::COMMONNAME)
 			.next()
@@ -131,6 +132,7 @@ impl NISTP256Key {
 		let ec_group = ec::EcGroup::from_curve_name(openssl::nid::Nid::X9_62_PRIME256V1)?;
 
 		let xbn = bn::BigNum::from_slice(&self.x)?;
+
 		let ybn = bn::BigNum::from_slice(&self.y)?;
 
 		let ec_key = openssl::ec::EcKey::from_public_key_affine_coordinates(&ec_group, &xbn, &ybn)?;
@@ -150,6 +152,7 @@ impl NISTP256Key {
 		let pkey = self.get_key()?;
 
 		let signature = openssl::ecdsa::EcdsaSig::from_der(signature)?;
+
 		let hash = openssl::sha::sha256(verification_data);
 
 		Ok(signature.verify(hash.as_ref(), &pkey)?)

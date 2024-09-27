@@ -13,11 +13,13 @@ use tauri::Manager;
 impl<R: Runtime> Store<R> {
 	pub fn save(&self) -> Result<(), Error> {
 		let app_dir = self.app.path().app_data_dir().expect("failed to resolve app dir");
+
 		let store_path = app_dir.join(&self.path);
 
 		create_dir_all(store_path.parent().expect("invalid store path"))?;
 
 		let bytes = (self.serialize)(&self.cache).map_err(Error::Serialize)?;
+
 		let mut f = File::create(&store_path)?;
 		f.write_all(&bytes)?;
 
@@ -27,6 +29,7 @@ impl<R: Runtime> Store<R> {
 	/// Update the store from the on-disk state
 	pub fn load(&mut self) -> Result<(), Error> {
 		let app_dir = self.app.path().app_data_dir().expect("failed to resolve app dir");
+
 		let store_path = app_dir.join(&self.path);
 
 		let bytes = read(store_path)?;

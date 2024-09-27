@@ -56,6 +56,7 @@ impl Image {
 	/// Creates an image from a raw vector of bytes
 	pub fn from_rgb(width: i32, height: i32, data: Vec<u8>) -> Result<Self, ImageError> {
 		let channels = 3i32;
+
 		let bits_per_sample = 8;
 		Self::from_raw_data(width, height, data, channels, bits_per_sample, false)
 	}
@@ -63,6 +64,7 @@ impl Image {
 	/// Creates an image from a raw vector of bytes with alpha
 	pub fn from_rgba(width: i32, height: i32, data: Vec<u8>) -> Result<Self, ImageError> {
 		let channels = 4i32;
+
 		let bits_per_sample = 8;
 		Self::from_raw_data(width, height, data, channels, bits_per_sample, true)
 	}
@@ -104,6 +106,7 @@ impl TryFrom<image::RgbImage> for Image {
 
 	fn try_from(img: image::RgbImage) -> Result<Self, Self::Error> {
 		let (width, height) = img.dimensions();
+
 		let image_data = img.into_raw();
 		Image::from_rgb(width as i32, height as i32, image_data)
 	}
@@ -114,6 +117,7 @@ impl TryFrom<image::RgbaImage> for Image {
 
 	fn try_from(img: image::RgbaImage) -> Result<Self, Self::Error> {
 		let (width, height) = img.dimensions();
+
 		let image_data = img.into_raw();
 		Image::from_rgba(width as i32, height as i32, image_data)
 	}
