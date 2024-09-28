@@ -30,8 +30,8 @@
 		"@iconify-json/ph": "1.2.0",
 		"@tauri-apps/cli": "2.0.0-rc.16",
 <<<<<<< HEAD
-		"@unocss/extractor-svelte": "^0.62.0",
-		"unocss": "^0.62.0"
+		"@unocss/extractor-svelte": "0.62.0",
+		"unocss": "0.62.0"
 =======
 		"@unocss/extractor-svelte": "0.62.4",
 		"unocss": "0.62.4"

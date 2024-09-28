@@ -18,7 +18,7 @@
 	},
 	"dependencies": {
 <<<<<<< HEAD
-		"@tauri-apps/api": "^2.0.0-rc.4"
+		"@tauri-apps/api": "2.0.0-rc.4"
 =======
 		"@tauri-apps/api": "2.0.0-rc.5"
 >>>>>>> 2874f8ec999ce9bf276bb152491dc489dbe30404
