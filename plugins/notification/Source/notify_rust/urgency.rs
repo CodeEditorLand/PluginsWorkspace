@@ -13,19 +13,19 @@ use std::convert::TryFrom;
 /// <cite> — see [Galago](http://www.galago-project.org/specs/notification/0.9/x320.html) or [Gnome](https://developer.gnome.org/notification-spec/#urgency-levels) specification.</cite>
 #[derive(Eq, PartialEq, Hash, Copy, Clone, Debug)]
 pub enum Urgency {
-    /// The behavior for `Low` urgency depends on the notification server.
-    Low = 0,
-    /// The behavior for `Normal` urgency depends on the notification server.
-    Normal = 1,
-    /// A critical notification will not time out.
-    Critical = 2,
+	/// The behavior for `Low` urgency depends on the notification server.
+	Low = 0,
+	/// The behavior for `Normal` urgency depends on the notification server.
+	Normal = 1,
+	/// A critical notification will not time out.
+	Critical = 2,
 }
 
 impl TryFrom<&str> for Urgency {
-    type Error = super::error::Error;
+	type Error = super::error::Error;
 
     #[rustfmt::skip]
-    fn try_from(string: &str) -> Result<Urgency, Self::Error> {
+	fn try_from(string: &str) -> Result<Urgency, Self::Error> {
         match string.to_lowercase().as_ref() {
             "low"      |
             "lo"       => Ok(Urgency::Low),
@@ -40,35 +40,35 @@ impl TryFrom<&str> for Urgency {
 }
 
 impl From<Option<u64>> for Urgency {
-    fn from(maybe_int: Option<u64>) -> Urgency {
-        match maybe_int {
-            Some(0) => Urgency::Low,
-            Some(x) if x >= 2 => Urgency::Critical,
-            _ => Urgency::Normal,
-        }
-    }
+	fn from(maybe_int: Option<u64>) -> Urgency {
+		match maybe_int {
+			Some(0) => Urgency::Low,
+			Some(x) if x >= 2 => Urgency::Critical,
+			_ => Urgency::Normal,
+		}
+	}
 }
 
 // TODO: remove this in v5.0
 #[cfg(not(feature = "server"))]
 impl From<u64> for Urgency {
-    fn from(int: u64) -> Urgency {
-        match int {
-            0 => Urgency::Low,
-            1 => Urgency::Normal,
-            2..=std::u64::MAX => Urgency::Critical,
-        }
-    }
+	fn from(int: u64) -> Urgency {
+		match int {
+			0 => Urgency::Low,
+			1 => Urgency::Normal,
+			2..=std::u64::MAX => Urgency::Critical,
+		}
+	}
 }
 
 // TODO: make this the default in v5.0
 #[cfg(feature = "server")]
 impl From<u8> for Urgency {
-    fn from(int: u8) -> Urgency {
-        match int {
-            0 => Urgency::Low,
-            1 => Urgency::Normal,
-            2..=std::u8::MAX => Urgency::Critical,
-        }
-    }
+	fn from(int: u8) -> Urgency {
+		match int {
+			0 => Urgency::Low,
+			1 => Urgency::Normal,
+			2..=std::u8::MAX => Urgency::Critical,
+		}
+	}
 }

@@ -13,6 +13,13 @@ exclude = ["/examples"]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.platforms.support]
+windows = { level = "full", notes = "" }
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+android = { level = "none", notes = "" }
+ios = { level = "none", notes = "" }
+
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
@@ -25,13 +32,13 @@ semver = { version = "1", optional = true }
 [target."cfg(target_os = \"windows\")".dependencies.windows-sys]
 version = "0.59"
 features = [
-  "Win32_System_Threading",
-  "Win32_System_DataExchange",
-  "Win32_Foundation",
-  "Win32_UI_WindowsAndMessaging",
-  "Win32_Security",
-  "Win32_System_LibraryLoader",
-  "Win32_Graphics_Gdi",
+	"Win32_System_Threading",
+	"Win32_System_DataExchange",
+	"Win32_Foundation",
+	"Win32_UI_WindowsAndMessaging",
+	"Win32_Security",
+	"Win32_System_LibraryLoader",
+	"Win32_Graphics_Gdi",
 ]
 
 [target."cfg(target_os = \"linux\")".dependencies]

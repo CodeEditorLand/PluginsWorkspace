@@ -9,7 +9,11 @@
 	},
 	"devDependencies": {
 		"@types/eslint__js": "8.42.3",
+<<<<<<< HEAD
 		"covector": "^0.12.0",
+=======
+		"covector": "0.12.3",
+>>>>>>> 2874f8ec999ce9bf276bb152491dc489dbe30404
 		"tslib": "2.7.0"
 	}
 }
