@@ -1,6 +1,6 @@
 {
 	"devDependencies": {
-		"@tauri-apps/cli": "2.0.0-rc.16"
+		"@tauri-apps/cli": "2.0.0-rc.17"
 	},
 	"scripts": {
 		"build": "tsc && vite build",
