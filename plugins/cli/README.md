@@ -2,17 +2,11 @@
 
 Parse arguments from your Command Line Interface.
 
-| Platform | Supported |
-| -------- | --------- |
-| Linux    | ✓         |
-| Windows  | ✓         |
-| macOS    | ✓         |
-| Android  | x         |
-| iOS      | x         |
+- Supported platforms: Windows, Linux and macOS.
 
 ## Install
 
-_This plugin requires a Rust version of at least **1.78**_
+_This plugin requires a Rust version of at least **1.75**_
 
 There are three general methods of installation that we can recommend.
 
@@ -27,7 +21,7 @@ Install the Core plugin by adding the following to your `Cargo.toml` file:
 ```toml
 # you can add the dependencies on the `[dependencies]` section if you do not target mobile
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
-tauri-plugin-cli = "2.0.0"
+tauri-plugin-cli = "2.0.0-rc"
 # alternatively with Git:
 tauri-plugin-cli = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```

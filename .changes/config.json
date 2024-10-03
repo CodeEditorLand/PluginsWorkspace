@@ -69,9 +69,7 @@
         "process",
         "shell",
         "store",
-        "updater",
-        "geolocation",
-        "haptics"
+        "updater"
       ]
     },
     "api-example-js": {

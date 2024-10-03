@@ -1,6 +1,6 @@
 ## Default Permission
 
-### Default Permissions
+# Tauri SQL Default Permissions
 
 This permission set configures what kind of
 database operations are available from the sql plugin.

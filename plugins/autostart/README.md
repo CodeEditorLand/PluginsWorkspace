@@ -1,18 +1,10 @@
 ![plugin-autostart](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/autostart/banner.png)
 
-Automatically launch your application at startup.
-
-| Platform | Supported |
-| -------- | --------- |
-| Linux    | ✓         |
-| Windows  | ✓         |
-| macOS    | ✓         |
-| Android  | x         |
-| iOS      | x         |
+Automatically launch your application at startup. Supports Windows, Mac (via AppleScript or Launch Agent), and Linux.
 
 ## Install
 
-_This plugin requires a Rust version of at least **1.78**_
+_This plugin requires a Rust version of at least **1.75**_
 
 There are three general methods of installation that we can recommend.
 
@@ -26,7 +18,7 @@ Install the Core plugin by adding the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-tauri-plugin-autostart = "2.0.0"
+tauri-plugin-autostart = "2.0.0-rc"
 # alternatively with Git:
 tauri-plugin-autostart = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```

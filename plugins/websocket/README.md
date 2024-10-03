@@ -2,17 +2,9 @@
 
 Expose a WebSocket server to your Tauri frontend.
 
-| Platform | Supported |
-| -------- | --------- |
-| Linux    | ✓         |
-| Windows  | ✓         |
-| macOS    | ✓         |
-| Android  | ✓         |
-| iOS      | ✓         |
-
 ## Install
 
-_This plugin requires a Rust version of at least **1.78**_
+_This plugin requires a Rust version of at least **1.75**_
 
 There are three general methods of installation that we can recommend.
 
@@ -26,7 +18,7 @@ Install the Core plugin by adding the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-tauri-plugin-websocket = "2.0.0"
+tauri-plugin-websocket = "2.0.0-rc"
 # alternatively with Git:
 tauri-plugin-websocket = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```

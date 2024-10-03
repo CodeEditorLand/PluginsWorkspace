@@ -4,7 +4,7 @@
 
 import { listen, type UnlistenFn } from '@tauri-apps/api/event'
 
-import { invoke, Resource } from '@tauri-apps/api/core'
+import { invoke } from '@tauri-apps/api/core'
 
 interface ChangePayload<T> {
   path: string
@@ -13,36 +13,12 @@ interface ChangePayload<T> {
 }
 
 /**
- * Options to create a store
+ * A key-value store persisted by the backend layer.
  */
-export type StoreOptions = {
-  /**
-   * Auto save on modification with debounce duration in milliseconds
-   */
-  autoSave?: boolean
-}
-
-/**
- * @param path: Path to save the store in `app_data_dir`
- * @param options: Store configuration options
- */
-export async function createStore(path: string, options?: StoreOptions) {
-  const resourceId = await invoke<number>('plugin:store|create_store', {
-    path,
-    ...options
-  })
-  return new Store(resourceId, path)
-}
-
-/**
- * A lazy loaded key-value store persisted by the backend layer.
- */
-export class Store extends Resource {
-  constructor(
-    rid: number,
-    private readonly path: string
-  ) {
-    super(rid)
+export class Store {
+  path: string
+  constructor(path: string) {
+    this.path = path
   }
 
   /**
@@ -54,7 +30,7 @@ export class Store extends Resource {
    */
   async set(key: string, value: unknown): Promise<void> {
     await invoke('plugin:store|set', {
-      rid: this.rid,
+      path: this.path,
       key,
       value
     })
@@ -68,7 +44,7 @@ export class Store extends Resource {
    */
   async get<T>(key: string): Promise<T | null> {
     return await invoke('plugin:store|get', {
-      rid: this.rid,
+      path: this.path,
       key
     })
   }
@@ -81,7 +57,7 @@ export class Store extends Resource {
    */
   async has(key: string): Promise<boolean> {
     return await invoke('plugin:store|has', {
-      rid: this.rid,
+      path: this.path,
       key
     })
   }
@@ -94,7 +70,7 @@ export class Store extends Resource {
    */
   async delete(key: string): Promise<boolean> {
     return await invoke('plugin:store|delete', {
-      rid: this.rid,
+      path: this.path,
       key
     })
   }
@@ -106,7 +82,9 @@ export class Store extends Resource {
    * @returns
    */
   async clear(): Promise<void> {
-    await invoke('plugin:store|clear', { rid: this.rid })
+    await invoke('plugin:store|clear', {
+      path: this.path
+    })
   }
 
   /**
@@ -116,7 +94,9 @@ export class Store extends Resource {
    * @returns
    */
   async reset(): Promise<void> {
-    await invoke('plugin:store|reset', { rid: this.rid })
+    await invoke('plugin:store|reset', {
+      path: this.path
+    })
   }
 
   /**
@@ -125,7 +105,9 @@ export class Store extends Resource {
    * @returns
    */
   async keys(): Promise<string[]> {
-    return await invoke('plugin:store|keys', { rid: this.rid })
+    return await invoke('plugin:store|keys', {
+      path: this.path
+    })
   }
 
   /**
@@ -134,7 +116,9 @@ export class Store extends Resource {
    * @returns
    */
   async values<T>(): Promise<T[]> {
-    return await invoke('plugin:store|values', { rid: this.rid })
+    return await invoke('plugin:store|values', {
+      path: this.path
+    })
   }
 
   /**
@@ -143,7 +127,9 @@ export class Store extends Resource {
    * @returns
    */
   async entries<T>(): Promise<Array<[key: string, value: T]>> {
-    return await invoke('plugin:store|entries', { rid: this.rid })
+    return await invoke('plugin:store|entries', {
+      path: this.path
+    })
   }
 
   /**
@@ -152,7 +138,9 @@ export class Store extends Resource {
    * @returns
    */
   async length(): Promise<number> {
-    return await invoke('plugin:store|length', { rid: this.rid })
+    return await invoke('plugin:store|length', {
+      path: this.path
+    })
   }
 
   /**
@@ -164,7 +152,9 @@ export class Store extends Resource {
    * @returns
    */
   async load(): Promise<void> {
-    await invoke('plugin:store|load', { rid: this.rid })
+    await invoke('plugin:store|load', {
+      path: this.path
+    })
   }
 
   /**
@@ -175,7 +165,9 @@ export class Store extends Resource {
    * @returns
    */
   async save(): Promise<void> {
-    await invoke('plugin:store|save', { rid: this.rid })
+    await invoke('plugin:store|save', {
+      path: this.path
+    })
   }
 
   /**
