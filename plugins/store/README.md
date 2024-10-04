@@ -2,9 +2,17 @@
 
 Simple, persistent key-value store.
 
+| Platform | Supported |
+| -------- | --------- |
+| Linux    | ✓         |
+| Windows  | ✓         |
+| macOS    | ✓         |
+| Android  | ✓         |
+| iOS      | ✓         |
+
 ## Install
 
-_This plugin requires a Rust version of at least **1.75**_
+_This plugin requires a Rust version of at least **1.77.2**_
 
 There are three general methods of installation that we can recommend.
 
@@ -18,7 +26,7 @@ Install the Core plugin by adding the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-tauri-plugin-store = "2.0.0-rc"
+tauri-plugin-store = "2.0.0"
 # alternatively with Git:
 tauri-plugin-store = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
@@ -149,12 +157,10 @@ As you may have noticed, the `Store` crated above isn't accessible to the fronte
 
 ```rust
 use tauri::Wry;
-use tauri_plugin_store::with_store;
+use tauri_plugin_store::StoreExt;
 
-let stores = app.state::<StoreCollection<Wry>>();
-let path = PathBuf::from("app_data.bin");
-
-with_store(app_handle, stores, path, |store| store.insert("a".to_string(), json!("b")))
+let store = app.store_builder("app_data.bin").build();
+store.insert("key", "value");
 ```
 
 ## Contributing
