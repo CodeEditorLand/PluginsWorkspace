@@ -1,34 +1,29 @@
 ## Default Permission
 
-This set of permissions describes the what kind of
-file system access the `fs` plugin has enabled or denied by default.
+This set of permissions describes the what kind of file system access the `fs`
+plugin has enabled or denied by default.
 
 #### Granted Permissions
 
-This default permission set enables read access to the
-application specific directories (AppConfig, AppData, AppLocalData, AppCache,
-AppLog) and all files and sub directories created in it.
-The location of these directories depends on the operating system,
-where the application is run.
+This default permission set enables read access to the application specific
+directories (AppConfig, AppData, AppLocalData, AppCache, AppLog) and all files
+and sub directories created in it. The location of these directories depends on
+the operating system, where the application is run.
 
-In general these directories need to be manually created
-by the application at runtime, before accessing files or folders
-in it is possible.
+In general these directories need to be manually created by the application at
+runtime, before accessing files or folders in it is possible.
 
-Therefore, it is also allowed to create all of these folders via
-the `mkdir` command.
+Therefore, it is also allowed to create all of these folders via the `mkdir`
+command.
 
 #### Denied Permissions
 
-This default permission set prevents access to critical components
-of the Tauri application by default.
-On Windows the webview data folder access is denied.
+This default permission set prevents access to critical components of the Tauri
+application by default. On Windows the webview data folder access is denied.
 
-
-
-- `create-app-specific-dirs`
-- `read-app-specific-dirs-recursive`
-- `deny-default`
+-   `create-app-specific-dirs`
+-   `read-app-specific-dirs-recursive`
+-   `deny-default`
 
 ## Permission Table
 
@@ -38,7 +33,6 @@ On Windows the webview data folder access is denied.
 <th>Description</th>
 </tr>
 
-
 <tr>
 <td>
 
@@ -47,7 +41,8 @@ On Windows the webview data folder access is denied.
 </td>
 <td>
 
-This allows full recursive read access to the complete application folders, files and subdirectories.
+This allows full recursive read access to the complete application folders,
+files and subdirectories.
 
 </td>
 </tr>
@@ -60,7 +55,8 @@ This allows full recursive read access to the complete application folders, file
 </td>
 <td>
 
-This allows full recursive write access to the complete application folders, files and subdirectories.
+This allows full recursive write access to the complete application folders,
+files and subdirectories.
 
 </td>
 </tr>
@@ -99,7 +95,8 @@ This allows non-recursive write access to the application folders.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the application folders, including file listing and statistics.
+This allows full recursive read access to metadata of the application folders,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -112,7 +109,8 @@ This allows full recursive read access to metadata of the application folders, i
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the application folders, including file listing and statistics.
+This allows non-recursive read access to metadata of the application folders,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -125,7 +123,8 @@ This allows non-recursive read access to metadata of the application folders, in
 </td>
 <td>
 
-This scope permits recursive access to the complete application folders, including sub directories and files.
+This scope permits recursive access to the complete application folders,
+including sub directories and files.
 
 </td>
 </tr>
@@ -138,7 +137,8 @@ This scope permits recursive access to the complete application folders, includi
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the application folders.
+This scope permits access to all files and list content of top level directories
+in the application folders.
 
 </td>
 </tr>
@@ -164,7 +164,8 @@ This scope permits to list all files and folders in the application directories.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$APPCACHE` folder, files and subdirectories.
+This allows full recursive read access to the complete `$APPCACHE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -177,7 +178,8 @@ This allows full recursive read access to the complete `$APPCACHE` folder, files
 </td>
 <td>
 
-This allows full recursive write access to the complete `$APPCACHE` folder, files and subdirectories.
+This allows full recursive write access to the complete `$APPCACHE` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -216,7 +218,8 @@ This allows non-recursive write access to the `$APPCACHE` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$APPCACHE` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$APPCACHE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -229,7 +232,8 @@ This allows full recursive read access to metadata of the `$APPCACHE` folder, in
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$APPCACHE` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$APPCACHE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -242,7 +246,8 @@ This allows non-recursive read access to metadata of the `$APPCACHE` folder, inc
 </td>
 <td>
 
-This scope permits recursive access to the complete `$APPCACHE` folder, including sub directories and files.
+This scope permits recursive access to the complete `$APPCACHE` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -255,7 +260,8 @@ This scope permits recursive access to the complete `$APPCACHE` folder, includin
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$APPCACHE` folder.
+This scope permits access to all files and list content of top level directories
+in the `$APPCACHE` folder.
 
 </td>
 </tr>
@@ -281,7 +287,8 @@ This scope permits to list all files and folders in the `$APPCACHE`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$APPCONFIG` folder, files and subdirectories.
+This allows full recursive read access to the complete `$APPCONFIG` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -294,7 +301,8 @@ This allows full recursive read access to the complete `$APPCONFIG` folder, file
 </td>
 <td>
 
-This allows full recursive write access to the complete `$APPCONFIG` folder, files and subdirectories.
+This allows full recursive write access to the complete `$APPCONFIG` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -333,7 +341,8 @@ This allows non-recursive write access to the `$APPCONFIG` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$APPCONFIG` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$APPCONFIG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -346,7 +355,8 @@ This allows full recursive read access to metadata of the `$APPCONFIG` folder, i
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$APPCONFIG` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$APPCONFIG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -359,7 +369,8 @@ This allows non-recursive read access to metadata of the `$APPCONFIG` folder, in
 </td>
 <td>
 
-This scope permits recursive access to the complete `$APPCONFIG` folder, including sub directories and files.
+This scope permits recursive access to the complete `$APPCONFIG` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -372,7 +383,8 @@ This scope permits recursive access to the complete `$APPCONFIG` folder, includi
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$APPCONFIG` folder.
+This scope permits access to all files and list content of top level directories
+in the `$APPCONFIG` folder.
 
 </td>
 </tr>
@@ -398,7 +410,8 @@ This scope permits to list all files and folders in the `$APPCONFIG`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$APPDATA` folder, files and subdirectories.
+This allows full recursive read access to the complete `$APPDATA` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -411,7 +424,8 @@ This allows full recursive read access to the complete `$APPDATA` folder, files 
 </td>
 <td>
 
-This allows full recursive write access to the complete `$APPDATA` folder, files and subdirectories.
+This allows full recursive write access to the complete `$APPDATA` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -450,7 +464,8 @@ This allows non-recursive write access to the `$APPDATA` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$APPDATA` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$APPDATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -463,7 +478,8 @@ This allows full recursive read access to metadata of the `$APPDATA` folder, inc
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$APPDATA` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$APPDATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -476,7 +492,8 @@ This allows non-recursive read access to metadata of the `$APPDATA` folder, incl
 </td>
 <td>
 
-This scope permits recursive access to the complete `$APPDATA` folder, including sub directories and files.
+This scope permits recursive access to the complete `$APPDATA` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -489,7 +506,8 @@ This scope permits recursive access to the complete `$APPDATA` folder, including
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$APPDATA` folder.
+This scope permits access to all files and list content of top level directories
+in the `$APPDATA` folder.
 
 </td>
 </tr>
@@ -515,7 +533,8 @@ This scope permits to list all files and folders in the `$APPDATA`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$APPLOCALDATA` folder, files and subdirectories.
+This allows full recursive read access to the complete `$APPLOCALDATA` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -528,7 +547,8 @@ This allows full recursive read access to the complete `$APPLOCALDATA` folder, f
 </td>
 <td>
 
-This allows full recursive write access to the complete `$APPLOCALDATA` folder, files and subdirectories.
+This allows full recursive write access to the complete `$APPLOCALDATA` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -567,7 +587,8 @@ This allows non-recursive write access to the `$APPLOCALDATA` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$APPLOCALDATA` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$APPLOCALDATA`
+folder, including file listing and statistics.
 
 </td>
 </tr>
@@ -580,7 +601,8 @@ This allows full recursive read access to metadata of the `$APPLOCALDATA` folder
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$APPLOCALDATA` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$APPLOCALDATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -593,7 +615,8 @@ This allows non-recursive read access to metadata of the `$APPLOCALDATA` folder,
 </td>
 <td>
 
-This scope permits recursive access to the complete `$APPLOCALDATA` folder, including sub directories and files.
+This scope permits recursive access to the complete `$APPLOCALDATA` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -606,7 +629,8 @@ This scope permits recursive access to the complete `$APPLOCALDATA` folder, incl
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$APPLOCALDATA` folder.
+This scope permits access to all files and list content of top level directories
+in the `$APPLOCALDATA` folder.
 
 </td>
 </tr>
@@ -632,7 +656,8 @@ This scope permits to list all files and folders in the `$APPLOCALDATA`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$APPLOG` folder, files and subdirectories.
+This allows full recursive read access to the complete `$APPLOG` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -645,7 +670,8 @@ This allows full recursive read access to the complete `$APPLOG` folder, files a
 </td>
 <td>
 
-This allows full recursive write access to the complete `$APPLOG` folder, files and subdirectories.
+This allows full recursive write access to the complete `$APPLOG` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -684,7 +710,8 @@ This allows non-recursive write access to the `$APPLOG` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$APPLOG` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$APPLOG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -697,7 +724,8 @@ This allows full recursive read access to metadata of the `$APPLOG` folder, incl
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$APPLOG` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$APPLOG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -710,7 +738,8 @@ This allows non-recursive read access to metadata of the `$APPLOG` folder, inclu
 </td>
 <td>
 
-This scope permits recursive access to the complete `$APPLOG` folder, including sub directories and files.
+This scope permits recursive access to the complete `$APPLOG` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -723,7 +752,8 @@ This scope permits recursive access to the complete `$APPLOG` folder, including 
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$APPLOG` folder.
+This scope permits access to all files and list content of top level directories
+in the `$APPLOG` folder.
 
 </td>
 </tr>
@@ -749,7 +779,8 @@ This scope permits to list all files and folders in the `$APPLOG`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$AUDIO` folder, files and subdirectories.
+This allows full recursive read access to the complete `$AUDIO` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -762,7 +793,8 @@ This allows full recursive read access to the complete `$AUDIO` folder, files an
 </td>
 <td>
 
-This allows full recursive write access to the complete `$AUDIO` folder, files and subdirectories.
+This allows full recursive write access to the complete `$AUDIO` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -801,7 +833,8 @@ This allows non-recursive write access to the `$AUDIO` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$AUDIO` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$AUDIO` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -814,7 +847,8 @@ This allows full recursive read access to metadata of the `$AUDIO` folder, inclu
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$AUDIO` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$AUDIO` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -827,7 +861,8 @@ This allows non-recursive read access to metadata of the `$AUDIO` folder, includ
 </td>
 <td>
 
-This scope permits recursive access to the complete `$AUDIO` folder, including sub directories and files.
+This scope permits recursive access to the complete `$AUDIO` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -840,7 +875,8 @@ This scope permits recursive access to the complete `$AUDIO` folder, including s
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$AUDIO` folder.
+This scope permits access to all files and list content of top level directories
+in the `$AUDIO` folder.
 
 </td>
 </tr>
@@ -866,7 +902,8 @@ This scope permits to list all files and folders in the `$AUDIO`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$CACHE` folder, files and subdirectories.
+This allows full recursive read access to the complete `$CACHE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -879,7 +916,8 @@ This allows full recursive read access to the complete `$CACHE` folder, files an
 </td>
 <td>
 
-This allows full recursive write access to the complete `$CACHE` folder, files and subdirectories.
+This allows full recursive write access to the complete `$CACHE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -918,7 +956,8 @@ This allows non-recursive write access to the `$CACHE` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$CACHE` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$CACHE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -931,7 +970,8 @@ This allows full recursive read access to metadata of the `$CACHE` folder, inclu
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$CACHE` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$CACHE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -944,7 +984,8 @@ This allows non-recursive read access to metadata of the `$CACHE` folder, includ
 </td>
 <td>
 
-This scope permits recursive access to the complete `$CACHE` folder, including sub directories and files.
+This scope permits recursive access to the complete `$CACHE` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -957,7 +998,8 @@ This scope permits recursive access to the complete `$CACHE` folder, including s
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$CACHE` folder.
+This scope permits access to all files and list content of top level directories
+in the `$CACHE` folder.
 
 </td>
 </tr>
@@ -983,7 +1025,8 @@ This scope permits to list all files and folders in the `$CACHE`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$CONFIG` folder, files and subdirectories.
+This allows full recursive read access to the complete `$CONFIG` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -996,7 +1039,8 @@ This allows full recursive read access to the complete `$CONFIG` folder, files a
 </td>
 <td>
 
-This allows full recursive write access to the complete `$CONFIG` folder, files and subdirectories.
+This allows full recursive write access to the complete `$CONFIG` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1035,7 +1079,8 @@ This allows non-recursive write access to the `$CONFIG` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$CONFIG` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$CONFIG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1048,7 +1093,8 @@ This allows full recursive read access to metadata of the `$CONFIG` folder, incl
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$CONFIG` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$CONFIG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1061,7 +1107,8 @@ This allows non-recursive read access to metadata of the `$CONFIG` folder, inclu
 </td>
 <td>
 
-This scope permits recursive access to the complete `$CONFIG` folder, including sub directories and files.
+This scope permits recursive access to the complete `$CONFIG` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -1074,7 +1121,8 @@ This scope permits recursive access to the complete `$CONFIG` folder, including 
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$CONFIG` folder.
+This scope permits access to all files and list content of top level directories
+in the `$CONFIG` folder.
 
 </td>
 </tr>
@@ -1100,7 +1148,8 @@ This scope permits to list all files and folders in the `$CONFIG`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$DATA` folder, files and subdirectories.
+This allows full recursive read access to the complete `$DATA` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -1113,7 +1162,8 @@ This allows full recursive read access to the complete `$DATA` folder, files and
 </td>
 <td>
 
-This allows full recursive write access to the complete `$DATA` folder, files and subdirectories.
+This allows full recursive write access to the complete `$DATA` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1152,7 +1202,8 @@ This allows non-recursive write access to the `$DATA` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$DATA` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$DATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1165,7 +1216,8 @@ This allows full recursive read access to metadata of the `$DATA` folder, includ
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$DATA` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$DATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1178,7 +1230,8 @@ This allows non-recursive read access to metadata of the `$DATA` folder, includi
 </td>
 <td>
 
-This scope permits recursive access to the complete `$DATA` folder, including sub directories and files.
+This scope permits recursive access to the complete `$DATA` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -1191,7 +1244,8 @@ This scope permits recursive access to the complete `$DATA` folder, including su
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$DATA` folder.
+This scope permits access to all files and list content of top level directories
+in the `$DATA` folder.
 
 </td>
 </tr>
@@ -1217,7 +1271,8 @@ This scope permits to list all files and folders in the `$DATA`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$DESKTOP` folder, files and subdirectories.
+This allows full recursive read access to the complete `$DESKTOP` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1230,7 +1285,8 @@ This allows full recursive read access to the complete `$DESKTOP` folder, files 
 </td>
 <td>
 
-This allows full recursive write access to the complete `$DESKTOP` folder, files and subdirectories.
+This allows full recursive write access to the complete `$DESKTOP` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1269,7 +1325,8 @@ This allows non-recursive write access to the `$DESKTOP` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$DESKTOP` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$DESKTOP` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1282,7 +1339,8 @@ This allows full recursive read access to metadata of the `$DESKTOP` folder, inc
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$DESKTOP` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$DESKTOP` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1295,7 +1353,8 @@ This allows non-recursive read access to metadata of the `$DESKTOP` folder, incl
 </td>
 <td>
 
-This scope permits recursive access to the complete `$DESKTOP` folder, including sub directories and files.
+This scope permits recursive access to the complete `$DESKTOP` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -1308,7 +1367,8 @@ This scope permits recursive access to the complete `$DESKTOP` folder, including
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$DESKTOP` folder.
+This scope permits access to all files and list content of top level directories
+in the `$DESKTOP` folder.
 
 </td>
 </tr>
@@ -1334,7 +1394,8 @@ This scope permits to list all files and folders in the `$DESKTOP`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$DOCUMENT` folder, files and subdirectories.
+This allows full recursive read access to the complete `$DOCUMENT` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1347,7 +1408,8 @@ This allows full recursive read access to the complete `$DOCUMENT` folder, files
 </td>
 <td>
 
-This allows full recursive write access to the complete `$DOCUMENT` folder, files and subdirectories.
+This allows full recursive write access to the complete `$DOCUMENT` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -1386,7 +1448,8 @@ This allows non-recursive write access to the `$DOCUMENT` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$DOCUMENT` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$DOCUMENT` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1399,7 +1462,8 @@ This allows full recursive read access to metadata of the `$DOCUMENT` folder, in
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$DOCUMENT` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$DOCUMENT` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1412,7 +1476,8 @@ This allows non-recursive read access to metadata of the `$DOCUMENT` folder, inc
 </td>
 <td>
 
-This scope permits recursive access to the complete `$DOCUMENT` folder, including sub directories and files.
+This scope permits recursive access to the complete `$DOCUMENT` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -1425,7 +1490,8 @@ This scope permits recursive access to the complete `$DOCUMENT` folder, includin
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$DOCUMENT` folder.
+This scope permits access to all files and list content of top level directories
+in the `$DOCUMENT` folder.
 
 </td>
 </tr>
@@ -1451,7 +1517,8 @@ This scope permits to list all files and folders in the `$DOCUMENT`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$DOWNLOAD` folder, files and subdirectories.
+This allows full recursive read access to the complete `$DOWNLOAD` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1464,7 +1531,8 @@ This allows full recursive read access to the complete `$DOWNLOAD` folder, files
 </td>
 <td>
 
-This allows full recursive write access to the complete `$DOWNLOAD` folder, files and subdirectories.
+This allows full recursive write access to the complete `$DOWNLOAD` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -1503,7 +1571,8 @@ This allows non-recursive write access to the `$DOWNLOAD` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$DOWNLOAD` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$DOWNLOAD` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1516,7 +1585,8 @@ This allows full recursive read access to metadata of the `$DOWNLOAD` folder, in
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$DOWNLOAD` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$DOWNLOAD` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1529,7 +1599,8 @@ This allows non-recursive read access to metadata of the `$DOWNLOAD` folder, inc
 </td>
 <td>
 
-This scope permits recursive access to the complete `$DOWNLOAD` folder, including sub directories and files.
+This scope permits recursive access to the complete `$DOWNLOAD` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -1542,7 +1613,8 @@ This scope permits recursive access to the complete `$DOWNLOAD` folder, includin
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$DOWNLOAD` folder.
+This scope permits access to all files and list content of top level directories
+in the `$DOWNLOAD` folder.
 
 </td>
 </tr>
@@ -1568,7 +1640,8 @@ This scope permits to list all files and folders in the `$DOWNLOAD`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$EXE` folder, files and subdirectories.
+This allows full recursive read access to the complete `$EXE` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -1581,7 +1654,8 @@ This allows full recursive read access to the complete `$EXE` folder, files and 
 </td>
 <td>
 
-This allows full recursive write access to the complete `$EXE` folder, files and subdirectories.
+This allows full recursive write access to the complete `$EXE` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -1620,7 +1694,8 @@ This allows non-recursive write access to the `$EXE` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$EXE` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$EXE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1633,7 +1708,8 @@ This allows full recursive read access to metadata of the `$EXE` folder, includi
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$EXE` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$EXE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1646,7 +1722,8 @@ This allows non-recursive read access to metadata of the `$EXE` folder, includin
 </td>
 <td>
 
-This scope permits recursive access to the complete `$EXE` folder, including sub directories and files.
+This scope permits recursive access to the complete `$EXE` folder, including sub
+directories and files.
 
 </td>
 </tr>
@@ -1659,7 +1736,8 @@ This scope permits recursive access to the complete `$EXE` folder, including sub
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$EXE` folder.
+This scope permits access to all files and list content of top level directories
+in the `$EXE` folder.
 
 </td>
 </tr>
@@ -1685,7 +1763,8 @@ This scope permits to list all files and folders in the `$EXE`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$FONT` folder, files and subdirectories.
+This allows full recursive read access to the complete `$FONT` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -1698,7 +1777,8 @@ This allows full recursive read access to the complete `$FONT` folder, files and
 </td>
 <td>
 
-This allows full recursive write access to the complete `$FONT` folder, files and subdirectories.
+This allows full recursive write access to the complete `$FONT` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1737,7 +1817,8 @@ This allows non-recursive write access to the `$FONT` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$FONT` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$FONT` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1750,7 +1831,8 @@ This allows full recursive read access to metadata of the `$FONT` folder, includ
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$FONT` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$FONT` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1763,7 +1845,8 @@ This allows non-recursive read access to metadata of the `$FONT` folder, includi
 </td>
 <td>
 
-This scope permits recursive access to the complete `$FONT` folder, including sub directories and files.
+This scope permits recursive access to the complete `$FONT` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -1776,7 +1859,8 @@ This scope permits recursive access to the complete `$FONT` folder, including su
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$FONT` folder.
+This scope permits access to all files and list content of top level directories
+in the `$FONT` folder.
 
 </td>
 </tr>
@@ -1802,7 +1886,8 @@ This scope permits to list all files and folders in the `$FONT`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$HOME` folder, files and subdirectories.
+This allows full recursive read access to the complete `$HOME` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -1815,7 +1900,8 @@ This allows full recursive read access to the complete `$HOME` folder, files and
 </td>
 <td>
 
-This allows full recursive write access to the complete `$HOME` folder, files and subdirectories.
+This allows full recursive write access to the complete `$HOME` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -1854,7 +1940,8 @@ This allows non-recursive write access to the `$HOME` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$HOME` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$HOME` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1867,7 +1954,8 @@ This allows full recursive read access to metadata of the `$HOME` folder, includ
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$HOME` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$HOME` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1880,7 +1968,8 @@ This allows non-recursive read access to metadata of the `$HOME` folder, includi
 </td>
 <td>
 
-This scope permits recursive access to the complete `$HOME` folder, including sub directories and files.
+This scope permits recursive access to the complete `$HOME` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -1893,7 +1982,8 @@ This scope permits recursive access to the complete `$HOME` folder, including su
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$HOME` folder.
+This scope permits access to all files and list content of top level directories
+in the `$HOME` folder.
 
 </td>
 </tr>
@@ -1919,7 +2009,8 @@ This scope permits to list all files and folders in the `$HOME`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$LOCALDATA` folder, files and subdirectories.
+This allows full recursive read access to the complete `$LOCALDATA` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -1932,7 +2023,8 @@ This allows full recursive read access to the complete `$LOCALDATA` folder, file
 </td>
 <td>
 
-This allows full recursive write access to the complete `$LOCALDATA` folder, files and subdirectories.
+This allows full recursive write access to the complete `$LOCALDATA` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -1971,7 +2063,8 @@ This allows non-recursive write access to the `$LOCALDATA` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$LOCALDATA` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$LOCALDATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1984,7 +2077,8 @@ This allows full recursive read access to metadata of the `$LOCALDATA` folder, i
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$LOCALDATA` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$LOCALDATA` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -1997,7 +2091,8 @@ This allows non-recursive read access to metadata of the `$LOCALDATA` folder, in
 </td>
 <td>
 
-This scope permits recursive access to the complete `$LOCALDATA` folder, including sub directories and files.
+This scope permits recursive access to the complete `$LOCALDATA` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -2010,7 +2105,8 @@ This scope permits recursive access to the complete `$LOCALDATA` folder, includi
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$LOCALDATA` folder.
+This scope permits access to all files and list content of top level directories
+in the `$LOCALDATA` folder.
 
 </td>
 </tr>
@@ -2036,7 +2132,8 @@ This scope permits to list all files and folders in the `$LOCALDATA`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$LOG` folder, files and subdirectories.
+This allows full recursive read access to the complete `$LOG` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -2049,7 +2146,8 @@ This allows full recursive read access to the complete `$LOG` folder, files and 
 </td>
 <td>
 
-This allows full recursive write access to the complete `$LOG` folder, files and subdirectories.
+This allows full recursive write access to the complete `$LOG` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -2088,7 +2186,8 @@ This allows non-recursive write access to the `$LOG` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$LOG` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$LOG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2101,7 +2200,8 @@ This allows full recursive read access to metadata of the `$LOG` folder, includi
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$LOG` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$LOG` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2114,7 +2214,8 @@ This allows non-recursive read access to metadata of the `$LOG` folder, includin
 </td>
 <td>
 
-This scope permits recursive access to the complete `$LOG` folder, including sub directories and files.
+This scope permits recursive access to the complete `$LOG` folder, including sub
+directories and files.
 
 </td>
 </tr>
@@ -2127,7 +2228,8 @@ This scope permits recursive access to the complete `$LOG` folder, including sub
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$LOG` folder.
+This scope permits access to all files and list content of top level directories
+in the `$LOG` folder.
 
 </td>
 </tr>
@@ -2153,7 +2255,8 @@ This scope permits to list all files and folders in the `$LOG`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$PICTURE` folder, files and subdirectories.
+This allows full recursive read access to the complete `$PICTURE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2166,7 +2269,8 @@ This allows full recursive read access to the complete `$PICTURE` folder, files 
 </td>
 <td>
 
-This allows full recursive write access to the complete `$PICTURE` folder, files and subdirectories.
+This allows full recursive write access to the complete `$PICTURE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2205,7 +2309,8 @@ This allows non-recursive write access to the `$PICTURE` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$PICTURE` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$PICTURE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2218,7 +2323,8 @@ This allows full recursive read access to metadata of the `$PICTURE` folder, inc
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$PICTURE` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$PICTURE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2231,7 +2337,8 @@ This allows non-recursive read access to metadata of the `$PICTURE` folder, incl
 </td>
 <td>
 
-This scope permits recursive access to the complete `$PICTURE` folder, including sub directories and files.
+This scope permits recursive access to the complete `$PICTURE` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -2244,7 +2351,8 @@ This scope permits recursive access to the complete `$PICTURE` folder, including
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$PICTURE` folder.
+This scope permits access to all files and list content of top level directories
+in the `$PICTURE` folder.
 
 </td>
 </tr>
@@ -2270,7 +2378,8 @@ This scope permits to list all files and folders in the `$PICTURE`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$PUBLIC` folder, files and subdirectories.
+This allows full recursive read access to the complete `$PUBLIC` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2283,7 +2392,8 @@ This allows full recursive read access to the complete `$PUBLIC` folder, files a
 </td>
 <td>
 
-This allows full recursive write access to the complete `$PUBLIC` folder, files and subdirectories.
+This allows full recursive write access to the complete `$PUBLIC` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2322,7 +2432,8 @@ This allows non-recursive write access to the `$PUBLIC` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$PUBLIC` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$PUBLIC` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2335,7 +2446,8 @@ This allows full recursive read access to metadata of the `$PUBLIC` folder, incl
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$PUBLIC` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$PUBLIC` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2348,7 +2460,8 @@ This allows non-recursive read access to metadata of the `$PUBLIC` folder, inclu
 </td>
 <td>
 
-This scope permits recursive access to the complete `$PUBLIC` folder, including sub directories and files.
+This scope permits recursive access to the complete `$PUBLIC` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -2361,7 +2474,8 @@ This scope permits recursive access to the complete `$PUBLIC` folder, including 
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$PUBLIC` folder.
+This scope permits access to all files and list content of top level directories
+in the `$PUBLIC` folder.
 
 </td>
 </tr>
@@ -2387,7 +2501,8 @@ This scope permits to list all files and folders in the `$PUBLIC`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$RESOURCE` folder, files and subdirectories.
+This allows full recursive read access to the complete `$RESOURCE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2400,7 +2515,8 @@ This allows full recursive read access to the complete `$RESOURCE` folder, files
 </td>
 <td>
 
-This allows full recursive write access to the complete `$RESOURCE` folder, files and subdirectories.
+This allows full recursive write access to the complete `$RESOURCE` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -2439,7 +2555,8 @@ This allows non-recursive write access to the `$RESOURCE` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$RESOURCE` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$RESOURCE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2452,7 +2569,8 @@ This allows full recursive read access to metadata of the `$RESOURCE` folder, in
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$RESOURCE` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$RESOURCE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2465,7 +2583,8 @@ This allows non-recursive read access to metadata of the `$RESOURCE` folder, inc
 </td>
 <td>
 
-This scope permits recursive access to the complete `$RESOURCE` folder, including sub directories and files.
+This scope permits recursive access to the complete `$RESOURCE` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -2478,7 +2597,8 @@ This scope permits recursive access to the complete `$RESOURCE` folder, includin
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$RESOURCE` folder.
+This scope permits access to all files and list content of top level directories
+in the `$RESOURCE` folder.
 
 </td>
 </tr>
@@ -2504,7 +2624,8 @@ This scope permits to list all files and folders in the `$RESOURCE`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$RUNTIME` folder, files and subdirectories.
+This allows full recursive read access to the complete `$RUNTIME` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2517,7 +2638,8 @@ This allows full recursive read access to the complete `$RUNTIME` folder, files 
 </td>
 <td>
 
-This allows full recursive write access to the complete `$RUNTIME` folder, files and subdirectories.
+This allows full recursive write access to the complete `$RUNTIME` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2556,7 +2678,8 @@ This allows non-recursive write access to the `$RUNTIME` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$RUNTIME` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$RUNTIME` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2569,7 +2692,8 @@ This allows full recursive read access to metadata of the `$RUNTIME` folder, inc
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$RUNTIME` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$RUNTIME` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2582,7 +2706,8 @@ This allows non-recursive read access to metadata of the `$RUNTIME` folder, incl
 </td>
 <td>
 
-This scope permits recursive access to the complete `$RUNTIME` folder, including sub directories and files.
+This scope permits recursive access to the complete `$RUNTIME` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -2595,7 +2720,8 @@ This scope permits recursive access to the complete `$RUNTIME` folder, including
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$RUNTIME` folder.
+This scope permits access to all files and list content of top level directories
+in the `$RUNTIME` folder.
 
 </td>
 </tr>
@@ -2621,7 +2747,8 @@ This scope permits to list all files and folders in the `$RUNTIME`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$TEMP` folder, files and subdirectories.
+This allows full recursive read access to the complete `$TEMP` folder, files and
+subdirectories.
 
 </td>
 </tr>
@@ -2634,7 +2761,8 @@ This allows full recursive read access to the complete `$TEMP` folder, files and
 </td>
 <td>
 
-This allows full recursive write access to the complete `$TEMP` folder, files and subdirectories.
+This allows full recursive write access to the complete `$TEMP` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2673,7 +2801,8 @@ This allows non-recursive write access to the `$TEMP` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$TEMP` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$TEMP` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2686,7 +2815,8 @@ This allows full recursive read access to metadata of the `$TEMP` folder, includ
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$TEMP` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$TEMP` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2699,7 +2829,8 @@ This allows non-recursive read access to metadata of the `$TEMP` folder, includi
 </td>
 <td>
 
-This scope permits recursive access to the complete `$TEMP` folder, including sub directories and files.
+This scope permits recursive access to the complete `$TEMP` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -2712,7 +2843,8 @@ This scope permits recursive access to the complete `$TEMP` folder, including su
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$TEMP` folder.
+This scope permits access to all files and list content of top level directories
+in the `$TEMP` folder.
 
 </td>
 </tr>
@@ -2738,7 +2870,8 @@ This scope permits to list all files and folders in the `$TEMP`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$TEMPLATE` folder, files and subdirectories.
+This allows full recursive read access to the complete `$TEMPLATE` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2751,7 +2884,8 @@ This allows full recursive read access to the complete `$TEMPLATE` folder, files
 </td>
 <td>
 
-This allows full recursive write access to the complete `$TEMPLATE` folder, files and subdirectories.
+This allows full recursive write access to the complete `$TEMPLATE` folder,
+files and subdirectories.
 
 </td>
 </tr>
@@ -2790,7 +2924,8 @@ This allows non-recursive write access to the `$TEMPLATE` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$TEMPLATE` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$TEMPLATE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2803,7 +2938,8 @@ This allows full recursive read access to metadata of the `$TEMPLATE` folder, in
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$TEMPLATE` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$TEMPLATE` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2816,7 +2952,8 @@ This allows non-recursive read access to metadata of the `$TEMPLATE` folder, inc
 </td>
 <td>
 
-This scope permits recursive access to the complete `$TEMPLATE` folder, including sub directories and files.
+This scope permits recursive access to the complete `$TEMPLATE` folder,
+including sub directories and files.
 
 </td>
 </tr>
@@ -2829,7 +2966,8 @@ This scope permits recursive access to the complete `$TEMPLATE` folder, includin
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$TEMPLATE` folder.
+This scope permits access to all files and list content of top level directories
+in the `$TEMPLATE` folder.
 
 </td>
 </tr>
@@ -2855,7 +2993,8 @@ This scope permits to list all files and folders in the `$TEMPLATE`folder.
 </td>
 <td>
 
-This allows full recursive read access to the complete `$VIDEO` folder, files and subdirectories.
+This allows full recursive read access to the complete `$VIDEO` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2868,7 +3007,8 @@ This allows full recursive read access to the complete `$VIDEO` folder, files an
 </td>
 <td>
 
-This allows full recursive write access to the complete `$VIDEO` folder, files and subdirectories.
+This allows full recursive write access to the complete `$VIDEO` folder, files
+and subdirectories.
 
 </td>
 </tr>
@@ -2907,7 +3047,8 @@ This allows non-recursive write access to the `$VIDEO` folder.
 </td>
 <td>
 
-This allows full recursive read access to metadata of the `$VIDEO` folder, including file listing and statistics.
+This allows full recursive read access to metadata of the `$VIDEO` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2920,7 +3061,8 @@ This allows full recursive read access to metadata of the `$VIDEO` folder, inclu
 </td>
 <td>
 
-This allows non-recursive read access to metadata of the `$VIDEO` folder, including file listing and statistics.
+This allows non-recursive read access to metadata of the `$VIDEO` folder,
+including file listing and statistics.
 
 </td>
 </tr>
@@ -2933,7 +3075,8 @@ This allows non-recursive read access to metadata of the `$VIDEO` folder, includ
 </td>
 <td>
 
-This scope permits recursive access to the complete `$VIDEO` folder, including sub directories and files.
+This scope permits recursive access to the complete `$VIDEO` folder, including
+sub directories and files.
 
 </td>
 </tr>
@@ -2946,7 +3089,8 @@ This scope permits recursive access to the complete `$VIDEO` folder, including s
 </td>
 <td>
 
-This scope permits access to all files and list content of top level directories in the `$VIDEO` folder.
+This scope permits access to all files and list content of top level directories
+in the `$VIDEO` folder.
 
 </td>
 </tr>
@@ -3598,7 +3742,6 @@ Denies the write_text_file command without any pre-configured scope.
 
 This permissions allows to create the application specific directories.
 
-
 </td>
 </tr>
 
@@ -3623,9 +3766,9 @@ This denies access to dangerous Tauri relevant files and folders by default.
 </td>
 <td>
 
-This denies read access to the
-`$APPLOCALDATA` folder on linux as the webview data and configuration values are stored here.
-Allowing access can lead to sensitive information disclosure and should be well considered.
+This denies read access to the `$APPLOCALDATA` folder on linux as the webview
+data and configuration values are stored here. Allowing access can lead to
+sensitive information disclosure and should be well considered.
 
 </td>
 </tr>
@@ -3638,9 +3781,9 @@ Allowing access can lead to sensitive information disclosure and should be well 
 </td>
 <td>
 
-This denies read access to the
-`$APPLOCALDATA/EBWebView` folder on windows as the webview data and configuration values are stored here.
-Allowing access can lead to sensitive information disclosure and should be well considered.
+This denies read access to the `$APPLOCALDATA/EBWebView` folder on windows as
+the webview data and configuration values are stored here. Allowing access can
+lead to sensitive information disclosure and should be well considered.
 
 </td>
 </tr>
@@ -3653,7 +3796,8 @@ Allowing access can lead to sensitive information disclosure and should be well 
 </td>
 <td>
 
-This enables all read related commands without any pre-configured accessible paths.
+This enables all read related commands without any pre-configured accessible
+paths.
 
 </td>
 </tr>
@@ -3666,9 +3810,8 @@ This enables all read related commands without any pre-configured accessible pat
 </td>
 <td>
 
-This permission allows recursive read functionality on the application
-specific base directories. 
-
+This permission allows recursive read functionality on the application specific
+base directories.
 
 </td>
 </tr>
@@ -3681,7 +3824,8 @@ specific base directories.
 </td>
 <td>
 
-This enables directory read and file metadata related commands without any pre-configured accessible paths.
+This enables directory read and file metadata related commands without any
+pre-configured accessible paths.
 
 </td>
 </tr>
@@ -3694,7 +3838,8 @@ This enables directory read and file metadata related commands without any pre-c
 </td>
 <td>
 
-This enables file read related commands without any pre-configured accessible paths.
+This enables file read related commands without any pre-configured accessible
+paths.
 
 </td>
 </tr>
@@ -3707,7 +3852,8 @@ This enables file read related commands without any pre-configured accessible pa
 </td>
 <td>
 
-This enables all index or metadata related commands without any pre-configured accessible paths.
+This enables all index or metadata related commands without any pre-configured
+accessible paths.
 
 </td>
 </tr>
@@ -3733,7 +3879,8 @@ An empty permission you can use to modify the global scope.
 </td>
 <td>
 
-This enables all write related commands without any pre-configured accessible paths.
+This enables all write related commands without any pre-configured accessible
+paths.
 
 </td>
 </tr>
@@ -3746,7 +3893,8 @@ This enables all write related commands without any pre-configured accessible pa
 </td>
 <td>
 
-This enables all file write related commands without any pre-configured accessible paths.
+This enables all file write related commands without any pre-configured
+accessible paths.
 
 </td>
 </tr>

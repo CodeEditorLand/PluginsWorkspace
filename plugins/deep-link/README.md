@@ -16,9 +16,12 @@ _This plugin requires a Rust version of at least **1.77.2**_
 
 There are three general methods of installation that we can recommend.
 
-1. Use crates.io and npm (easiest, and requires you to trust that our publishing pipeline worked)
-2. Pull sources directly from Github using git tags / revision hashes (most secure)
-3. Git submodule install this repo in your tauri project and then use file protocol to ingest the source (most secure, but inconvenient to use)
+1. Use crates.io and npm (easiest, and requires you to trust that our publishing
+   pipeline worked)
+2. Pull sources directly from Github using git tags / revision hashes (most
+   secure)
+3. Git submodule install this repo in your tauri project and then use file
+   protocol to ingest the source (most secure, but inconvenient to use)
 
 Install the Core plugin by adding the following to your `Cargo.toml` file:
 
@@ -31,9 +34,12 @@ tauri-plugin-deep-link = "2.0.0"
 tauri-plugin-deep-link = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
 
-You can install the JavaScript Guest bindings using your preferred JavaScript package manager:
+You can install the JavaScript Guest bindings using your preferred JavaScript
+package manager:
 
-> Note: Since most JavaScript package managers are unable to install packages from git monorepos we provide read-only mirrors of each plugin. This makes installation option 2 more ergonomic to use.
+> Note: Since most JavaScript package managers are unable to install packages
+> from git monorepos we provide read-only mirrors of each plugin. This makes
+> installation option 2 more ergonomic to use.
 
 ```sh
 pnpm add @tauri-apps/plugin-deep-link
@@ -54,7 +60,10 @@ yarn add https://github.com/tauri-apps/tauri-plugin-deep-link#v2
 
 ### Android
 
-For [app links](https://developer.android.com/training/app-links#android-app-links), you need a server with a `.well-known/assetlinks.json` endpoint that must return a text response in the given format:
+For
+[app links](https://developer.android.com/training/app-links#android-app-links),
+you need a server with a `.well-known/assetlinks.json` endpoint that must return
+a text response in the given format:
 
 ```
 [
@@ -71,11 +80,18 @@ For [app links](https://developer.android.com/training/app-links#android-app-lin
 ]
 ```
 
-Where `$APP_BUNDLE_ID` is the value defined on `tauri.conf.json > identifier` with `-` replaced with `_` and `$CERT_FINGERPRINT` is a list of SHA256 fingerprints of your app's signing certificates, see [verify android applinks](https://developer.android.com/training/app-links/verify-android-applinks#web-assoc) for more information.
+Where `$APP_BUNDLE_ID` is the value defined on `tauri.conf.json > identifier`
+with `-` replaced with `_` and `$CERT_FINGERPRINT` is a list of SHA256
+fingerprints of your app's signing certificates, see
+[verify android applinks](https://developer.android.com/training/app-links/verify-android-applinks#web-assoc)
+for more information.
 
 ### iOS
 
-For [universal links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content?language=objc), you need a server with a `.well-known/apple-app-site-association` endpoint that must return a text response in the given format:
+For
+[universal links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content?language=objc),
+you need a server with a `.well-known/apple-app-site-association` endpoint that
+must return a text response in the given format:
 
 ```
 {
@@ -95,37 +111,48 @@ For [universal links](https://developer.apple.com/documentation/xcode/allowing-a
 }
 ```
 
-Where `$DEVELOPMENT_TEAM_ID` is the value defined on `tauri.conf.json > bundle > iOS > developmentTeam` or the `APPLE_DEVELOPMENT_TEAM` environment variable and `$APP_BUNDLE_ID` is the value defined on `tauri.conf.json > identifier`. See [applinks.details](https://developer.apple.com/documentation/bundleresources/applinks/details) for more information.
+Where `$DEVELOPMENT_TEAM_ID` is the value defined on
+`tauri.conf.json > bundle > iOS > developmentTeam` or the
+`APPLE_DEVELOPMENT_TEAM` environment variable and `$APP_BUNDLE_ID` is the value
+defined on `tauri.conf.json > identifier`. See
+[applinks.details](https://developer.apple.com/documentation/bundleresources/applinks/details)
+for more information.
 
-To verify if your domain has been properly configured to expose the app associations, you can run the following command:
+To verify if your domain has been properly configured to expose the app
+associations, you can run the following command:
 
 ```sh
 curl -v https://app-site-association.cdn-apple.com/a/v1/<host>
 ```
 
-**The apple-app-site-association file must be served over HTTPS and the response must include the `Content-Type: application/json` header.**
+**The apple-app-site-association file must be served over HTTPS and the response
+must include the `Content-Type: application/json` header.**
 
-To quickly open an app link on the iOS simulator you can execute `xcrun simctl openurl booted <url>`.
+To quickly open an app link on the iOS simulator you can execute
+`xcrun simctl openurl booted <url>`.
 
-See [supporting associated domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains?language=objc) for more information.
+See
+[supporting associated domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains?language=objc)
+for more information.
 
 ## Configuration
 
-Under `tauri.conf.json > plugins > deep-link`, configure the domains (mobile) and schemes (desktop) you want to associate with your application:
+Under `tauri.conf.json > plugins > deep-link`, configure the domains (mobile)
+and schemes (desktop) you want to associate with your application:
 
 ```json
 {
-  "plugins": {
-    "deep-link": {
-      "mobile": [
-        { "host": "your.website.com", "pathPrefix": ["/open"] },
-        { "host": "another.site.br" }
-      ],
-      "desktop": {
-        "schemes": ["something", "my-tauri-app"]
-      }
-    }
-  }
+	"plugins": {
+		"deep-link": {
+			"mobile": [
+				{ "host": "your.website.com", "pathPrefix": ["/open"] },
+				{ "host": "another.site.br" }
+			],
+			"desktop": {
+				"schemes": ["something", "my-tauri-app"]
+			}
+		}
+	}
 }
 ```
 
@@ -144,20 +171,27 @@ fn main() {
 }
 ```
 
-Afterwards all the plugin's APIs are available through the JavaScript guest bindings:
+Afterwards all the plugin's APIs are available through the JavaScript guest
+bindings:
 
 ```javascript
-import { onOpenUrl } from '@tauri-apps/plugin-deep-link'
+import { onOpenUrl } from "@tauri-apps/plugin-deep-link";
+
 await onOpenUrl((urls) => {
-  console.log('deep link:', urls)
-})
+	console.log("deep link:", urls);
+});
 ```
 
-Note that the Plugin will only emit events on macOS, iOS and Android. On Windows and Linux the OS will spawn a new instance of your app with the URL as a CLI argument. If you want your app to behave on Windows & Linux similar to the other platforms you can use the [single-instance](../single-instance/) plugin with the `deep-link` feature enabled.
+Note that the Plugin will only emit events on macOS, iOS and Android. On Windows
+and Linux the OS will spawn a new instance of your app with the URL as a CLI
+argument. If you want your app to behave on Windows & Linux similar to the other
+platforms you can use the [single-instance](../single-instance/) plugin with the
+`deep-link` feature enabled.
 
 ## Contributing
 
-PRs accepted. Please make sure to read the Contributing Guide before making a pull request.
+PRs accepted. Please make sure to read the Contributing Guide before making a
+pull request.
 
 ## Contributed By
 
@@ -192,7 +226,9 @@ PRs accepted. Please make sure to read the Contributing Guide before making a pu
   </tbody>
 </table>
 
-For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).
+For the complete list of sponsors please visit our
+[website](https://tauri.app#sponsors) and
+[Open Collective](https://opencollective.com/tauri).
 
 ## License
 

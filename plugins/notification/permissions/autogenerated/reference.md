@@ -1,30 +1,28 @@
 ## Default Permission
 
-This permission set configures which
-notification features are by default exposed.
+This permission set configures which notification features are by default
+exposed.
 
 #### Granted Permissions
 
 It allows all notification related features.
 
-
-
-- `allow-is-permission-granted`
-- `allow-request-permission`
-- `allow-notify`
-- `allow-register-action-types`
-- `allow-register-listener`
-- `allow-cancel`
-- `allow-get-pending`
-- `allow-remove-active`
-- `allow-get-active`
-- `allow-check-permissions`
-- `allow-show`
-- `allow-batch`
-- `allow-list-channels`
-- `allow-delete-channel`
-- `allow-create-channel`
-- `allow-permission-state`
+-   `allow-is-permission-granted`
+-   `allow-request-permission`
+-   `allow-notify`
+-   `allow-register-action-types`
+-   `allow-register-listener`
+-   `allow-cancel`
+-   `allow-get-pending`
+-   `allow-remove-active`
+-   `allow-get-active`
+-   `allow-check-permissions`
+-   `allow-show`
+-   `allow-batch`
+-   `allow-list-channels`
+-   `allow-delete-channel`
+-   `allow-create-channel`
+-   `allow-permission-state`
 
 ## Permission Table
 
@@ -33,7 +31,6 @@ It allows all notification related features.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

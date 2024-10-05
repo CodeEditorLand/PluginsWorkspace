@@ -2,8 +2,8 @@
 
 Allows the move_window command
 
-- `allow-move-window`
-- `set-tray-icon-state`
+-   `allow-move-window`
+-   `set-tray-icon-state`
 
 ## Permission Table
 
@@ -12,7 +12,6 @@ Allows the move_window command
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

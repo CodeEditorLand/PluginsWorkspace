@@ -1,22 +1,19 @@
 ## Default Permission
 
-This permission set configures which
-operating system information are available
+This permission set configures which operating system information are available
 to gather from the frontend.
 
 #### Granted Permissions
 
 All information except the host name are available.
 
-
-
-- `allow-arch`
-- `allow-exe-extension`
-- `allow-family`
-- `allow-locale`
-- `allow-os-type`
-- `allow-platform`
-- `allow-version`
+-   `allow-arch`
+-   `allow-exe-extension`
+-   `allow-family`
+-   `allow-locale`
+-   `allow-os-type`
+-   `allow-platform`
+-   `allow-version`
 
 ## Permission Table
 
@@ -25,7 +22,6 @@ All information except the host name are available.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

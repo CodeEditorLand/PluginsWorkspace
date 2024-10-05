@@ -1,6 +1,7 @@
 ![plugin-notification](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/notification/banner.png)
 
-Send message notifications (brief auto-expiring OS window element) to your user. Can also be used with the Notification Web API.
+Send message notifications (brief auto-expiring OS window element) to your user.
+Can also be used with the Notification Web API.
 
 | Platform | Supported |
 | -------- | --------- |
@@ -16,9 +17,12 @@ _This plugin requires a Rust version of at least **1.77.2**_
 
 There are three general methods of installation that we can recommend.
 
-1. Use crates.io and npm (easiest, and requires you to trust that our publishing pipeline worked)
-2. Pull sources directly from Github using git tags / revision hashes (most secure)
-3. Git submodule install this repo in your tauri project and then use file protocol to ingest the source (most secure, but inconvenient to use)
+1. Use crates.io and npm (easiest, and requires you to trust that our publishing
+   pipeline worked)
+2. Pull sources directly from Github using git tags / revision hashes (most
+   secure)
+3. Git submodule install this repo in your tauri project and then use file
+   protocol to ingest the source (most secure, but inconvenient to use)
 
 Install the Core plugin by adding the following to your `Cargo.toml` file:
 
@@ -31,9 +35,12 @@ tauri-plugin-notification = "2.0.0"
 tauri-plugin-notification = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
 
-You can install the JavaScript Guest bindings using your preferred JavaScript package manager:
+You can install the JavaScript Guest bindings using your preferred JavaScript
+package manager:
 
-> Note: Since most JavaScript package managers are unable to install packages from git monorepos we provide read-only mirrors of each plugin. This makes installation option 2 more ergonomic to use.
+> Note: Since most JavaScript package managers are unable to install packages
+> from git monorepos we provide read-only mirrors of each plugin. This makes
+> installation option 2 more ergonomic to use.
 
 ```sh
 pnpm add @tauri-apps/plugin-notification
@@ -80,33 +87,35 @@ Then you need to add the permissions to your capabilities file:
 }
 ```
 
-Afterwards all the plugin's APIs are available through the JavaScript guest bindings:
+Afterwards all the plugin's APIs are available through the JavaScript guest
+bindings:
 
 ```javascript
 import {
-  isPermissionGranted,
-  requestPermission,
-  sendNotification
-} from '@tauri-apps/plugin-notification'
+	isPermissionGranted,
+	requestPermission,
+	sendNotification,
+} from "@tauri-apps/plugin-notification";
 
 async function checkPermission() {
-  if (!(await isPermissionGranted())) {
-    return (await requestPermission()) === 'granted'
-  }
-  return true
+	if (!(await isPermissionGranted())) {
+		return (await requestPermission()) === "granted";
+	}
+	return true;
 }
 
 export async function enqueueNotification(title, body) {
-  if (!(await checkPermission())) {
-    return
-  }
-  sendNotification({ title, body })
+	if (!(await checkPermission())) {
+		return;
+	}
+	sendNotification({ title, body });
 }
 ```
 
 ## Contributing
 
-PRs accepted. Please make sure to read the Contributing Guide before making a pull request.
+PRs accepted. Please make sure to read the Contributing Guide before making a
+pull request.
 
 ## Partners
 
@@ -122,7 +131,9 @@ PRs accepted. Please make sure to read the Contributing Guide before making a pu
   </tbody>
 </table>
 
-For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).
+For the complete list of sponsors please visit our
+[website](https://tauri.app#sponsors) and
+[Open Collective](https://opencollective.com/tauri).
 
 ## License
 

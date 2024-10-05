@@ -2,19 +2,17 @@
 
 ### Default Permissions
 
-This permission set configures what kind of
-database operations are available from the sql plugin.
+This permission set configures what kind of database operations are available
+from the sql plugin.
 
 ### Granted Permissions
 
-All reading related operations are enabled.
-Also allows to load or close a connection.
+All reading related operations are enabled. Also allows to load or close a
+connection.
 
-
-
-- `allow-close`
-- `allow-load`
-- `allow-select`
+-   `allow-close`
+-   `allow-load`
+-   `allow-select`
 
 ## Permission Table
 
@@ -23,7 +21,6 @@ Also allows to load or close a connection.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

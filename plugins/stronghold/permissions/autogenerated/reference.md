@@ -1,22 +1,20 @@
 ## Default Permission
 
-This permission set configures what kind of
-operations are available from the stronghold plugin.
+This permission set configures what kind of operations are available from the
+stronghold plugin.
 
 #### Granted Permissions
 
 All non-destructive operations are enabled by default.
 
-
-
-- `allow-create-client`
-- `allow-get-store-record`
-- `allow-initialize`
-- `allow-execute-procedure`
-- `allow-load-client`
-- `allow-save-secret`
-- `allow-save-store-record`
-- `allow-save`
+-   `allow-create-client`
+-   `allow-get-store-record`
+-   `allow-initialize`
+-   `allow-execute-procedure`
+-   `allow-load-client`
+-   `allow-save-secret`
+-   `allow-save-store-record`
+-   `allow-save`
 
 ## Permission Table
 
@@ -25,7 +23,6 @@ All non-destructive operations are enabled by default.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

@@ -1,16 +1,14 @@
 ## Default Permission
 
-This permission set configures what kind of
-operations are available from the upload plugin.
+This permission set configures what kind of operations are available from the
+upload plugin.
 
 #### Granted Permissions
 
 All operations are enabled by default.
 
-
-
-- `allow-upload`
-- `allow-download`
+-   `allow-upload`
+-   `allow-download`
 
 ## Permission Table
 
@@ -19,7 +17,6 @@ All operations are enabled by default.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

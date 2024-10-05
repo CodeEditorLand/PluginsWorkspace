@@ -1,19 +1,16 @@
 ## Default Permission
 
-This permission set configures which kind of
-updater functions are exposed to the frontend.
+This permission set configures which kind of updater functions are exposed to
+the frontend.
 
 #### Granted Permissions
 
-The full workflow from checking for updates to installing them
-is enabled.
+The full workflow from checking for updates to installing them is enabled.
 
-
-
-- `allow-check`
-- `allow-download`
-- `allow-install`
-- `allow-download-and-install`
+-   `allow-check`
+-   `allow-download`
+-   `allow-install`
+-   `allow-download-and-install`
 
 ## Permission Table
 
@@ -22,7 +19,6 @@ is enabled.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

@@ -2,17 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use crate::{Error, Runtime, Store};
 use std::{
 	fs::{create_dir_all, read, File},
 	io::Write,
 };
+
 use tauri::Manager;
 
+use crate::{Error, Runtime, Store};
+
 #[cfg(desktop)]
-impl<R: Runtime> Store<R> {
+impl<R:Runtime> Store<R> {
 	pub fn save(&self) -> Result<(), Error> {
-		let app_dir = self.app.path().app_data_dir().expect("failed to resolve app dir");
+		let app_dir =
+			self.app.path().app_data_dir().expect("failed to resolve app dir");
 
 		let store_path = app_dir.join(&self.path);
 
@@ -28,13 +31,15 @@ impl<R: Runtime> Store<R> {
 
 	/// Update the store from the on-disk state
 	pub fn load(&mut self) -> Result<(), Error> {
-		let app_dir = self.app.path().app_data_dir().expect("failed to resolve app dir");
+		let app_dir =
+			self.app.path().app_data_dir().expect("failed to resolve app dir");
 
 		let store_path = app_dir.join(&self.path);
 
 		let bytes = read(store_path)?;
 
-		self.cache.extend((self.deserialize)(&bytes).map_err(Error::Deserialize)?);
+		self.cache
+			.extend((self.deserialize)(&bytes).map_err(Error::Deserialize)?);
 
 		Ok(())
 	}

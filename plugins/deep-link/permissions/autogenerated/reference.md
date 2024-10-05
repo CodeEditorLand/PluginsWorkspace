@@ -2,7 +2,7 @@
 
 Allows reading the opened deep link via the get_current command
 
-- `allow-get-current`
+-   `allow-get-current`
 
 ## Permission Table
 
@@ -11,7 +11,6 @@ Allows reading the opened deep link via the get_current command
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

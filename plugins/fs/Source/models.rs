@@ -7,12 +7,12 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetFileDescriptorPayload {
-    pub uri: String,
-    pub mode: String,
+	pub uri:String,
+	pub mode:String,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct GetFileDescriptorResponse {
-    pub fd: Option<i32>,
+	pub fd:Option<i32>,
 }

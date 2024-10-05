@@ -7,30 +7,32 @@ use tauri::{plugin::PluginApi, AppHandle, Runtime};
 
 use crate::models::*;
 
-pub fn init<R: Runtime, C: DeserializeOwned>(
-    app: &AppHandle<R>,
-    _api: PluginApi<R, C>,
+pub fn init<R:Runtime, C:DeserializeOwned>(
+	app:&AppHandle<R>,
+	_api:PluginApi<R, C>,
 ) -> crate::Result<Haptics<R>> {
-    Ok(Haptics(app.clone()))
+	Ok(Haptics(app.clone()))
 }
 
 /// Access to the haptics APIs.
-pub struct Haptics<R: Runtime>(AppHandle<R>);
+pub struct Haptics<R:Runtime>(AppHandle<R>);
 
-impl<R: Runtime> Haptics<R> {
-    pub fn vibrate(&self, _duration: u32) -> crate::Result<()> {
-        Ok(())
-    }
+impl<R:Runtime> Haptics<R> {
+	pub fn vibrate(&self, _duration:u32) -> crate::Result<()> { Ok(()) }
 
-    pub fn impact_feedback(&self, _style: ImpactFeedbackStyle) -> crate::Result<()> {
-        Ok(())
-    }
+	pub fn impact_feedback(
+		&self,
+		_style:ImpactFeedbackStyle,
+	) -> crate::Result<()> {
+		Ok(())
+	}
 
-    pub fn notification_feedback(&self, _type: NotificationFeedbackType) -> crate::Result<()> {
-        Ok(())
-    }
+	pub fn notification_feedback(
+		&self,
+		_type:NotificationFeedbackType,
+	) -> crate::Result<()> {
+		Ok(())
+	}
 
-    pub fn selection_feedback(&self) -> crate::Result<()> {
-        Ok(())
-    }
+	pub fn selection_feedback(&self) -> crate::Result<()> { Ok(()) }
 }

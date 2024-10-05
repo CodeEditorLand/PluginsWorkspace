@@ -1,16 +1,13 @@
 ## Default Permission
 
-This permission set configures which
-biometric features are by default exposed.
+This permission set configures which biometric features are by default exposed.
 
 #### Granted Permissions
 
 It allows acccess to all biometric commands.
 
-
-
-- `allow-authenticate`
-- `allow-status`
+-   `allow-authenticate`
+-   `allow-status`
 
 ## Permission Table
 
@@ -19,7 +16,6 @@ It allows acccess to all biometric commands.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

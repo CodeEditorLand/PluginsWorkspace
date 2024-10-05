@@ -1,20 +1,18 @@
 ## Default Permission
 
-This permission set configures which
-barcode scanning features are by default exposed.
+This permission set configures which barcode scanning features are by default
+exposed.
 
 #### Granted Permissions
 
 It allows all barcode related features.
 
-
-
-- `allow-cancel`
-- `allow-check-permissions`
-- `allow-open-app-settings`
-- `allow-request-permissions`
-- `allow-scan`
-- `allow-vibrate`
+-   `allow-cancel`
+-   `allow-check-permissions`
+-   `allow-open-app-settings`
+-   `allow-request-permissions`
+-   `allow-scan`
+-   `allow-vibrate`
 
 ## Permission Table
 
@@ -23,7 +21,6 @@ It allows all barcode related features.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

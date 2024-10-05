@@ -2,7 +2,7 @@
 
 Allows reading the CLI matches
 
-- `allow-cli-matches`
+-   `allow-cli-matches`
 
 ## Permission Table
 
@@ -11,7 +11,6 @@ Allows reading the CLI matches
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

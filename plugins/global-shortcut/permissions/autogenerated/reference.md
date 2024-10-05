@@ -1,11 +1,8 @@
 ## Default Permission
 
-No features are enabled by default, as we believe
-the shortcuts can be inherently dangerous and it is
-application specific if specific shortcuts should be
-registered or unregistered.
-
-
+No features are enabled by default, as we believe the shortcuts can be
+inherently dangerous and it is application specific if specific shortcuts should
+be registered or unregistered.
 
 ## Permission Table
 
@@ -14,7 +11,6 @@ registered or unregistered.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

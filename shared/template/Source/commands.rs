@@ -2,14 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use tauri::{AppHandle, command, Runtime, Window};
+use tauri::{command, AppHandle, Runtime, Window};
 
 use crate::Result;
 
 #[command]
-pub(crate) async fn execute<R: Runtime>(
-  _app: AppHandle<R>,
-  _window: Window<R>,
+pub(crate) async fn execute<R:Runtime>(
+	_app:AppHandle<R>,
+	_window:Window<R>,
 ) -> Result<String> {
-  Ok("success".to_string())
+	Ok("success".to_string())
 }

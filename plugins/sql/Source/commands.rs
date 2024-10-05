@@ -10,22 +10,22 @@ use tauri::{command, AppHandle, Runtime, State};
 use crate::{DbInstances, DbPool, Error, LastInsertId, Migrations};
 
 #[command]
-pub(crate) async fn load<R: Runtime>(
-    app: AppHandle<R>,
-    db_instances: State<'_, DbInstances>,
-    migrations: State<'_, Migrations>,
-    db: String,
+pub(crate) async fn load<R:Runtime>(
+	app:AppHandle<R>,
+	db_instances:State<'_, DbInstances>,
+	migrations:State<'_, Migrations>,
+	db:String,
 ) -> Result<String, crate::Error> {
-    let pool = DbPool::connect(&db, &app).await?;
+	let pool = DbPool::connect(&db, &app).await?;
 
-    if let Some(migrations) = migrations.0.lock().await.remove(&db) {
-        let migrator = Migrator::new(migrations).await?;
-        pool.migrate(&migrator).await?;
-    }
+	if let Some(migrations) = migrations.0.lock().await.remove(&db) {
+		let migrator = Migrator::new(migrations).await?;
+		pool.migrate(&migrator).await?;
+	}
 
-    db_instances.0.lock().await.insert(db.clone(), pool);
+	db_instances.0.lock().await.insert(db.clone(), pool);
 
-    Ok(db)
+	Ok(db)
 }
 
 /// Allows the database connection(s) to be closed; if no database
@@ -33,50 +33,49 @@ pub(crate) async fn load<R: Runtime>(
 /// shut down.
 #[command]
 pub(crate) async fn close(
-    db_instances: State<'_, DbInstances>,
-    db: Option<String>,
+	db_instances:State<'_, DbInstances>,
+	db:Option<String>,
 ) -> Result<bool, crate::Error> {
-    let mut instances = db_instances.0.lock().await;
+	let mut instances = db_instances.0.lock().await;
 
-    let pools = if let Some(db) = db {
-        vec![db]
-    } else {
-        instances.keys().cloned().collect()
-    };
+	let pools = if let Some(db) = db {
+		vec![db]
+	} else {
+		instances.keys().cloned().collect()
+	};
 
-    for pool in pools {
-        let db = instances
-            .get_mut(&pool)
-            .ok_or(Error::DatabaseNotLoaded(pool))?;
-        db.close().await;
-    }
+	for pool in pools {
+		let db =
+			instances.get_mut(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
+		db.close().await;
+	}
 
-    Ok(true)
+	Ok(true)
 }
 
 /// Execute a command against the database
 #[command]
 pub(crate) async fn execute(
-    db_instances: State<'_, DbInstances>,
-    db: String,
-    query: String,
-    values: Vec<JsonValue>,
+	db_instances:State<'_, DbInstances>,
+	db:String,
+	query:String,
+	values:Vec<JsonValue>,
 ) -> Result<(u64, LastInsertId), crate::Error> {
-    let mut instances = db_instances.0.lock().await;
+	let mut instances = db_instances.0.lock().await;
 
-    let db = instances.get_mut(&db).ok_or(Error::DatabaseNotLoaded(db))?;
-    db.execute(query, values).await
+	let db = instances.get_mut(&db).ok_or(Error::DatabaseNotLoaded(db))?;
+	db.execute(query, values).await
 }
 
 #[command]
 pub(crate) async fn select(
-    db_instances: State<'_, DbInstances>,
-    db: String,
-    query: String,
-    values: Vec<JsonValue>,
+	db_instances:State<'_, DbInstances>,
+	db:String,
+	query:String,
+	values:Vec<JsonValue>,
 ) -> Result<Vec<IndexMap<String, JsonValue>>, crate::Error> {
-    let mut instances = db_instances.0.lock().await;
+	let mut instances = db_instances.0.lock().await;
 
-    let db = instances.get_mut(&db).ok_or(Error::DatabaseNotLoaded(db))?;
-    db.select(query, values).await
+	let db = instances.get_mut(&db).ok_or(Error::DatabaseNotLoaded(db))?;
+	db.select(query, values).await
 }

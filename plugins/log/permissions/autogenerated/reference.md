@@ -2,7 +2,7 @@
 
 Allows the log command
 
-- `allow-log`
+-   `allow-log`
 
 ## Permission Table
 
@@ -11,7 +11,6 @@ Allows the log command
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

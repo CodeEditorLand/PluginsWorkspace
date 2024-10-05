@@ -1,18 +1,15 @@
 ## Default Permission
 
-This permission set configures what kind of
-operations are available from the nfc plugin.
+This permission set configures what kind of operations are available from the
+nfc plugin.
 
 #### Granted Permissions
 
-Checking if the NFC functionality is available
-and scanning nearby tags is allowed.
-Writing to tags needs to be manually enabled.
+Checking if the NFC functionality is available and scanning nearby tags is
+allowed. Writing to tags needs to be manually enabled.
 
-
-
-- `allow-is-available`
-- `allow-scan`
+-   `allow-is-available`
+-   `allow-scan`
 
 ## Permission Table
 
@@ -21,7 +18,6 @@ Writing to tags needs to be manually enabled.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>

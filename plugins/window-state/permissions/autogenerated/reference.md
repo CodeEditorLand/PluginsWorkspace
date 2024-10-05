@@ -1,17 +1,15 @@
 ## Default Permission
 
-This permission set configures what kind of
-operations are available from the window state plugin.
+This permission set configures what kind of operations are available from the
+window state plugin.
 
 #### Granted Permissions
 
 All operations are enabled by default.
 
-
-
-- `allow-filename`
-- `allow-restore-state`
-- `allow-save-window-state`
+-   `allow-filename`
+-   `allow-restore-state`
+-   `allow-save-window-state`
 
 ## Permission Table
 
@@ -20,7 +18,6 @@ All operations are enabled by default.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
-
 
 <tr>
 <td>
