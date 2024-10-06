@@ -1,25 +1,27 @@
 ## Default Permission
 
-This permission set configures what kind of operations are available from the
-store plugin.
+This permission set configures what kind of
+operations are available from the store plugin.
 
 #### Granted Permissions
 
 All operations are enabled by default.
 
--   `allow-create-store`
--   `allow-clear`
--   `allow-delete`
--   `allow-entries`
--   `allow-get`
--   `allow-has`
--   `allow-keys`
--   `allow-length`
--   `allow-load`
--   `allow-reset`
--   `allow-save`
--   `allow-set`
--   `allow-values`
+
+
+- `allow-create-store`
+- `allow-clear`
+- `allow-delete`
+- `allow-entries`
+- `allow-get`
+- `allow-has`
+- `allow-keys`
+- `allow-length`
+- `allow-load`
+- `allow-reset`
+- `allow-save`
+- `allow-set`
+- `allow-values`
 
 ## Permission Table
 
@@ -28,6 +30,7 @@ All operations are enabled by default.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
+
 
 <tr>
 <td>

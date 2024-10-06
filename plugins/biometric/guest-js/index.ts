@@ -2,48 +2,48 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-import { invoke } from "@tauri-apps/api/core";
+import { invoke } from '@tauri-apps/api/core'
 
 export enum BiometryType {
-	None = 0,
-	// Apple TouchID or Android fingerprint
-	TouchID = 1,
-	// Apple FaceID or Android face authentication
-	FaceID = 2,
-	// Android iris authentication
-	Iris = 3,
+  None = 0,
+  // Apple TouchID or Android fingerprint
+  TouchID = 1,
+  // Apple FaceID or Android face authentication
+  FaceID = 2,
+  // Android iris authentication
+  Iris = 3
 }
 
 export interface Status {
-	isAvailable: boolean;
-	biometryType: BiometryType;
-	error?: string;
-	errorCode?:
-		| "appCancel"
-		| "authenticationFailed"
-		| "invalidContext"
-		| "notInteractive"
-		| "passcodeNotSet"
-		| "systemCancel"
-		| "userCancel"
-		| "userFallback"
-		| "biometryLockout"
-		| "biometryNotAvailable"
-		| "biometryNotEnrolled";
+  isAvailable: boolean
+  biometryType: BiometryType
+  error?: string
+  errorCode?:
+    | 'appCancel'
+    | 'authenticationFailed'
+    | 'invalidContext'
+    | 'notInteractive'
+    | 'passcodeNotSet'
+    | 'systemCancel'
+    | 'userCancel'
+    | 'userFallback'
+    | 'biometryLockout'
+    | 'biometryNotAvailable'
+    | 'biometryNotEnrolled'
 }
 
 export interface AuthOptions {
-	allowDeviceCredential?: boolean;
-	cancelTitle?: string;
+  allowDeviceCredential?: boolean
+  cancelTitle?: string
 
-	// iOS options
-	fallbackTitle?: string;
+  // iOS options
+  fallbackTitle?: string
 
-	// android options
-	title?: string;
-	subtitle?: string;
-	confirmationRequired?: boolean;
-	maxAttemps?: number;
+  // android options
+  title?: string
+  subtitle?: string
+  confirmationRequired?: boolean
+  maxAttemps?: number
 }
 
 /**
@@ -51,7 +51,7 @@ export interface AuthOptions {
  * @returns a promise resolving to an object containing all the information about the status of the biometry.
  */
 export async function checkStatus(): Promise<Status> {
-	return await invoke("plugin:biometric|status");
+  return await invoke('plugin:biometric|status')
 }
 
 /**
@@ -67,11 +67,11 @@ export async function checkStatus(): Promise<Status> {
  * @returns
  */
 export async function authenticate(
-	reason: string,
-	options?: AuthOptions,
+  reason: string,
+  options?: AuthOptions
 ): Promise<void> {
-	await invoke("plugin:biometric|authenticate", {
-		reason,
-		...options,
-	});
+  await invoke('plugin:biometric|authenticate', {
+    reason,
+    ...options
+  })
 }

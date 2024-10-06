@@ -1,15 +1,19 @@
 ## Default Permission
 
-This permission set configures if your application can enable or disable auto
+This permission set configures if your
+application can enable or disable auto
 starting the application on boot.
 
 #### Granted Permissions
 
-It allows all to check, enable and disable the automatic start on boot.
+It allows all to check, enable and
+disable the automatic start on boot.
 
--   `allow-enable`
--   `allow-disable`
--   `allow-is-enabled`
+
+
+- `allow-enable`
+- `allow-disable`
+- `allow-is-enabled`
 
 ## Permission Table
 
@@ -18,6 +22,7 @@ It allows all to check, enable and disable the automatic start on boot.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
+
 
 <tr>
 <td>

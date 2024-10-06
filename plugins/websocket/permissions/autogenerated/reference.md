@@ -2,8 +2,8 @@
 
 Allows connecting and sending data to a WebSocket server
 
--   `allow-connect`
--   `allow-send`
+- `allow-connect`
+- `allow-send`
 
 ## Permission Table
 
@@ -12,6 +12,7 @@ Allows connecting and sending data to a WebSocket server
 <th>Identifier</th>
 <th>Description</th>
 </tr>
+
 
 <tr>
 <td>

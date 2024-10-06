@@ -1,14 +1,16 @@
 ## Default Permission
 
-This permission set configures which process feeatures are by default exposed.
+This permission set configures which
+process feeatures are by default exposed.
 
 #### Granted Permissions
 
-This enables to quit via `allow-exit` and restart via `allow-restart` the
-application.
+This enables to quit via `allow-exit` and restart via `allow-restart`
+the application.
 
--   `allow-exit`
--   `allow-restart`
+
+- `allow-exit`
+- `allow-restart`
 
 ## Permission Table
 
@@ -17,6 +19,7 @@ application.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
+
 
 <tr>
 <td>

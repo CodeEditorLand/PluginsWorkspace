@@ -2,76 +2,74 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-import { invoke } from "@tauri-apps/api/core";
-import { listen, type Event, type UnlistenFn } from "@tauri-apps/api/event";
+import { invoke } from '@tauri-apps/api/core'
+import { listen, type UnlistenFn, type Event } from '@tauri-apps/api/event'
 
 export interface LogOptions {
-	file?: string;
-	line?: number;
-	keyValues?: Record<string, string | undefined>;
+  file?: string
+  line?: number
+  keyValues?: Record<string, string | undefined>
 }
 
 enum LogLevel {
-	/**
-	 * The "trace" level.
-	 *
-	 * Designates very low priority, often extremely verbose, information.
-	 */
-	Trace = 1,
-	/**
-	 * The "debug" level.
-	 *
-	 * Designates lower priority information.
-	 */
-	Debug,
-	/**
-	 * The "info" level.
-	 *
-	 * Designates useful information.
-	 */
-	Info,
-	/**
-	 * The "warn" level.
-	 *
-	 * Designates hazardous situations.
-	 */
-	Warn,
-	/**
-	 * The "error" level.
-	 *
-	 * Designates very serious errors.
-	 */
-	Error,
+  /**
+   * The "trace" level.
+   *
+   * Designates very low priority, often extremely verbose, information.
+   */
+  Trace = 1,
+  /**
+   * The "debug" level.
+   *
+   * Designates lower priority information.
+   */
+  Debug,
+  /**
+   * The "info" level.
+   *
+   * Designates useful information.
+   */
+  Info,
+  /**
+   * The "warn" level.
+   *
+   * Designates hazardous situations.
+   */
+  Warn,
+  /**
+   * The "error" level.
+   *
+   * Designates very serious errors.
+   */
+  Error
 }
 
 async function log(
-	level: LogLevel,
-	message: string,
-	options?: LogOptions,
+  level: LogLevel,
+  message: string,
+  options?: LogOptions
 ): Promise<void> {
-	const traces = new Error().stack
-		?.split("\n")
-		.map((line) => line.split("@"));
+  const traces = new Error().stack?.split('\n').map((line) => line.split('@'))
 
-	const filtered = traces?.filter(([name, location]) => {
-		return name.length > 0 && location !== "[native code]";
-	});
+  const filtered = traces?.filter(([name, location]) => {
+    return name.length > 0 && location !== '[native code]'
+  })
 
-	const { file, line, keyValues } = options ?? {};
+  const { file, line, keyValues } = options ?? {}
 
-	let location = filtered?.[0]?.filter((v) => v.length > 0).join("@");
-	if (location === "Error") {
-		location = "webview::unknown";
-	}
+  let location = filtered?.[0]?.filter((v) => v.length > 0).join('@')
+  if (location === 'Error') {
+    location = 'webview::unknown'
+  }
 
-	await invoke("plugin:log|log", {
-		level,
-		message,
-		location,
-		file,
-		line,
-		keyValues,
-	});
+  await invoke('plugin:log|log', {
+    level,
+    message,
+    location,
+    file,
+    line,
+    keyValues
+  })
 }
 
 /**
@@ -91,10 +89,10 @@ async function log(
  * ```
  */
 export async function error(
-	message: string,
-	options?: LogOptions,
+  message: string,
+  options?: LogOptions
 ): Promise<void> {
-	await log(LogLevel.Error, message, options);
+  await log(LogLevel.Error, message, options)
 }
 
 /**
@@ -113,10 +111,10 @@ export async function error(
  * ```
  */
 export async function warn(
-	message: string,
-	options?: LogOptions,
+  message: string,
+  options?: LogOptions
 ): Promise<void> {
-	await log(LogLevel.Warn, message, options);
+  await log(LogLevel.Warn, message, options)
 }
 
 /**
@@ -135,10 +133,10 @@ export async function warn(
  * ```
  */
 export async function info(
-	message: string,
-	options?: LogOptions,
+  message: string,
+  options?: LogOptions
 ): Promise<void> {
-	await log(LogLevel.Info, message, options);
+  await log(LogLevel.Info, message, options)
 }
 
 /**
@@ -157,10 +155,10 @@ export async function info(
  * ```
  */
 export async function debug(
-	message: string,
-	options?: LogOptions,
+  message: string,
+  options?: LogOptions
 ): Promise<void> {
-	await log(LogLevel.Debug, message, options);
+  await log(LogLevel.Debug, message, options)
 }
 
 /**
@@ -179,18 +177,18 @@ export async function debug(
  * ```
  */
 export async function trace(
-	message: string,
-	options?: LogOptions,
+  message: string,
+  options?: LogOptions
 ): Promise<void> {
-	await log(LogLevel.Trace, message, options);
+  await log(LogLevel.Trace, message, options)
 }
 
 interface RecordPayload {
-	level: LogLevel;
-	message: string;
+  level: LogLevel
+  message: string
 }
 
-type LoggerFn = (fn: RecordPayload) => void;
+type LoggerFn = (fn: RecordPayload) => void
 
 /**
  * Attaches a listener for the log, and calls the passed function for each log entry.
@@ -199,19 +197,19 @@ type LoggerFn = (fn: RecordPayload) => void;
  * @returns a function to cancel the listener.
  */
 export async function attachLogger(fn: LoggerFn): Promise<UnlistenFn> {
-	return await listen("log://log", (event: Event<RecordPayload>) => {
-		const { level } = event.payload;
-		let { message } = event.payload;
+  return await listen('log://log', (event: Event<RecordPayload>) => {
+    const { level } = event.payload
+    let { message } = event.payload
 
-		// Strip ANSI escape codes
-		message = message.replace(
-			// TODO: Investigate security/detect-unsafe-regex
-			// eslint-disable-next-line no-control-regex, security/detect-unsafe-regex
-			/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
-			"",
-		);
-		fn({ message, level });
-	});
+    // Strip ANSI escape codes
+    message = message.replace(
+      // TODO: Investigate security/detect-unsafe-regex
+      // eslint-disable-next-line no-control-regex, security/detect-unsafe-regex
+      /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
+      ''
+    )
+    fn({ message, level })
+  })
 }
 
 /**
@@ -220,26 +218,26 @@ export async function attachLogger(fn: LoggerFn): Promise<UnlistenFn> {
  * @returns a function to cancel the listener.
  */
 export async function attachConsole(): Promise<UnlistenFn> {
-	return await attachLogger(({ level, message }: RecordPayload) => {
-		switch (level) {
-			case LogLevel.Trace:
-				console.log(message);
-				break;
-			case LogLevel.Debug:
-				console.debug(message);
-				break;
-			case LogLevel.Info:
-				console.info(message);
-				break;
-			case LogLevel.Warn:
-				console.warn(message);
-				break;
-			case LogLevel.Error:
-				console.error(message);
-				break;
-			default:
-				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-				throw new Error(`unknown log level ${level}`);
-		}
-	});
+  return await attachLogger(({ level, message }: RecordPayload) => {
+    switch (level) {
+      case LogLevel.Trace:
+        console.log(message)
+        break
+      case LogLevel.Debug:
+        console.debug(message)
+        break
+      case LogLevel.Info:
+        console.info(message)
+        break
+      case LogLevel.Warn:
+        console.warn(message)
+        break
+      case LogLevel.Error:
+        console.error(message)
+        break
+      default:
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        throw new Error(`unknown log level ${level}`)
+    }
+  })
 }

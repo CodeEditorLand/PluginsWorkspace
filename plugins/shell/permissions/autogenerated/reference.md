@@ -1,13 +1,16 @@
 ## Default Permission
 
-This permission set configures which shell functionality is exposed by default.
+This permission set configures which
+shell functionality is exposed by default.
 
 #### Granted Permissions
 
-It allows to use the `open` functionality without any specific scope
-pre-configured. It will allow opening `http(s)://`, `tel:` and `mailto:` links.
+It allows to use the `open` functionality without any specific
+scope pre-configured. It will allow opening `http(s)://`,
+`tel:` and `mailto:` links.
 
--   `allow-open`
+
+- `allow-open`
 
 ## Permission Table
 
@@ -16,6 +19,7 @@ pre-configured. It will allow opening `http(s)://`, `tel:` and `mailto:` links.
 <th>Identifier</th>
 <th>Description</th>
 </tr>
+
 
 <tr>
 <td>
