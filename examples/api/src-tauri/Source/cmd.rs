@@ -8,17 +8,17 @@ use tauri::command;
 #[derive(Debug, Deserialize)]
 #[allow(unused)]
 pub struct RequestBody {
-	id:i32,
-	name:String,
+    id: i32,
+    name: String,
 }
 
 #[command]
-pub fn log_operation(event:String, payload:Option<String>) {
-	log::info!("{} {:?}", event, payload);
+pub fn log_operation(event: String, payload: Option<String>) {
+    log::info!("{} {:?}", event, payload);
 }
 
 #[command]
-pub fn perform_request(endpoint:String, body:RequestBody) -> String {
-	println!("{} {:?}", endpoint, body);
-	"message response".into()
+pub fn perform_request(endpoint: String, body: RequestBody) -> String {
+    println!("{} {:?}", endpoint, body);
+    "message response".into()
 }
