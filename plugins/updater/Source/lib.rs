@@ -45,8 +45,7 @@ pub trait UpdaterExt<R:Runtime> {
 	/// tauri::Builder::default().setup(|app| {
 	/// 	let handle = app.handle().clone();
 	/// 	tauri::async_runtime::spawn(async move {
-	/// 		let response =
-	/// 			handle.updater_builder().build().unwrap().check().await;
+	/// 		let response = handle.updater_builder().build().unwrap().check().await;
 	/// 	});
 	/// 	Ok(())
 	/// });
@@ -74,8 +73,7 @@ impl<R:Runtime, T:Manager<R>> UpdaterExt<R> for T {
 	fn updater_builder(&self) -> UpdaterBuilder {
 		let app = self.app_handle();
 		let package_info = app.package_info();
-		let UpdaterState { config, target } =
-			self.state::<UpdaterState>().inner();
+		let UpdaterState { config, target } = self.state::<UpdaterState>().inner();
 
 		let mut builder = UpdaterBuilder::new(
 			package_info.name.clone(),

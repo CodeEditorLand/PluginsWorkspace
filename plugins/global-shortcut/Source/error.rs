@@ -16,10 +16,7 @@ pub enum Error {
 }
 
 impl Serialize for Error {
-	fn serialize<S>(
-		&self,
-		serializer:S,
-	) -> std::result::Result<S::Ok, S::Error>
+	fn serialize<S>(&self, serializer:S) -> std::result::Result<S::Ok, S::Error>
 	where
 		S: Serializer, {
 		serializer.serialize_str(self.to_string().as_ref())
@@ -27,9 +24,7 @@ impl Serialize for Error {
 }
 
 impl From<global_hotkey::Error> for Error {
-	fn from(value:global_hotkey::Error) -> Self {
-		Self::GlobalHotkey(value.to_string())
-	}
+	fn from(value:global_hotkey::Error) -> Self { Self::GlobalHotkey(value.to_string()) }
 }
 
 impl From<global_hotkey::hotkey::HotKeyParseError> for Error {

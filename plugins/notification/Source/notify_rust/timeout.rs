@@ -19,9 +19,7 @@ pub enum Timeout {
 }
 
 impl Default for Timeout {
-	fn default() -> Self {
-		Timeout::Default
-	}
+	fn default() -> Self { Timeout::Default }
 }
 
 #[test]
@@ -32,7 +30,7 @@ fn timeout_from_i32() {
 }
 
 impl From<i32> for Timeout {
-	fn from(int: i32) -> Timeout {
+	fn from(int:i32) -> Timeout {
 		use std::cmp::Ordering::*;
 		match int.cmp(&0) {
 			Greater => Timeout::Milliseconds(int as u32),
@@ -43,7 +41,7 @@ impl From<i32> for Timeout {
 }
 
 impl From<Duration> for Timeout {
-	fn from(duration: Duration) -> Timeout {
+	fn from(duration:Duration) -> Timeout {
 		if duration.is_zero() {
 			Timeout::Never
 		} else if duration.as_millis() > u32::MAX.into() {
@@ -55,7 +53,7 @@ impl From<Duration> for Timeout {
 }
 
 impl From<Timeout> for i32 {
-	fn from(timeout: Timeout) -> Self {
+	fn from(timeout:Timeout) -> Self {
 		match timeout {
 			Timeout::Default => -1,
 			Timeout::Never => 0,
@@ -67,7 +65,7 @@ impl From<Timeout> for i32 {
 impl FromStr for Timeout {
 	type Err = ParseIntError;
 
-	fn from_str(s: &str) -> Result<Self, Self::Err> {
+	fn from_str(s:&str) -> Result<Self, Self::Err> {
 		match s {
 			"default" => Ok(Timeout::Default),
 			"never" => Ok(Timeout::Never),
@@ -79,24 +77,20 @@ impl FromStr for Timeout {
 pub struct TimeoutMessage(Timeout);
 
 impl From<Timeout> for TimeoutMessage {
-	fn from(hint: Timeout) -> Self {
-		TimeoutMessage(hint)
-	}
+	fn from(hint:Timeout) -> Self { TimeoutMessage(hint) }
 }
 
 impl std::ops::Deref for TimeoutMessage {
 	type Target = Timeout;
 
-	fn deref(&self) -> &Self::Target {
-		&self.0
-	}
+	fn deref(&self) -> &Self::Target { &self.0 }
 }
 
 #[cfg(all(feature = "dbus", unix, not(target_os = "macos")))]
 impl TryFrom<&dbus::arg::messageitem::MessageItem> for TimeoutMessage {
 	type Error = ();
 
-	fn try_from(mi: &dbus::arg::messageitem::MessageItem) -> Result<TimeoutMessage, ()> {
+	fn try_from(mi:&dbus::arg::messageitem::MessageItem) -> Result<TimeoutMessage, ()> {
 		mi.inner::<i32>().map(|i| TimeoutMessage(i.into()))
 	}
 }

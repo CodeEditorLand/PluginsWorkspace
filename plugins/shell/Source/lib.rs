@@ -60,9 +60,7 @@ pub struct Shell<R:Runtime> {
 
 impl<R:Runtime> Shell<R> {
 	/// Creates a new Command for launching the given program.
-	pub fn command(&self, program:impl AsRef<OsStr>) -> Command {
-		Command::new(program)
-	}
+	pub fn command(&self, program:impl AsRef<OsStr>) -> Command { Command::new(program) }
 
 	/// Creates a new Command for launching the given sidecar program.
 	///
@@ -77,11 +75,7 @@ impl<R:Runtime> Shell<R> {
 	///
 	/// See [`crate::open::open`] for how it handles security-related measures.
 	#[cfg(desktop)]
-	pub fn open(
-		&self,
-		path:impl Into<String>,
-		with:Option<open::Program>,
-	) -> Result<()> {
+	pub fn open(&self, path:impl Into<String>, with:Option<open::Program>) -> Result<()> {
 		open::open(&self.open_scope, path.into(), with).map_err(Into::into)
 	}
 
@@ -89,11 +83,7 @@ impl<R:Runtime> Shell<R> {
 	///
 	/// See [`crate::open::open`] for how it handles security-related measures.
 	#[cfg(mobile)]
-	pub fn open(
-		&self,
-		path:impl Into<String>,
-		_with:Option<open::Program>,
-	) -> Result<()> {
+	pub fn open(&self, path:impl Into<String>, _with:Option<open::Program>) -> Result<()> {
 		self.mobile_plugin_handle
 			.run_mobile_plugin("open", path.into())
 			.map_err(Into::into)
@@ -123,8 +113,7 @@ pub fn init<R:Runtime>() -> TauriPlugin<R, Option<config::Config>> {
 			let config = api.config().as_ref().unwrap_or(&default_config);
 
 			#[cfg(target_os = "android")]
-			let handle =
-				api.register_android_plugin(PLUGIN_IDENTIFIER, "ShellPlugin")?;
+			let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "ShellPlugin")?;
 			#[cfg(target_os = "ios")]
 			let handle = api.register_ios_plugin(init_plugin_shell)?;
 
@@ -157,15 +146,12 @@ fn open_scope(open:&config::ShellAllowlistOpen) -> scope::OpenScope {
 	let shell_scope_open = match open {
 		config::ShellAllowlistOpen::Flag(false) => None,
 		config::ShellAllowlistOpen::Flag(true) => {
-			Some(
-				Regex::new(r"^((mailto:\w+)|(tel:\w+)|(https?://\w+)).+")
-					.unwrap(),
-			)
+			Some(Regex::new(r"^((mailto:\w+)|(tel:\w+)|(https?://\w+)).+").unwrap())
 		},
 		config::ShellAllowlistOpen::Validate(validator) => {
 			let regex = format!("^{validator}$");
-			let validator = Regex::new(&regex)
-				.unwrap_or_else(|e| panic!("invalid regex {regex}: {e}"));
+			let validator =
+				Regex::new(&regex).unwrap_or_else(|e| panic!("invalid regex {regex}: {e}"));
 			Some(validator)
 		},
 	};

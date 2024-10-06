@@ -2,13 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use std::{
-	collections::HashMap,
-	future::Future,
-	path::PathBuf,
-	pin::Pin,
-	string::FromUtf8Error,
-};
+use std::{collections::HashMap, future::Future, path::PathBuf, pin::Pin, string::FromUtf8Error};
 
 use encoding_rs::Encoding;
 use serde::{Deserialize, Serialize};
@@ -44,17 +38,12 @@ pub enum JSCommandEvent {
 	Terminated(TerminatedPayload),
 }
 
-fn get_event_buffer(
-	line:Vec<u8>,
-	encoding:EncodingWrapper,
-) -> Result<Buffer, FromUtf8Error> {
+fn get_event_buffer(line:Vec<u8>, encoding:EncodingWrapper) -> Result<Buffer, FromUtf8Error> {
 	match encoding {
 		EncodingWrapper::Text(character_encoding) => {
 			match character_encoding {
 				Some(encoding) => {
-					Ok(Buffer::Text(
-						encoding.decode_with_bom_removal(&line).0.into(),
-					))
+					Ok(Buffer::Text(encoding.decode_with_bom_removal(&line).0.into()))
 				},
 				None => String::from_utf8(line).map(Buffer::Text),
 			}
@@ -66,9 +55,7 @@ fn get_event_buffer(
 impl JSCommandEvent {
 	pub fn new(event:CommandEvent, encoding:EncodingWrapper) -> Self {
 		match event {
-			CommandEvent::Terminated(payload) => {
-				JSCommandEvent::Terminated(payload)
-			},
+			CommandEvent::Terminated(payload) => JSCommandEvent::Terminated(payload),
 			CommandEvent::Error(error) => JSCommandEvent::Error(error),
 			CommandEvent::Stderr(line) => {
 				get_event_buffer(line, encoding)
@@ -125,27 +112,21 @@ fn prepare_cmd<R:Runtime>(
 	global_scope:GlobalScope<crate::scope::ScopeAllowedCommand>,
 ) -> crate::Result<(crate::process::Command, EncodingWrapper)> {
 	let scope = crate::scope::ShellScope {
-		scopes:command_scope
-			.allows()
-			.iter()
-			.chain(global_scope.allows())
-			.collect(),
+		scopes:command_scope.allows().iter().chain(global_scope.allows()).collect(),
 	};
 
 	let mut command = if options.sidecar {
 		let program = PathBuf::from(program);
 		let program_as_string = program.display().to_string();
-		let program_no_ext_as_string =
-			program.with_extension("").display().to_string();
+		let program_no_ext_as_string = program.with_extension("").display().to_string();
 		let configured_sidecar = window
 			.config()
 			.bundle
 			.external_bin
 			.as_ref()
 			.and_then(|bins| {
-				bins.iter().find(|b| {
-					b == &&program_as_string || b == &&program_no_ext_as_string
-				})
+				bins.iter()
+					.find(|b| b == &&program_as_string || b == &&program_no_ext_as_string)
 			})
 			.cloned();
 		if let Some(sidecar) = configured_sidecar {
@@ -159,9 +140,7 @@ fn prepare_cmd<R:Runtime>(
 			Err(e) => {
 				#[cfg(debug_assertions)]
 				eprintln!("{e}");
-				return Err(crate::Error::ProgramNotAllowed(PathBuf::from(
-					program,
-				)));
+				return Err(crate::Error::ProgramNotAllowed(PathBuf::from(program)));
 			},
 		}
 	};
@@ -183,9 +162,7 @@ fn prepare_cmd<R:Runtime>(
 					EncodingWrapper::Raw
 				},
 				_ => {
-					if let Some(text_encoding) =
-						Encoding::for_label(encoding.as_bytes())
-					{
+					if let Some(text_encoding) = Encoding::for_label(encoding.as_bytes()) {
 						EncodingWrapper::Text(Some(text_encoding))
 					} else {
 						return Err(crate::Error::UnknownEncoding(encoding));
@@ -223,14 +200,8 @@ pub async fn execute<R:Runtime>(
 	command_scope:CommandScope<crate::scope::ScopeAllowedCommand>,
 	global_scope:GlobalScope<crate::scope::ScopeAllowedCommand>,
 ) -> crate::Result<ChildProcessReturn> {
-	let (command, encoding) = prepare_cmd(
-		window,
-		program,
-		args,
-		options,
-		command_scope,
-		global_scope,
-	)?;
+	let (command, encoding) =
+		prepare_cmd(window, program, args, options, command_scope, global_scope)?;
 
 	let mut command:std::process::Command = command.into();
 	let output = command.output()?;
@@ -238,12 +209,8 @@ pub async fn execute<R:Runtime>(
 	let (stdout, stderr) = match encoding {
 		EncodingWrapper::Text(Some(encoding)) => {
 			(
-				Output::String(
-					encoding.decode_with_bom_removal(&output.stdout).0.into(),
-				),
-				Output::String(
-					encoding.decode_with_bom_removal(&output.stderr).0.into(),
-				),
+				Output::String(encoding.decode_with_bom_removal(&output.stdout).0.into()),
+				Output::String(encoding.decode_with_bom_removal(&output.stderr).0.into()),
 			)
 		},
 		EncodingWrapper::Text(None) => {
@@ -252,9 +219,7 @@ pub async fn execute<R:Runtime>(
 				Output::String(String::from_utf8(output.stderr)?),
 			)
 		},
-		EncodingWrapper::Raw => {
-			(Output::Raw(output.stdout), Output::Raw(output.stderr))
-		},
+		EncodingWrapper::Raw => (Output::Raw(output.stdout), Output::Raw(output.stderr)),
 	};
 
 	#[cfg(unix)]
@@ -283,14 +248,8 @@ pub fn spawn<R:Runtime>(
 	command_scope:CommandScope<crate::scope::ScopeAllowedCommand>,
 	global_scope:GlobalScope<crate::scope::ScopeAllowedCommand>,
 ) -> crate::Result<ChildId> {
-	let (command, encoding) = prepare_cmd(
-		window,
-		program,
-		args,
-		options,
-		command_scope,
-		global_scope,
-	)?;
+	let (command, encoding) =
+		prepare_cmd(window, program, args, options, command_scope, global_scope)?;
 
 	let (mut rx, child) = command.spawn()?;
 
@@ -311,10 +270,7 @@ pub fn spawn<R:Runtime>(
 					js_event:&'a JSCommandEvent,
 				) -> Pin<Box<dyn Future<Output = ()> + Send + 'a>> {
 					Box::pin(async move {
-						tokio::time::sleep(std::time::Duration::from_millis(
-							15,
-						))
-						.await;
+						tokio::time::sleep(std::time::Duration::from_millis(15)).await;
 						if on_event.send(js_event.clone()).is_err() {
 							send(on_event, js_event).await;
 						}

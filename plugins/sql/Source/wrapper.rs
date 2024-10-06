@@ -28,11 +28,7 @@ pub enum DbPool {
 	MySql(Pool<MySql>),
 	#[cfg(feature = "postgres")]
 	Postgres(Pool<Postgres>),
-	#[cfg(not(any(
-		feature = "sqlite",
-		feature = "mysql",
-		feature = "postgres"
-	)))]
+	#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 	None,
 }
 
@@ -79,13 +75,9 @@ impl DbPool {
 		{
 			#[cfg(feature = "sqlite")]
 			"sqlite" => {
-				let app_path = _app
-					.path()
-					.app_config_dir()
-					.expect("No App config path was found!");
+				let app_path = _app.path().app_config_dir().expect("No App config path was found!");
 
-				create_dir_all(&app_path)
-					.expect("Couldn't create app config dir");
+				create_dir_all(&app_path).expect("Couldn't create app config dir");
 
 				let conn_url = &path_mapper(app_path, conn_url);
 
@@ -123,11 +115,7 @@ impl DbPool {
 			DbPool::MySql(pool) => _migrator.run(pool).await?,
 			#[cfg(feature = "postgres")]
 			DbPool::Postgres(pool) => _migrator.run(pool).await?,
-			#[cfg(not(any(
-				feature = "sqlite",
-				feature = "mysql",
-				feature = "postgres"
-			)))]
+			#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 			DbPool::None => (),
 		}
 		Ok(())
@@ -141,11 +129,7 @@ impl DbPool {
 			DbPool::MySql(pool) => pool.close().await,
 			#[cfg(feature = "postgres")]
 			DbPool::Postgres(pool) => pool.close().await,
-			#[cfg(not(any(
-				feature = "sqlite",
-				feature = "mysql",
-				feature = "postgres"
-			)))]
+			#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 			DbPool::None => (),
 		}
 	}
@@ -171,10 +155,7 @@ impl DbPool {
 					}
 				}
 				let result = pool.execute(query).await?;
-				(
-					result.rows_affected(),
-					LastInsertId::Sqlite(result.last_insert_rowid()),
-				)
+				(result.rows_affected(), LastInsertId::Sqlite(result.last_insert_rowid()))
 			},
 			#[cfg(feature = "mysql")]
 			DbPool::MySql(pool) => {
@@ -191,10 +172,7 @@ impl DbPool {
 					}
 				}
 				let result = pool.execute(query).await?;
-				(
-					result.rows_affected(),
-					LastInsertId::MySql(result.last_insert_id()),
-				)
+				(result.rows_affected(), LastInsertId::MySql(result.last_insert_id()))
 			},
 			#[cfg(feature = "postgres")]
 			DbPool::Postgres(pool) => {
@@ -213,11 +191,7 @@ impl DbPool {
 				let result = pool.execute(query).await?;
 				(result.rows_affected(), LastInsertId::Postgres(()))
 			},
-			#[cfg(not(any(
-				feature = "sqlite",
-				feature = "mysql",
-				feature = "postgres"
-			)))]
+			#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 			DbPool::None => (0, LastInsertId::None),
 		})
 	}
@@ -318,11 +292,7 @@ impl DbPool {
 				}
 				values
 			},
-			#[cfg(not(any(
-				feature = "sqlite",
-				feature = "mysql",
-				feature = "postgres"
-			)))]
+			#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 			DbPool::None => Vec::new(),
 		})
 	}
@@ -331,10 +301,7 @@ impl DbPool {
 #[cfg(feature = "sqlite")]
 /// Maps the user supplied DB connection string to a connection string
 /// with a fully qualified file path to the App's designed "app_path"
-fn path_mapper(
-	mut app_path:std::path::PathBuf,
-	connection_string:&str,
-) -> String {
+fn path_mapper(mut app_path:std::path::PathBuf, connection_string:&str) -> String {
 	app_path.push(
 		connection_string
 			.split_once(':')

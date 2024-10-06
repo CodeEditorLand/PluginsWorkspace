@@ -35,8 +35,7 @@ fn init_deep_link<R:Runtime>(
 			Emitter,
 		};
 
-		let handle =
-			_api.register_android_plugin(PLUGIN_IDENTIFIER, "DeepLinkPlugin")?;
+		let handle = _api.register_android_plugin(PLUGIN_IDENTIFIER, "DeepLinkPlugin")?;
 
 		#[derive(serde::Deserialize)]
 		struct Event {
@@ -50,9 +49,7 @@ fn init_deep_link<R:Runtime>(
 				handler:Channel::new(move |event| {
 					let url = match event {
 						InvokeResponseBody::Json(payload) => {
-							serde_json::from_str::<Event>(&payload)
-								.ok()
-								.map(|payload| payload.url)
+							serde_json::from_str::<Event>(&payload).ok().map(|payload| payload.url)
 						},
 						_ => None,
 					};
@@ -77,11 +74,8 @@ fn init_deep_link<R:Runtime>(
 	#[cfg(desktop)]
 	{
 		let args = std::env::args();
-		let deep_link = DeepLink {
-			app:app.clone(),
-			current:Default::default(),
-			config:api.config().clone(),
-		};
+		let deep_link =
+			DeepLink { app:app.clone(), current:Default::default(), config:api.config().clone() };
 		deep_link.handle_cli_arguments(args);
 
 		Ok(deep_link)
@@ -157,10 +151,7 @@ mod imp {
 		///   older distros.
 		/// - **macOS / Android / iOS**: Unsupported, will return
 		///   [`Error::UnsupportedPlatform`](`crate::Error::UnsupportedPlatform`).
-		pub fn unregister<S:AsRef<str>>(
-			&self,
-			_protocol:S,
-		) -> crate::Result<()> {
+		pub fn unregister<S:AsRef<str>>(&self, _protocol:S) -> crate::Result<()> {
 			Err(crate::Error::UnsupportedPlatform)
 		}
 
@@ -173,10 +164,7 @@ mod imp {
 		///
 		/// - **macOS / Android / iOS**: Unsupported, will return
 		///   [`Error::UnsupportedPlatform`](`crate::Error::UnsupportedPlatform`).
-		pub fn is_registered<S:AsRef<str>>(
-			&self,
-			_protocol:S,
-		) -> crate::Result<bool> {
+		pub fn is_registered<S:AsRef<str>>(&self, _protocol:S) -> crate::Result<bool> {
 			Err(crate::Error::UnsupportedPlatform)
 		}
 	}
@@ -222,10 +210,7 @@ mod imp {
 		/// This function updates the [`Self::get_current`] value and emits a
 		/// `deep-link://new-url` event.
 		#[cfg(desktop)]
-		pub fn handle_cli_arguments<S:AsRef<str>, I:Iterator<Item = S>>(
-			&self,
-			mut args:I,
-		) {
+		pub fn handle_cli_arguments<S:AsRef<str>, I:Iterator<Item = S>>(&self, mut args:I) {
 			use tauri::Emitter;
 
 			let Some(config) = &self.config else {
@@ -241,18 +226,15 @@ mod imp {
 					return;
 				}
 
-				if let Some(url) =
-					arg.and_then(|arg| arg.as_ref().parse::<url::Url>().ok())
-				{
-					if config.desktop.contains_scheme(&url.scheme().to_string())
-					{
+				if let Some(url) = arg.and_then(|arg| arg.as_ref().parse::<url::Url>().ok()) {
+					if config.desktop.contains_scheme(&url.scheme().to_string()) {
 						let mut current = self.current.lock().unwrap();
 						current.replace(vec![url.clone()]);
 						let _ = self.app.emit("deep-link://new-url", vec![url]);
 					} else if cfg!(debug_assertions) {
 						log::warn!(
-							"argument {url} does not match any configured \
-							 deep link scheme; skipping it"
+							"argument {url} does not match any configured deep link scheme; \
+							 skipping it"
 						);
 					}
 				}
@@ -305,27 +287,21 @@ mod imp {
 		pub fn register<S:AsRef<str>>(&self, _protocol:S) -> crate::Result<()> {
 			#[cfg(windows)]
 			{
-				let key_base =
-					format!("Software\\Classes\\{}", _protocol.as_ref());
+				let key_base = format!("Software\\Classes\\{}", _protocol.as_ref());
 
-				let exe =
-					dunce::simplified(&tauri::utils::platform::current_exe()?)
-						.display()
-						.to_string();
+				let exe = dunce::simplified(&tauri::utils::platform::current_exe()?)
+					.display()
+					.to_string();
 
 				let key_reg = CURRENT_USER.create(&key_base)?;
-				key_reg.set_string(
-					"",
-					&format!("URL:{} protocol", self.app.config().identifier),
-				)?;
+				key_reg
+					.set_string("", &format!("URL:{} protocol", self.app.config().identifier))?;
 				key_reg.set_string("URL Protocol", "")?;
 
-				let icon_reg =
-					CURRENT_USER.create(format!("{key_base}\\DefaultIcon"))?;
+				let icon_reg = CURRENT_USER.create(format!("{key_base}\\DefaultIcon"))?;
 				icon_reg.set_string("", &format!("{exe},0"))?;
 
-				let cmd_reg = CURRENT_USER
-					.create(format!("{key_base}\\shell\\open\\command"))?;
+				let cmd_reg = CURRENT_USER.create(format!("{key_base}\\shell\\open\\command"))?;
 
 				cmd_reg.set_string("", &format!("\"{exe}\" \"%1\""))?;
 
@@ -335,10 +311,8 @@ mod imp {
 			#[cfg(target_os = "linux")]
 			{
 				let bin = tauri::utils::platform::current_exe()?;
-				let file_name = format!(
-					"{}-handler.desktop",
-					bin.file_name().unwrap().to_string_lossy()
-				);
+				let file_name =
+					format!("{}-handler.desktop", bin.file_name().unwrap().to_string_lossy());
 				let appimage = self.app.env().appimage;
 				let exec = appimage
 					.clone()
@@ -352,22 +326,14 @@ mod imp {
 
 				let target_file = target.join(&file_name);
 
-				let mime_type =
-					format!("x-scheme-handler/{}", _protocol.as_ref());
+				let mime_type = format!("x-scheme-handler/{}", _protocol.as_ref());
 
-				if let Ok(mut desktop_file) =
-					ini::Ini::load_from_file(&target_file)
-				{
-					if let Some(section) =
-						desktop_file.section_mut(Some("Desktop Entry"))
-					{
+				if let Ok(mut desktop_file) = ini::Ini::load_from_file(&target_file) {
+					if let Some(section) = desktop_file.section_mut(Some("Desktop Entry")) {
 						let old_mimes = section.remove("MimeType");
 						section.append(
 							"MimeType",
-							format!(
-								"{mime_type};{}",
-								old_mimes.unwrap_or_default()
-							),
+							format!("{mime_type};{}", old_mimes.unwrap_or_default()),
 						);
 						desktop_file.write_to_file(&target_file)?;
 					}
@@ -414,39 +380,26 @@ mod imp {
 		///   older distros.
 		/// - **macOS / Android / iOS**: Unsupported, will return
 		///   [`Error::UnsupportedPlatform`](`crate::Error::UnsupportedPlatform`).
-		pub fn unregister<S:AsRef<str>>(
-			&self,
-			_protocol:S,
-		) -> crate::Result<()> {
+		pub fn unregister<S:AsRef<str>>(&self, _protocol:S) -> crate::Result<()> {
 			#[cfg(windows)]
 			{
-				CURRENT_USER.remove_tree(format!(
-					"Software\\Classes\\{}",
-					_protocol.as_ref()
-				))?;
+				CURRENT_USER.remove_tree(format!("Software\\Classes\\{}", _protocol.as_ref()))?;
 
 				Ok(())
 			}
 
 			#[cfg(target_os = "linux")]
 			{
-				let mimeapps_path =
-					self.app.path().config_dir()?.join("mimeapps.list");
+				let mimeapps_path = self.app.path().config_dir()?.join("mimeapps.list");
 				let mut mimeapps = ini::Ini::load_from_file(&mimeapps_path)?;
 
 				let file_name = format!(
 					"{}-handler.desktop",
-					tauri::utils::platform::current_exe()?
-						.file_name()
-						.unwrap()
-						.to_string_lossy()
+					tauri::utils::platform::current_exe()?.file_name().unwrap().to_string_lossy()
 				);
 
-				if let Some(section) =
-					mimeapps.section_mut(Some("Default Applications"))
-				{
-					let scheme =
-						format!("x-scheme-handler/{}", _protocol.as_ref());
+				if let Some(section) = mimeapps.section_mut(Some("Default Applications")) {
+					let scheme = format!("x-scheme-handler/{}", _protocol.as_ref());
 
 					if section.get(&scheme).unwrap_or_default() == file_name {
 						section.remove(scheme);
@@ -471,10 +424,7 @@ mod imp {
 		///
 		/// - **macOS / Android / iOS**: Unsupported, will return
 		///   [`Error::UnsupportedPlatform`](`crate::Error::UnsupportedPlatform`).
-		pub fn is_registered<S:AsRef<str>>(
-			&self,
-			_protocol:S,
-		) -> crate::Result<bool> {
+		pub fn is_registered<S:AsRef<str>>(&self, _protocol:S) -> crate::Result<bool> {
 			#[cfg(windows)]
 			{
 				let cmd_reg = CURRENT_USER.open(format!(
@@ -484,10 +434,9 @@ mod imp {
 
 				let registered_cmd = cmd_reg.get_string("")?;
 
-				let exe =
-					dunce::simplified(&tauri::utils::platform::current_exe()?)
-						.display()
-						.to_string();
+				let exe = dunce::simplified(&tauri::utils::platform::current_exe()?)
+					.display()
+					.to_string();
 
 				Ok(registered_cmd == format!("\"{exe}\" \"%1\""))
 			}
@@ -495,18 +444,11 @@ mod imp {
 			{
 				let file_name = format!(
 					"{}-handler.desktop",
-					tauri::utils::platform::current_exe()?
-						.file_name()
-						.unwrap()
-						.to_string_lossy()
+					tauri::utils::platform::current_exe()?.file_name().unwrap().to_string_lossy()
 				);
 
 				let output = Command::new("xdg-mime")
-					.args([
-						"query",
-						"default",
-						&format!("x-scheme-handler/{}", _protocol.as_ref()),
-					])
+					.args(["query", "default", &format!("x-scheme-handler/{}", _protocol.as_ref())])
 					.output()?;
 
 				Ok(String::from_utf8_lossy(&output.stdout).contains(&file_name))
@@ -554,10 +496,7 @@ impl<R:Runtime> DeepLink<R> {
 	///
 	/// To avoid race conditions, if the app was started with a deep link,
 	/// the closure gets immediately called with the deep link URL.
-	pub fn on_open_url<F:Fn(OpenUrlEvent) + Send + Sync + 'static>(
-		&self,
-		f:F,
-	) -> EventId {
+	pub fn on_open_url<F:Fn(OpenUrlEvent) + Send + Sync + 'static>(&self, f:F) -> EventId {
 		let f = Arc::new(f);
 		let f_ = f.clone();
 		let event_id = self.app.listen("deep-link://new-url", move |event| {
@@ -593,11 +532,7 @@ pub fn init<R:Runtime>() -> TauriPlugin<R, Option<config::Config>> {
 				use tauri::Emitter;
 
 				let _ = _app.emit("deep-link://new-url", urls);
-				_app.state::<DeepLink<R>>()
-					.current
-					.lock()
-					.unwrap()
-					.replace(urls.clone());
+				_app.state::<DeepLink<R>>().current.lock().unwrap().replace(urls.clone());
 			}
 		})
 		.build()

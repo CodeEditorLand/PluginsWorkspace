@@ -7,9 +7,7 @@ use self::Hint;
 use super::{Urgency::*, *};
 
 #[ctor]
-fn init_color_backtrace() {
-	color_backtrace::install();
-}
+fn init_color_backtrace() { color_backtrace::install(); }
 
 #[test]
 fn hint_to_item() {
@@ -40,7 +38,7 @@ fn simple_hint_to_item() {
 	let old_hint = &Hint::Custom("foo".into(), "bar".into());
 
 	let (k, v) = old_hint.into();
-	let hint: Hint = (&k, &v).into();
+	let hint:Hint = (&k, &v).into();
 
 	assert_eq!(old_hint, &hint);
 }
@@ -49,7 +47,7 @@ fn simple_hint_to_item() {
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 fn imagedata_hint_to_item() {
 	let hint = &Hint::ImageData(Image::from_rgb(1, 1, vec![0, 0, 0]).unwrap());
-	let item: MessageItem = hint.into();
+	let item:MessageItem = hint.into();
 	let test_item = Item::DictEntry(
 		Box::new(Item::Str(image_spec(*::SPEC_VERSION))),
 		Box::new(Item::Variant(Box::new(Item::Struct(vec![

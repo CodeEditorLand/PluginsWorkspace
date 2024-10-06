@@ -35,9 +35,7 @@ pub trait BarcodeScannerExt<R:Runtime> {
 }
 
 impl<R:Runtime, T:Manager<R>> crate::BarcodeScannerExt<R> for T {
-	fn barcode_scanner(&self) -> &BarcodeScanner<R> {
-		self.state::<BarcodeScanner<R>>().inner()
-	}
+	fn barcode_scanner(&self) -> &BarcodeScanner<R> { self.state::<BarcodeScanner<R>>().inner() }
 }
 
 /// Initializes the plugin.
@@ -45,10 +43,7 @@ pub fn init<R:Runtime>() -> TauriPlugin<R> {
 	Builder::new("barcode-scanner")
 		.setup(|app, api| {
 			#[cfg(target_os = "android")]
-			let handle = api.register_android_plugin(
-				PLUGIN_IDENTIFIER,
-				"BarcodeScannerPlugin",
-			)?;
+			let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "BarcodeScannerPlugin")?;
 			#[cfg(target_os = "ios")]
 			let handle = api.register_ios_plugin(init_plugin_barcode_scanner)?;
 			app.manage(BarcodeScanner(handle));

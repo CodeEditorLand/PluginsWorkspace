@@ -1,8 +1,9 @@
 #![allow(missing_docs)]
 
+use std::{fmt, num};
+
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 use super::image::ImageError;
-use std::{fmt, num};
 /// Convenient wrapper around `std::Result`.
 pub type Result<T> = ::std::result::Result<T, Error>;
 
@@ -12,7 +13,7 @@ pub use super::macos::{ApplicationError, MacOsError, NotificationError};
 /// The Error type.
 #[derive(Debug)]
 pub struct Error {
-	kind: ErrorKind,
+	kind:ErrorKind,
 }
 
 /// The kind of an error.
@@ -44,7 +45,7 @@ pub enum ErrorKind {
 }
 
 impl fmt::Display for Error {
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+	fn fmt(&self, f:&mut fmt::Formatter) -> fmt::Result {
 		match self.kind {
 			#[cfg(all(feature = "dbus", unix, not(target_os = "macos")))]
 			ErrorKind::Dbus(ref e) => write!(f, "{}", e),
@@ -60,10 +61,12 @@ impl fmt::Display for Error {
 			ErrorKind::SpecVersion(ref e) | ErrorKind::Msg(ref e) => write!(f, "{}", e),
 			#[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 			ErrorKind::Image(ref e) => write!(f, "{}", e),
-			ErrorKind::ImplementationMissing => write!(
-				f,
-				r#"No Dbus implementation available, please compile with either feature ="z" or feature="d""#
-			),
+			ErrorKind::ImplementationMissing => {
+				write!(
+					f,
+					r#"No Dbus implementation available, please compile with either feature ="z" or feature="d""#
+				)
+			},
 		}
 	}
 }
@@ -71,49 +74,37 @@ impl fmt::Display for Error {
 impl std::error::Error for Error {}
 
 impl From<&str> for Error {
-	fn from(e: &str) -> Error {
-		Error { kind: ErrorKind::Msg(e.into()) }
-	}
+	fn from(e:&str) -> Error { Error { kind:ErrorKind::Msg(e.into()) } }
 }
 
 #[cfg(all(feature = "dbus", unix, not(target_os = "macos")))]
 impl From<dbus::Error> for Error {
-	fn from(e: dbus::Error) -> Error {
-		Error { kind: ErrorKind::Dbus(e) }
-	}
+	fn from(e:dbus::Error) -> Error { Error { kind:ErrorKind::Dbus(e) } }
 }
 
 #[cfg(all(feature = "zbus", unix, not(target_os = "macos")))]
 impl From<zbus::Error> for Error {
-	fn from(e: zbus::Error) -> Error {
-		Error { kind: ErrorKind::Zbus(e) }
-	}
+	fn from(e:zbus::Error) -> Error { Error { kind:ErrorKind::Zbus(e) } }
 }
 
 #[cfg(target_os = "macos")]
 impl From<mac_notification_sys::error::Error> for Error {
-	fn from(e: mac_notification_sys::error::Error) -> Error {
-		Error { kind: ErrorKind::MacNotificationSys(e) }
+	fn from(e:mac_notification_sys::error::Error) -> Error {
+		Error { kind:ErrorKind::MacNotificationSys(e) }
 	}
 }
 
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 impl From<ImageError> for Error {
-	fn from(e: ImageError) -> Error {
-		Error { kind: ErrorKind::Image(e) }
-	}
+	fn from(e:ImageError) -> Error { Error { kind:ErrorKind::Image(e) } }
 }
 
 impl From<num::ParseIntError> for Error {
-	fn from(e: num::ParseIntError) -> Error {
-		Error { kind: ErrorKind::Parse(e) }
-	}
+	fn from(e:num::ParseIntError) -> Error { Error { kind:ErrorKind::Parse(e) } }
 }
 
 impl From<ErrorKind> for Error {
-	fn from(kind: ErrorKind) -> Error {
-		Error { kind }
-	}
+	fn from(kind:ErrorKind) -> Error { Error { kind } }
 }
 
 /// Just the usual bail macro

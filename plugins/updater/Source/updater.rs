@@ -33,8 +33,7 @@ use crate::{
 	Config,
 };
 
-const UPDATER_USER_AGENT:&str =
-	concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
+const UPDATER_USER_AGENT:&str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"),);
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct ReleaseManifestPlatform {
@@ -73,10 +72,9 @@ impl RemoteRelease {
 		match self.data {
 			RemoteReleaseInner::Dynamic(ref platform) => Ok(&platform.url),
 			RemoteReleaseInner::Static { ref platforms } => {
-				platforms.get(target).map_or(
-					Err(Error::TargetNotFound(target.to_string())),
-					|p| Ok(&p.url),
-				)
+				platforms
+					.get(target)
+					.map_or(Err(Error::TargetNotFound(target.to_string())), |p| Ok(&p.url))
 			},
 		}
 	}
@@ -84,14 +82,13 @@ impl RemoteRelease {
 	/// The release's signature for the given target.
 	pub fn signature(&self, target:&str) -> Result<&String> {
 		match self.data {
-			RemoteReleaseInner::Dynamic(ref platform) => {
-				Ok(&platform.signature)
-			},
+			RemoteReleaseInner::Dynamic(ref platform) => Ok(&platform.signature),
 			RemoteReleaseInner::Static { ref platforms } => {
-				platforms.get(target).map_or(
-					Err(Error::TargetNotFound(target.to_string())),
-					|platform| Ok(&platform.signature),
-				)
+				platforms
+					.get(target)
+					.map_or(Err(Error::TargetNotFound(target.to_string())), |platform| {
+						Ok(&platform.signature)
+					})
 			},
 		}
 	}
@@ -103,8 +100,7 @@ pub struct UpdaterBuilder {
 	app_name:String,
 	current_version:Version,
 	config:Config,
-	version_comparator:
-		Option<Box<dyn Fn(Version, RemoteRelease) -> bool + Send + Sync>>,
+	version_comparator:Option<Box<dyn Fn(Version, RemoteRelease) -> bool + Send + Sync>>,
 	executable_path:Option<PathBuf>,
 	target:Option<String>,
 	endpoints:Option<Vec<Url>>,
@@ -119,11 +115,7 @@ pub struct UpdaterBuilder {
 impl UpdaterBuilder {
 	/// It's prefered to use [`crate::UpdaterExt::updater_builder`] instead of
 	/// constructing a [`UpdaterBuilder`] with this function yourself
-	pub fn new(
-		app_name:String,
-		current_version:Version,
-		config:crate::Config,
-	) -> Self {
+	pub fn new(app_name:String, current_version:Version, config:crate::Config) -> Self {
 		Self {
 			installer_args:config
 				.windows
@@ -145,9 +137,7 @@ impl UpdaterBuilder {
 		}
 	}
 
-	pub fn version_comparator<
-		F:Fn(Version, RemoteRelease) -> bool + Send + Sync + 'static,
-	>(
+	pub fn version_comparator<F:Fn(Version, RemoteRelease) -> bool + Send + Sync + 'static>(
 		mut self,
 		f:F,
 	) -> Self {
@@ -181,8 +171,7 @@ impl UpdaterBuilder {
 		<HeaderName as TryFrom<K>>::Error: Into<http::Error>,
 		HeaderValue: TryFrom<V>,
 		<HeaderValue as TryFrom<V>>::Error: Into<http::Error>, {
-		let key:std::result::Result<HeaderName, http::Error> =
-			key.try_into().map_err(Into::into);
+		let key:std::result::Result<HeaderName, http::Error> = key.try_into().map_err(Into::into);
 		let value:std::result::Result<HeaderValue, http::Error> =
 			value.try_into().map_err(Into::into);
 		self.headers.insert(key?, value?);
@@ -226,17 +215,13 @@ impl UpdaterBuilder {
 		self
 	}
 
-	pub fn on_before_exit<F:Fn() + Send + Sync + 'static>(
-		mut self,
-		f:F,
-	) -> Self {
+	pub fn on_before_exit<F:Fn() + Send + Sync + 'static>(mut self, f:F) -> Self {
 		self.on_before_exit.replace(Arc::new(f));
 		self
 	}
 
 	pub fn build(self) -> Result<Updater> {
-		let endpoints =
-			self.endpoints.unwrap_or_else(|| self.config.endpoints.clone());
+		let endpoints = self.endpoints.unwrap_or_else(|| self.config.endpoints.clone());
 
 		if endpoints.is_empty() {
 			return Err(Error::EmptyEndpoints);
@@ -250,8 +235,7 @@ impl UpdaterBuilder {
 			(target.to_string(), format!("{target}-{arch}"))
 		};
 
-		let executable_path =
-			self.executable_path.clone().unwrap_or(current_exe()?);
+		let executable_path = self.executable_path.clone().unwrap_or(current_exe()?);
 
 		// Get the extract_path from the provided executable_path
 		let extract_path = if cfg!(target_os = "linux") {
@@ -295,8 +279,7 @@ pub struct Updater {
 	config:Config,
 	app_name:String,
 	current_version:Version,
-	version_comparator:
-		Option<Box<dyn Fn(Version, RemoteRelease) -> bool + Send + Sync>>,
+	version_comparator:Option<Box<dyn Fn(Version, RemoteRelease) -> bool + Send + Sync>>,
 	timeout:Option<Duration>,
 	proxy:Option<Url>,
 	endpoints:Vec<Url>,
@@ -319,19 +302,13 @@ impl Updater {
 	pub async fn check(&self) -> Result<Option<Update>> {
 		// we want JSON only
 		let mut headers = self.headers.clone();
-		headers.insert(
-			"Accept",
-			HeaderValue::from_str("application/json").unwrap(),
-		);
+		headers.insert("Accept", HeaderValue::from_str("application/json").unwrap());
 
 		// Set SSL certs for linux if they aren't available.
 		#[cfg(target_os = "linux")]
 		{
 			if std::env::var_os("SSL_CERT_FILE").is_none() {
-				std::env::set_var(
-					"SSL_CERT_FILE",
-					"/etc/ssl/certs/ca-certificates.crt",
-				);
+				std::env::set_var("SSL_CERT_FILE", "/etc/ssl/certs/ca-certificates.crt");
 			}
 			if std::env::var_os("SSL_CERT_DIR").is_none() {
 				std::env::set_var("SSL_CERT_DIR", "/etc/ssl/certs");
@@ -351,8 +328,7 @@ impl Updater {
 			let version = self.current_version.to_string();
 			let version = version.as_bytes();
 			const CONTROLS_ADD:&AsciiSet = &CONTROLS.add(b'+');
-			let encoded_version =
-				percent_encoding::percent_encode(version, CONTROLS_ADD);
+			let encoded_version = percent_encoding::percent_encode(version, CONTROLS_ADD);
 			let encoded_version = encoded_version.to_string();
 
 			let url:Url = url
@@ -367,8 +343,7 @@ impl Updater {
                 .replace("{{arch}}", self.arch)
                 .parse()?;
 
-			let mut request =
-				ClientBuilder::new().user_agent(UPDATER_USER_AGENT);
+			let mut request = ClientBuilder::new().user_agent(UPDATER_USER_AGENT);
 			if let Some(timeout) = self.timeout {
 				request = request.timeout(timeout);
 			}
@@ -376,8 +351,7 @@ impl Updater {
 				let proxy = reqwest::Proxy::all(proxy.as_str())?;
 				request = request.proxy(proxy);
 			}
-			let response =
-				request.build()?.get(url).headers(headers.clone()).send().await;
+			let response = request.build()?.get(url).headers(headers.clone()).send().await;
 
 			if let Ok(res) = response {
 				if res.status().is_success() {
@@ -386,10 +360,8 @@ impl Updater {
 						return Ok(None);
 					};
 
-					match serde_json::from_value::<RemoteRelease>(
-						res.json().await?,
-					)
-					.map_err(Into::into)
+					match serde_json::from_value::<RemoteRelease>(res.json().await?)
+						.map_err(Into::into)
 					{
 						Ok(release) => {
 							last_error = None;
@@ -413,9 +385,7 @@ impl Updater {
 		let release = remote_release.ok_or(Error::ReleaseNotFound)?;
 
 		let should_update = match self.version_comparator.as_ref() {
-			Some(comparator) => {
-				comparator(self.current_version.clone(), release.clone())
-			},
+			Some(comparator) => comparator(self.current_version.clone(), release.clone()),
 			None => release.version > self.current_version,
 		};
 
@@ -429,9 +399,7 @@ impl Updater {
 				extract_path:self.extract_path.clone(),
 				version:release.version.to_string(),
 				date:release.pub_date,
-				download_url:release
-					.download_url(&self.json_target)?
-					.to_owned(),
+				download_url:release.download_url(&self.json_target)?.to_owned(),
 				body:release.notes.clone(),
 				signature:release.signature(&self.json_target)?.to_owned(),
 				timeout:self.timeout,
@@ -498,10 +466,7 @@ impl Update {
 	) -> Result<Vec<u8>> {
 		// set our headers
 		let mut headers = self.headers.clone();
-		headers.insert(
-			"Accept",
-			HeaderValue::from_str("application/octet-stream").unwrap(),
-		);
+		headers.insert("Accept", HeaderValue::from_str("application/octet-stream").unwrap());
 
 		let mut request = ClientBuilder::new().user_agent(UPDATER_USER_AGENT);
 		if let Some(timeout) = self.timeout {
@@ -511,12 +476,8 @@ impl Update {
 			let proxy = reqwest::Proxy::all(proxy.as_str())?;
 			request = request.proxy(proxy);
 		}
-		let response = request
-			.build()?
-			.get(self.download_url.clone())
-			.headers(headers)
-			.send()
-			.await?;
+		let response =
+			request.build()?.get(self.download_url.clone()).headers(headers).send().await?;
 
 		if !response.status().is_success() {
 			return Err(Error::Network(format!(
@@ -552,10 +513,7 @@ impl Update {
 	}
 
 	/// Downloads and installs the updater package
-	pub async fn download_and_install<
-		C:FnMut(usize, Option<u64>),
-		D:FnOnce(),
-	>(
+	pub async fn download_and_install<C:FnMut(usize, Option<u64>), D:FnOnce()>(
 		&self,
 		on_chunk:C,
 		on_download_finish:D,
@@ -584,9 +542,7 @@ enum WindowsUpdaterType {
 
 #[cfg(windows)]
 impl WindowsUpdaterType {
-	fn nsis(path:PathBuf, temp:Option<tempfile::TempPath>) -> Self {
-		Self::Nsis { path, temp }
-	}
+	fn nsis(path:PathBuf, temp:Option<tempfile::TempPath>) -> Self { Self::Nsis { path, temp } }
 
 	fn msi(path:PathBuf, temp:Option<tempfile::TempPath>) -> Self {
 		Self::Msi { path:path.wrap_in_quotes(), temp }
@@ -596,10 +552,7 @@ impl WindowsUpdaterType {
 #[cfg(windows)]
 impl Config {
 	fn install_mode(&self) -> crate::config::WindowsUpdateInstallMode {
-		self.windows
-			.as_ref()
-			.map(|w| w.install_mode.clone())
-			.unwrap_or_default()
+		self.windows.as_ref().map(|w| w.install_mode.clone()).unwrap_or_default()
 	}
 }
 
@@ -641,13 +594,9 @@ impl Update {
 					.collect()
 			},
 			WindowsUpdaterType::Msi { path, .. } => {
-				let escaped_args = current_args
-					.iter()
-					.map(escape_msi_property_arg)
-					.collect::<Vec<_>>()
-					.join(" ");
-				msi_args =
-					OsString::from(format!("LAUNCHAPPARGS=\"{escaped_args}\""));
+				let escaped_args =
+					current_args.iter().map(escape_msi_property_arg).collect::<Vec<_>>().join(" ");
+				msi_args = OsString::from(format!("LAUNCHAPPARGS=\"{escaped_args}\""));
 
 				[OsStr::new("/i"), path.as_os_str()]
 					.into_iter()
@@ -665,9 +614,7 @@ impl Update {
 		}
 
 		let file = match &updater_type {
-			WindowsUpdaterType::Nsis { path, .. } => {
-				path.as_os_str().to_os_string()
-			},
+			WindowsUpdaterType::Nsis { path, .. } => path.as_os_str().to_os_string(),
 			WindowsUpdaterType::Msi { .. } => {
 				std::env::var("SYSTEMROOT").as_ref().map_or_else(
 					|_| OsString::from("msiexec.exe"),
@@ -794,12 +741,9 @@ impl Update {
 		let extract_path_metadata = self.extract_path.metadata()?;
 
 		let tmp_dir_locations = vec![
-			Box::new(|| Some(std::env::temp_dir()))
-				as Box<dyn FnOnce() -> Option<PathBuf>>,
+			Box::new(|| Some(std::env::temp_dir())) as Box<dyn FnOnce() -> Option<PathBuf>>,
 			Box::new(dirs::cache_dir),
-			Box::new(|| {
-				Some(self.extract_path.parent().unwrap().to_path_buf())
-			}),
+			Box::new(|| Some(self.extract_path.parent().unwrap().to_path_buf())),
 		];
 
 		for tmp_dir_location in tmp_dir_locations {
@@ -814,11 +758,9 @@ impl Update {
 					perms.set_mode(0o700);
 					std::fs::set_permissions(tmp_dir.path(), perms)?;
 
-					let tmp_app_image =
-						&tmp_dir.path().join("current_app.AppImage");
+					let tmp_app_image = &tmp_dir.path().join("current_app.AppImage");
 
-					let permissions =
-						std::fs::metadata(&self.extract_path)?.permissions();
+					let permissions = std::fs::metadata(&self.extract_path)?.permissions();
 
 					// create a backup of our current app image
 					std::fs::rename(&self.extract_path, tmp_app_image)?;
@@ -833,19 +775,12 @@ impl Update {
 						let mut archive = tar::Archive::new(decoder);
 						for mut entry in archive.entries()?.flatten() {
 							if let Ok(path) = entry.path() {
-								if path.extension()
-									== Some(OsStr::new("AppImage"))
-								{
+								if path.extension() == Some(OsStr::new("AppImage")) {
 									// if something went wrong during the
 									// extraction, we should restore previous
 									// app
-									if let Err(err) =
-										entry.unpack(&self.extract_path)
-									{
-										std::fs::rename(
-											tmp_app_image,
-											&self.extract_path,
-										)?;
+									if let Err(err) = entry.unpack(&self.extract_path) {
+										std::fs::rename(tmp_app_image, &self.extract_path)?;
 										return Err(err.into());
 									}
 									// early finish we have everything we need
@@ -861,12 +796,8 @@ impl Update {
 					}
 
 					return match std::fs::write(&self.extract_path, bytes)
-						.and_then(|_| {
-							std::fs::set_permissions(
-								&self.extract_path,
-								permissions,
-							)
-						}) {
+						.and_then(|_| std::fs::set_permissions(&self.extract_path, permissions))
+					{
 						Err(err) => {
 							// if something went wrong during the extraction, we
 							// should restore previous app
@@ -900,8 +831,7 @@ impl Update {
 
 		// the first file in the tar.gz will always be
 		// <app_name>/Contents
-		let tmp_dir =
-			tempfile::Builder::new().prefix("tauri_current_app").tempdir()?;
+		let tmp_dir = tempfile::Builder::new().prefix("tauri_current_app").tempdir()?;
 
 		// create backup of our current app
 		std::fs::rename(&self.extract_path, tmp_dir.path())?;
@@ -936,9 +866,7 @@ impl Update {
 			extracted_files.push(extraction_path.to_path_buf());
 		}
 
-		let _ = std::process::Command::new("touch")
-			.arg(&self.extract_path)
-			.status();
+		let _ = std::process::Command::new("touch").arg(&self.extract_path).status();
 
 		Ok(())
 	}
@@ -946,9 +874,7 @@ impl Update {
 
 /// Gets the target string used on the updater.
 pub fn target() -> Option<String> {
-	if let (Some(target), Some(arch)) =
-		(get_updater_target(), get_updater_arch())
-	{
+	if let (Some(target), Some(arch)) = (get_updater_target(), get_updater_arch()) {
 		Some(format!("{target}-{arch}"))
 	} else {
 		None
@@ -1028,15 +954,8 @@ impl<'de> Deserialize<'de> for RemoteRelease {
 
 		let pub_date = if let Some(date) = release.pub_date {
 			Some(
-				OffsetDateTime::parse(
-					&date,
-					&time::format_description::well_known::Rfc3339,
-				)
-				.map_err(|e| {
-					DeError::custom(format!(
-						"invalid value for `pub_date`: {e}"
-					))
-				})?,
+				OffsetDateTime::parse(&date, &time::format_description::well_known::Rfc3339)
+					.map_err(|e| DeError::custom(format!("invalid value for `pub_date`: {e}")))?,
 			)
 		} else {
 			None
@@ -1051,16 +970,10 @@ impl<'de> Deserialize<'de> for RemoteRelease {
 			} else {
 				RemoteReleaseInner::Dynamic(ReleaseManifestPlatform {
 					url:release.url.ok_or_else(|| {
-						DeError::custom(
-							"the `url` field was not set on the updater \
-							 response",
-						)
+						DeError::custom("the `url` field was not set on the updater response")
 					})?,
 					signature:release.signature.ok_or_else(|| {
-						DeError::custom(
-							"the `signature` field was not set on the updater \
-							 response",
-						)
+						DeError::custom("the `signature` field was not set on the updater response")
 					})?,
 				})
 			},
@@ -1068,23 +981,16 @@ impl<'de> Deserialize<'de> for RemoteRelease {
 	}
 }
 
-fn parse_version<'de, D>(
-	deserializer:D,
-) -> std::result::Result<Version, D::Error>
+fn parse_version<'de, D>(deserializer:D) -> std::result::Result<Version, D::Error>
 where
 	D: serde::Deserializer<'de>, {
 	let str = String::deserialize(deserializer)?;
 
-	Version::from_str(str.trim_start_matches('v'))
-		.map_err(serde::de::Error::custom)
+	Version::from_str(str.trim_start_matches('v')).map_err(serde::de::Error::custom)
 }
 
 // Validate signature
-fn verify_signature(
-	data:&[u8],
-	release_signature:&str,
-	pub_key:&str,
-) -> Result<bool> {
+fn verify_signature(data:&[u8], release_signature:&str, pub_key:&str) -> Result<bool> {
 	// we need to convert the pub key
 	let pub_key_decoded = base64_to_string(pub_key)?;
 	let public_key = PublicKey::decode(&pub_key_decoded)?;
@@ -1097,8 +1003,7 @@ fn verify_signature(
 }
 
 fn base64_to_string(base64_string:&str) -> Result<String> {
-	let decoded_string =
-		&base64::engine::general_purpose::STANDARD.decode(base64_string)?;
+	let decoded_string = &base64::engine::general_purpose::STANDARD.decode(base64_string)?;
 	let result = std::str::from_utf8(decoded_string)
 		.map_err(|_| Error::SignatureUtf8(base64_string.into()))?
 		.to_string();
@@ -1164,11 +1069,8 @@ mod tests {
 		use super::PathExt;
 
 		assert_eq!(
-			PathBuf::from("C:\\Users\\Some User\\AppData\\tauri-example.exe")
-				.wrap_in_quotes(),
-			PathBuf::from(
-				"\"C:\\Users\\Some User\\AppData\\tauri-example.exe\""
-			)
+			PathBuf::from("C:\\Users\\Some User\\AppData\\tauri-example.exe").wrap_in_quotes(),
+			PathBuf::from("\"C:\\Users\\Some User\\AppData\\tauri-example.exe\"")
 		)
 	}
 
@@ -1184,26 +1086,26 @@ mod tests {
 		// interpreted as " later. This means that the escaped strings can't
 		// ever have a single quotation mark! Now there are 3 major things to
 		// look out for to not break the msiexec call:
-		//   1) Wrap spaces in quotation marks, otherwise it will be interpreted
-		//      as the end of the msiexec argument.
-		//   2) Escape escaping quotation marks, otherwise they will either end
-		//      the msiexec argument or be ignored.
-		//   3) Escape emtpy args in quotation marks, otherwise the argument
-		//      will get lost.
+		//   1) Wrap spaces in quotation marks, otherwise it will be interpreted as the
+		//      end of the msiexec argument.
+		//   2) Escape escaping quotation marks, otherwise they will either end the
+		//      msiexec argument or be ignored.
+		//   3) Escape emtpy args in quotation marks, otherwise the argument will get
+		//      lost.
 		let cases = [
 			"something",
 			"--flag",
 			"--empty=",
 			"--arg=value",
-			"some space",  // This simulates `./my-app "some string"`.
+			"some space", // This simulates `./my-app "some string"`.
 			"--arg value", /* -> This simulates `./my-app "--arg value"`.
-			                * Same as above but it triggers the
-			                * startsWith(`-`) logic. */
-			"--arg=unwrapped space", // `./my-app --arg="unwrapped space"`
-			"--arg=\"wrapped\"",     // `./my-app --args=""wrapped""`
-			"--arg=\"wrapped space\"", // `./my-app --args=""wrapped space""`
+			               * Same as above but it triggers the
+			               * startsWith(`-`) logic. */
+			"--arg=unwrapped space",          // `./my-app --arg="unwrapped space"`
+			"--arg=\"wrapped\"",              // `./my-app --args=""wrapped""`
+			"--arg=\"wrapped space\"",        // `./my-app --args=""wrapped space""`
 			"--arg=midword\"wrapped space\"", // `./my-app --args=midword""wrapped""`
-			"",                      // `./my-app '""'`
+			"",                               // `./my-app '""'`
 		];
 		let cases_escaped = [
 			"something",

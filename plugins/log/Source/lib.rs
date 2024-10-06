@@ -158,8 +158,7 @@ impl TimezoneStrategy {
 		match self {
 			TimezoneStrategy::UseUtc => OffsetDateTime::now_utc(),
 			TimezoneStrategy::UseLocal => {
-				OffsetDateTime::now_local()
-					.unwrap_or_else(|_| OffsetDateTime::now_utc())
+				OffsetDateTime::now_local().unwrap_or_else(|_| OffsetDateTime::now_utc())
 			}, // Fallback to UTC since Rust cannot determine local timezone
 		}
 	}
@@ -206,9 +205,7 @@ pub struct Target {
 
 impl Target {
 	#[inline]
-	pub const fn new(kind:TargetKind) -> Self {
-		Self { kind, filters:Vec::new() }
-	}
+	pub const fn new(kind:TargetKind) -> Self { Self { kind, filters:Vec::new() } }
 
 	#[inline]
 	pub fn filter<F>(mut self, filter:F) -> Self
@@ -232,16 +229,10 @@ fn log(
 
 	let level = log::Level::from(level);
 
-	let metadata =
-		log::MetadataBuilder::new().level(level).target(WEBVIEW_TARGET).build();
+	let metadata = log::MetadataBuilder::new().level(level).target(WEBVIEW_TARGET).build();
 
 	let mut builder = RecordBuilder::new();
-	builder
-		.level(level)
-		.metadata(metadata)
-		.target(location)
-		.file(file)
-		.line(line);
+	builder.level(level).metadata(metadata).target(location).file(file).line(line);
 
 	let key_values = key_values.unwrap_or_default();
 	let mut kv = HashMap::new();
@@ -264,28 +255,23 @@ pub struct Builder {
 impl Default for Builder {
 	fn default() -> Self {
 		#[cfg(desktop)]
-		let format = time::format_description::parse(
-			"[[[year]-[month]-[day]][[[hour]:[minute]:[second]]",
-		)
-		.unwrap();
-		let dispatch =
-			fern::Dispatch::new().format(move |out, message, record| {
-				out.finish(
-					#[cfg(mobile)]
-					format_args!("[{}] {}", record.target(), message),
-					#[cfg(desktop)]
-					format_args!(
-						"{}[{}][{}] {}",
-						DEFAULT_TIMEZONE_STRATEGY
-							.get_now()
-							.format(&format)
-							.unwrap(),
-						record.target(),
-						record.level(),
-						message
-					),
-				)
-			});
+		let format =
+			time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
+				.unwrap();
+		let dispatch = fern::Dispatch::new().format(move |out, message, record| {
+			out.finish(
+				#[cfg(mobile)]
+				format_args!("[{}] {}", record.target(), message),
+				#[cfg(desktop)]
+				format_args!(
+					"{}[{}][{}] {}",
+					DEFAULT_TIMEZONE_STRATEGY.get_now().format(&format).unwrap(),
+					record.target(),
+					record.level(),
+					message
+				),
+			)
+		});
 		Self {
 			dispatch,
 			rotation_strategy:DEFAULT_ROTATION_STRATEGY,
@@ -299,34 +285,26 @@ impl Default for Builder {
 impl Builder {
 	pub fn new() -> Self { Default::default() }
 
-	pub fn rotation_strategy(
-		mut self,
-		rotation_strategy:RotationStrategy,
-	) -> Self {
+	pub fn rotation_strategy(mut self, rotation_strategy:RotationStrategy) -> Self {
 		self.rotation_strategy = rotation_strategy;
 		self
 	}
 
-	pub fn timezone_strategy(
-		mut self,
-		timezone_strategy:TimezoneStrategy,
-	) -> Self {
+	pub fn timezone_strategy(mut self, timezone_strategy:TimezoneStrategy) -> Self {
 		self.timezone_strategy = timezone_strategy.clone();
 
-		let format = time::format_description::parse(
-			"[[[year]-[month]-[day]][[[hour]:[minute]:[second]]",
-		)
-		.unwrap();
-		self.dispatch =
-			fern::Dispatch::new().format(move |out, message, record| {
-				out.finish(format_args!(
-					"{}[{}][{}] {}",
-					timezone_strategy.get_now().format(&format).unwrap(),
-					record.level(),
-					record.target(),
-					message
-				))
-			});
+		let format =
+			time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
+				.unwrap();
+		self.dispatch = fern::Dispatch::new().format(move |out, message, record| {
+			out.finish(format_args!(
+				"{}[{}][{}] {}",
+				timezone_strategy.get_now().format(&format).unwrap(),
+				record.level(),
+				record.target(),
+				message
+			))
+		});
 		self
 	}
 
@@ -347,11 +325,7 @@ impl Builder {
 		self
 	}
 
-	pub fn level_for(
-		mut self,
-		module:impl Into<Cow<'static, str>>,
-		level:LevelFilter,
-	) -> Self {
+	pub fn level_for(mut self, module:impl Into<Cow<'static, str>>, level:LevelFilter) -> Self {
 		self.dispatch = self.dispatch.level_for(module, level);
 		self
 	}
@@ -400,10 +374,9 @@ impl Builder {
 
 	#[cfg(feature = "colored")]
 	pub fn with_colors(self, colors:fern::colors::ColoredLevelConfig) -> Self {
-		let format = time::format_description::parse(
-			"[[[year]-[month]-[day]][[[hour]:[minute]:[second]]",
-		)
-		.unwrap();
+		let format =
+			time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
+				.unwrap();
 
 		let timezone_strategy = self.timezone_strategy.clone();
 		self.format(move |out, message, record| {
@@ -436,9 +409,7 @@ impl Builder {
 
 			let logger = match target.kind {
 				#[cfg(target_os = "android")]
-				TargetKind::Stdout | TargetKind::Stderr => {
-					fern::Output::call(android_logger::log)
-				},
+				TargetKind::Stdout | TargetKind::Stderr => fern::Output::call(android_logger::log),
 				#[cfg(target_os = "ios")]
 				TargetKind::Stdout | TargetKind::Stderr => {
 					fern::Output::call(move |record| {
@@ -515,8 +486,7 @@ impl Builder {
 	}
 
 	fn plugin_builder<R:Runtime>() -> plugin::Builder<R> {
-		plugin::Builder::new("log")
-			.invoke_handler(tauri::generate_handler![log])
+		plugin::Builder::new("log").invoke_handler(tauri::generate_handler![log])
 	}
 
 	#[allow(clippy::type_complexity)]
@@ -584,11 +554,9 @@ fn get_log_file_path(
 					let to = dir.as_ref().join(format!(
 						"{}_{}.log",
 						file_name,
-						timezone_strategy.get_now().format(
-							&time::format_description::parse(
-								"[year]-[month]-[day]_[hour]-[minute]-[second]"
-							)?
-						)?,
+						timezone_strategy.get_now().format(&time::format_description::parse(
+							"[year]-[month]-[day]_[hour]-[minute]-[second]"
+						)?)?,
 					));
 					if to.is_file() {
 						// designated rotated log file name already exists
@@ -597,10 +565,7 @@ fn get_log_file_path(
 						let mut to_bak = to.clone();
 						to_bak.set_file_name(format!(
 							"{}.bak",
-							to_bak
-								.file_name()
-								.map(|f| f.to_string_lossy())
-								.unwrap_or_default()
+							to_bak.file_name().map(|f| f.to_string_lossy()).unwrap_or_default()
 						));
 						fs::rename(&to, to_bak)?;
 					}

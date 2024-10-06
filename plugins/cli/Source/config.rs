@@ -167,17 +167,13 @@ impl Config {
 	pub fn args(&self) -> Option<&Vec<Arg>> { self.args.as_ref() }
 
 	/// List of subcommands of this command
-	pub fn subcommands(&self) -> Option<&HashMap<String, Config>> {
-		self.subcommands.as_ref()
-	}
+	pub fn subcommands(&self) -> Option<&HashMap<String, Config>> { self.subcommands.as_ref() }
 
 	/// Command description which will be shown on the help information.
 	pub fn description(&self) -> Option<&String> { self.description.as_ref() }
 
 	/// Command long description which will be shown on the help information.
-	pub fn long_description(&self) -> Option<&String> {
-		self.description.as_ref()
-	}
+	pub fn long_description(&self) -> Option<&String> { self.description.as_ref() }
 
 	/// Adds additional help information to be displayed in addition to
 	/// auto-generated help. This information is displayed before the

@@ -33,9 +33,7 @@ impl<'de> Deserialize<'de> for Entry {
 		let config = EntryRaw::deserialize(deserializer)?;
 
 		if !config.sidecar && config.command.is_none() {
-			return Err(DeError::custom(
-				"The shell scope `command` value is required.",
-			));
+			return Err(DeError::custom("The shell scope `command` value is required."));
 		}
 
 		Ok(Entry {

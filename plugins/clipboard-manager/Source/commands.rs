@@ -2,16 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use tauri::{
-	command,
-	image::JsImage,
-	AppHandle,
-	Manager,
-	ResourceId,
-	Runtime,
-	State,
-	Webview,
-};
+use tauri::{command, image::JsImage, AppHandle, Manager, ResourceId, Runtime, State, Webview};
 
 use crate::{Clipboard, Result};
 

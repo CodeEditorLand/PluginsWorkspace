@@ -1,10 +1,10 @@
+use std::{path::Path, str::FromStr};
+
 use winrt_notification::Toast;
 
 pub use super::{error::*, notification::Notification, timeout::Timeout};
 
-use std::{path::Path, str::FromStr};
-
-pub(crate) fn show_notification(notification: &Notification) -> Result<()> {
+pub(crate) fn show_notification(notification:&Notification) -> Result<()> {
 	let sound = match &notification.sound_name {
 		Some(chosen_sound_name) => winrt_notification::Sound::from_str(chosen_sound_name).ok(),
 		None => None,
@@ -19,7 +19,7 @@ pub(crate) fn show_notification(notification: &Notification) -> Result<()> {
 			} else {
 				winrt_notification::Duration::Short
 			}
-		}
+		},
 	};
 
 	let powershell_app_id = &Toast::POWERSHELL_APP_ID.to_string();

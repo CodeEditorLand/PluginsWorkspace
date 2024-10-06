@@ -59,10 +59,7 @@ pub enum Error {
 }
 
 impl Serialize for Error {
-	fn serialize<S>(
-		&self,
-		serializer:S,
-	) -> std::result::Result<S::Ok, S::Error>
+	fn serialize<S>(&self, serializer:S) -> std::result::Result<S::Ok, S::Error>
 	where
 		S: Serializer, {
 		serializer.serialize_str(self.to_string().as_ref())
@@ -136,10 +133,7 @@ pub struct Migration {
 struct MigrationList(Vec<Migration>);
 
 impl MigrationSource<'static> for MigrationList {
-	fn resolve(
-		self,
-	) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>>
-	{
+	fn resolve(self) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>> {
 		Box::pin(async move {
 			let mut migrations = Vec::new();
 			for migration in self.0 {
@@ -191,21 +185,13 @@ async fn load<R:Runtime>(
 /// name is passed in then _all_ database connection pools will be
 /// shut down.
 #[command]
-async fn close(
-	db_instances:State<'_, DbInstances>,
-	db:Option<String>,
-) -> Result<bool> {
+async fn close(db_instances:State<'_, DbInstances>, db:Option<String>) -> Result<bool> {
 	let mut instances = db_instances.0.lock().await;
 
-	let pools = if let Some(db) = db {
-		vec![db]
-	} else {
-		instances.keys().cloned().collect()
-	};
+	let pools = if let Some(db) = db { vec![db] } else { instances.keys().cloned().collect() };
 
 	for pool in pools {
-		let db =
-			instances.get_mut(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
+		let db = instances.get_mut(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
 		db.close().await;
 	}
 
@@ -295,11 +281,7 @@ impl Builder {
 
 	/// Add migrations to a database.
 	#[must_use]
-	pub fn add_migrations(
-		mut self,
-		db_url:&str,
-		migrations:Vec<Migration>,
-	) -> Self {
+	pub fn add_migrations(mut self, db_url:&str, migrations:Vec<Migration>) -> Self {
 		self.migrations
 			.get_or_insert(Default::default())
 			.insert(db_url.to_string(), MigrationList(migrations));
@@ -308,15 +290,12 @@ impl Builder {
 
 	pub fn build<R:Runtime>(mut self) -> TauriPlugin<R, Option<PluginConfig>> {
 		PluginBuilder::<R, Option<PluginConfig>>::new("sql")
-			.invoke_handler(tauri::generate_handler![
-				load, execute, select, close
-			])
+			.invoke_handler(tauri::generate_handler![load, execute, select, close])
 			.setup(|app, api| {
 				let config = api.config().clone().unwrap_or_default();
 
 				#[cfg(feature = "sqlite")]
-				create_dir_all(app_path(app))
-					.expect("problems creating App directory!");
+				create_dir_all(app_path(app)).expect("problems creating App directory!");
 
 				tauri::async_runtime::block_on(async move {
 					let instances = DbInstances::default();
@@ -332,9 +311,7 @@ impl Builder {
 						}
 						let pool = Pool::connect(&fqdb).await?;
 
-						if let Some(migrations) =
-							self.migrations.as_mut().unwrap().remove(&db)
-						{
+						if let Some(migrations) = self.migrations.as_mut().unwrap().remove(&db) {
 							let migrator = Migrator::new(migrations).await?;
 							migrator.run(&pool).await?;
 						}
@@ -343,9 +320,7 @@ impl Builder {
 					drop(lock);
 
 					app.manage(instances);
-					app.manage(Migrations(Mutex::new(
-						self.migrations.take().unwrap_or_default(),
-					)));
+					app.manage(Migrations(Mutex::new(self.migrations.take().unwrap_or_default())));
 
 					Ok(())
 				})

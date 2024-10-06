@@ -4,13 +4,7 @@
 
 use std::{collections::HashMap, fmt::Display};
 
-use serde::{
-	de::Error as DeError,
-	Deserialize,
-	Deserializer,
-	Serialize,
-	Serializer,
-};
+use serde::{de::Error as DeError, Deserialize, Deserializer, Serialize, Serializer};
 use url::Url;
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,9 +15,7 @@ pub struct Attachment {
 }
 
 impl Attachment {
-	pub fn new(id:impl Into<String>, url:Url) -> Self {
-		Self { id:id.into(), url }
-	}
+	pub fn new(id:impl Into<String>, url:Url) -> Self { Self { id:id.into(), url } }
 }
 
 #[derive(Debug, Default, Serialize, Deserialize)]
@@ -70,10 +62,7 @@ impl Display for ScheduleEvery {
 }
 
 impl Serialize for ScheduleEvery {
-	fn serialize<S>(
-		&self,
-		serializer:S,
-	) -> std::result::Result<S::Ok, S::Error>
+	fn serialize<S>(&self, serializer:S) -> std::result::Result<S::Ok, S::Error>
 	where
 		S: Serializer, {
 		serializer.serialize_str(self.to_string().as_ref())
@@ -274,9 +263,7 @@ impl ActiveNotification {
 
 	pub fn attachments(&self) -> &[Attachment] { &self.attachments }
 
-	pub fn action_type_id(&self) -> Option<&str> {
-		self.action_type_id.as_deref()
-	}
+	pub fn action_type_id(&self) -> Option<&str> { self.action_type_id.as_deref() }
 
 	pub fn schedule(&self) -> Option<&Schedule> { self.schedule.as_ref() }
 
@@ -358,10 +345,7 @@ mod android {
 	pub struct ChannelBuilder(Channel);
 
 	impl Channel {
-		pub fn builder(
-			id:impl Into<String>,
-			name:impl Into<String>,
-		) -> ChannelBuilder {
+		pub fn builder(id:impl Into<String>, name:impl Into<String>) -> ChannelBuilder {
 			ChannelBuilder(Self {
 				id:id.into(),
 				name:name.into(),
@@ -379,17 +363,13 @@ mod android {
 
 		pub fn name(&self) -> &str { &self.name }
 
-		pub fn description(&self) -> Option<&str> {
-			self.description.as_deref()
-		}
+		pub fn description(&self) -> Option<&str> { self.description.as_deref() }
 
 		pub fn sound(&self) -> Option<&str> { self.sound.as_deref() }
 
 		pub fn lights(&self) -> bool { self.lights }
 
-		pub fn light_color(&self) -> Option<&str> {
-			self.light_color.as_deref()
-		}
+		pub fn light_color(&self) -> Option<&str> { self.light_color.as_deref() }
 
 		pub fn vibration(&self) -> bool { self.vibration }
 

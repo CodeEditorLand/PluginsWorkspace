@@ -55,9 +55,7 @@ impl<R:Runtime> NotificationBuilder<R> {
 	fn new(app:AppHandle<R>) -> Self { Self { app, data:Default::default() } }
 
 	#[cfg(mobile)]
-	fn new(handle:PluginHandle<R>) -> Self {
-		Self { handle, data:Default::default() }
-	}
+	fn new(handle:PluginHandle<R>) -> Self { Self { handle, data:Default::default() } }
 
 	/// Sets the notification identifier.
 	pub fn id(mut self, id:i32) -> Self {
@@ -174,14 +172,8 @@ impl<R:Runtime> NotificationBuilder<R> {
 	}
 
 	/// Adds an extra payload to store in the notification.
-	pub fn extra(
-		mut self,
-		key:impl Into<String>,
-		value:impl Serialize,
-	) -> Self {
-		self.data
-			.extra
-			.insert(key.into(), serde_json::to_value(value).unwrap());
+	pub fn extra(mut self, key:impl Into<String>, value:impl Serialize) -> Self {
+		self.data.extra.insert(key.into(), serde_json::to_value(value).unwrap());
 		self
 	}
 
@@ -217,9 +209,7 @@ pub trait NotificationExt<R:Runtime> {
 }
 
 impl<R:Runtime, T:Manager<R>> crate::NotificationExt<R> for T {
-	fn notification(&self) -> &Notification<R> {
-		self.state::<Notification<R>>().inner()
-	}
+	fn notification(&self) -> &Notification<R> { self.state::<Notification<R>>().inner() }
 }
 
 /// Initializes the plugin.
@@ -230,10 +220,10 @@ pub fn init<R:Runtime>() -> TauriPlugin<R> {
 			commands::request_permission,
 			commands::is_permission_granted
 		])
-		.js_init_script(include_str!("init-iife.js").replace(
-			"__TEMPLATE_windows__",
-			if cfg!(windows) { "true" } else { "false" },
-		))
+		.js_init_script(
+			include_str!("init-iife.js")
+				.replace("__TEMPLATE_windows__", if cfg!(windows) { "true" } else { "false" }),
+		)
 		.setup(|app, api| {
 			#[cfg(mobile)]
 			let notification = mobile::init(app, api)?;

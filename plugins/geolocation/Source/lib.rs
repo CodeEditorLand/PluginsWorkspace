@@ -51,9 +51,7 @@ pub trait GeolocationExt<R:Runtime> {
 }
 
 impl<R:Runtime, T:Manager<R>> crate::GeolocationExt<R> for T {
-	fn geolocation(&self) -> &Geolocation<R> {
-		self.state::<Geolocation<R>>().inner()
-	}
+	fn geolocation(&self) -> &Geolocation<R> { self.state::<Geolocation<R>>().inner() }
 }
 
 /// Initializes the plugin.

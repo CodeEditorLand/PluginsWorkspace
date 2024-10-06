@@ -52,21 +52,13 @@ enum Error {
 	#[error("connection not found for the given id: {0}")]
 	ConnectionNotFound(Id),
 	#[error(transparent)]
-	InvalidHeaderValue(
-		#[from]
-		tokio_tungstenite::tungstenite::http::header::InvalidHeaderValue,
-	),
+	InvalidHeaderValue(#[from] tokio_tungstenite::tungstenite::http::header::InvalidHeaderValue),
 	#[error(transparent)]
-	InvalidHeaderName(
-		#[from] tokio_tungstenite::tungstenite::http::header::InvalidHeaderName,
-	),
+	InvalidHeaderName(#[from] tokio_tungstenite::tungstenite::http::header::InvalidHeaderName),
 }
 
 impl Serialize for Error {
-	fn serialize<S>(
-		&self,
-		serializer:S,
-	) -> std::result::Result<S::Ok, S::Error>
+	fn serialize<S>(&self, serializer:S) -> std::result::Result<S::Ok, S::Error>
 	where
 		S: Serializer, {
 		serializer.serialize_str(self.to_string().as_str())
@@ -99,9 +91,7 @@ impl From<ConnectionConfig> for WebSocketConfig {
 		Self {
 			max_send_queue:None,
 			write_buffer_size:config.write_buffer_size.unwrap_or(128 * 1024),
-			max_write_buffer_size:config
-				.max_write_buffer_size
-				.unwrap_or(usize::MAX),
+			max_write_buffer_size:config.max_write_buffer_size.unwrap_or(usize::MAX),
 			// This may be harmful since if it's not provided from js we're
 			// overwriting the default value with None, meaning no size limit.
 			max_message_size:config.max_message_size,
@@ -154,70 +144,60 @@ async fn connect<R:Runtime>(
 	};
 
 	#[cfg(any(feature = "rustls-tls", feature = "native-tls"))]
-	let (ws_stream, _) = connect_async_tls_with_config(
-		request,
-		config.map(Into::into),
-		false,
-		tls_connector,
-	)
-	.await?;
-	#[cfg(not(any(feature = "rustls-tls", feature = "native-tls")))]
 	let (ws_stream, _) =
-		connect_async_with_config(request, config.map(Into::into), false)
+		connect_async_tls_with_config(request, config.map(Into::into), false, tls_connector)
 			.await?;
+	#[cfg(not(any(feature = "rustls-tls", feature = "native-tls")))]
+	let (ws_stream, _) = connect_async_with_config(request, config.map(Into::into), false).await?;
 
 	tauri::async_runtime::spawn(async move {
 		let (write, read) = ws_stream.split();
 		let manager = window.state::<ConnectionManager>();
 		manager.0.lock().await.insert(id, write);
 		read.for_each(move |message| {
-            let window_ = window.clone();
-            let on_message_ = on_message.clone();
-            async move {
-                if let Ok(Message::Close(_)) = message {
-                    let manager = window_.state::<ConnectionManager>();
-                    manager.0.lock().await.remove(&id);
-                }
+			let window_ = window.clone();
+			let on_message_ = on_message.clone();
+			async move {
+				if let Ok(Message::Close(_)) = message {
+					let manager = window_.state::<ConnectionManager>();
+					manager.0.lock().await.remove(&id);
+				}
 
-                let response = match message {
-                    Ok(Message::Text(t)) => {
-                        serde_json::to_value(WebSocketMessage::Text(t)).unwrap()
-                    }
-                    Ok(Message::Binary(t)) => {
-                        serde_json::to_value(WebSocketMessage::Binary(t)).unwrap()
-                    }
-                    Ok(Message::Ping(t)) => {
-                        serde_json::to_value(WebSocketMessage::Ping(t)).unwrap()
-                    }
-                    Ok(Message::Pong(t)) => {
-                        serde_json::to_value(WebSocketMessage::Pong(t)).unwrap()
-                    }
-                    Ok(Message::Close(t)) => {
-                        serde_json::to_value(WebSocketMessage::Close(t.map(|v| CloseFrame {
-                            code: v.code.into(),
-                            reason: v.reason.into_owned(),
-                        })))
-                        .unwrap()
-                    }
-                    Ok(Message::Frame(_)) => serde_json::Value::Null, // This value can't be recieved.
-                    Err(e) => serde_json::to_value(Error::from(e)).unwrap(),
-                };
+				let response = match message {
+					Ok(Message::Text(t)) => {
+						serde_json::to_value(WebSocketMessage::Text(t)).unwrap()
+					},
+					Ok(Message::Binary(t)) => {
+						serde_json::to_value(WebSocketMessage::Binary(t)).unwrap()
+					},
+					Ok(Message::Ping(t)) => {
+						serde_json::to_value(WebSocketMessage::Ping(t)).unwrap()
+					},
+					Ok(Message::Pong(t)) => {
+						serde_json::to_value(WebSocketMessage::Pong(t)).unwrap()
+					},
+					Ok(Message::Close(t)) => {
+						serde_json::to_value(WebSocketMessage::Close(t.map(|v| {
+							CloseFrame { code:v.code.into(), reason:v.reason.into_owned() }
+						})))
+						.unwrap()
+					},
+					Ok(Message::Frame(_)) => serde_json::Value::Null, /* This value can't be
+					                                                    * recieved. */
+					Err(e) => serde_json::to_value(Error::from(e)).unwrap(),
+				};
 
-                let _ = on_message_.send(response);
-            }
-        })
-        .await;
+				let _ = on_message_.send(response);
+			}
+		})
+		.await;
 	});
 
 	Ok(id)
 }
 
 #[tauri::command]
-async fn send(
-	manager:State<'_, ConnectionManager>,
-	id:Id,
-	message:WebSocketMessage,
-) -> Result<()> {
+async fn send(manager:State<'_, ConnectionManager>, id:Id, message:WebSocketMessage) -> Result<()> {
 	if let Some(write) = manager.0.lock().await.get_mut(&id) {
 		write
 			.send(match message {

@@ -1,14 +1,23 @@
-use super::error::ErrorKind;
 use std::convert::TryFrom;
+
+use super::error::ErrorKind;
 
 /// Levels of Urgency.
 ///
 /// # Specification
-/// > Developers must use their own judgement when deciding the urgency of a notification. Typically, if the majority of programs are using the same level for a specific type of urgency, other applications should follow them.
+/// > Developers must use their own judgement when deciding the urgency of a
+/// > notification. Typically, if the majority of programs are using the same
+/// > level for a specific type of urgency, other applications should follow
+/// > them.
 /// >
-/// > For low and normal urgencies, server implementations may display the notifications how they choose. They should, however, have a sane expiration timeout dependent on the urgency level.
+/// > For low and normal urgencies, server implementations may display the
+/// > notifications how they choose. They should, however, have a sane
+/// > expiration timeout dependent on the urgency level.
 /// >
-/// > **Critical notifications should not automatically expire**, as they are things that the user will most likely want to know about. They should only be closed when the user dismisses them, for example, by clicking on the notification.
+/// > **Critical notifications should not automatically expire**, as they are
+/// > things that the user will most likely want to know about. They should only
+/// > be closed when the user dismisses them, for example, by clicking on the
+/// > notification.
 ///
 /// <cite> — see [Galago](http://www.galago-project.org/specs/notification/0.9/x320.html) or [Gnome](https://developer.gnome.org/notification-spec/#urgency-levels) specification.</cite>
 #[derive(Eq, PartialEq, Hash, Copy, Clone, Debug)]
@@ -24,7 +33,7 @@ pub enum Urgency {
 impl TryFrom<&str> for Urgency {
 	type Error = super::error::Error;
 
-    #[rustfmt::skip]
+	#[rustfmt::skip]
 	fn try_from(string: &str) -> Result<Urgency, Self::Error> {
         match string.to_lowercase().as_ref() {
             "low"      |
@@ -40,7 +49,7 @@ impl TryFrom<&str> for Urgency {
 }
 
 impl From<Option<u64>> for Urgency {
-	fn from(maybe_int: Option<u64>) -> Urgency {
+	fn from(maybe_int:Option<u64>) -> Urgency {
 		match maybe_int {
 			Some(0) => Urgency::Low,
 			Some(x) if x >= 2 => Urgency::Critical,
@@ -52,7 +61,7 @@ impl From<Option<u64>> for Urgency {
 // TODO: remove this in v5.0
 #[cfg(not(feature = "server"))]
 impl From<u64> for Urgency {
-	fn from(int: u64) -> Urgency {
+	fn from(int:u64) -> Urgency {
 		match int {
 			0 => Urgency::Low,
 			1 => Urgency::Normal,
@@ -64,7 +73,7 @@ impl From<u64> for Urgency {
 // TODO: make this the default in v5.0
 #[cfg(feature = "server")]
 impl From<u8> for Urgency {
-	fn from(int: u8) -> Urgency {
+	fn from(int:u8) -> Urgency {
 		match int {
 			0 => Urgency::Low,
 			1 => Urgency::Normal,

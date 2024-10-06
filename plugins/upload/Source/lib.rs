@@ -45,10 +45,7 @@ pub enum Error {
 }
 
 impl Serialize for Error {
-	fn serialize<S>(
-		&self,
-		serializer:S,
-	) -> std::result::Result<S::Ok, S::Error>
+	fn serialize<S>(&self, serializer:S) -> std::result::Result<S::Ok, S::Error>
 	where
 		S: Serializer, {
 		serializer.serialize_str(self.to_string().as_ref())
@@ -91,8 +88,7 @@ async fn download(
 
 	while let Some(chunk) = stream.try_next().await? {
 		file.write_all(&chunk).await?;
-		let _ = on_progress
-			.send(ProgressPayload { progress:chunk.len() as u64, total });
+		let _ = on_progress.send(ProgressPayload { progress:chunk.len() as u64, total });
 	}
 	file.flush().await?;
 
@@ -135,8 +131,7 @@ async fn upload(
 }
 
 fn file_to_body(channel:Channel<ProgressPayload>, file:File) -> reqwest::Body {
-	let stream =
-		FramedRead::new(file, BytesCodec::new()).map_ok(|r| r.freeze());
+	let stream = FramedRead::new(file, BytesCodec::new()).map_ok(|r| r.freeze());
 
 	reqwest::Body::wrap_stream(ReadProgressStream::new(
 		stream,
@@ -177,11 +172,7 @@ mod tests {
 		let mocked_server = spawn_server_mocked(200).await;
 		let result = download_file(&mocked_server.url).await;
 		mocked_server.mocked_endpoint.assert();
-		assert!(
-			result.is_ok(),
-			"failed to download file: {}",
-			result.unwrap_err()
-		);
+		assert!(result.is_ok(), "failed to download file: {}", result.unwrap_err());
 	}
 
 	async fn download_file(url:&str) -> Result<()> {

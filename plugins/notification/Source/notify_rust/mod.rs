@@ -1,6 +1,7 @@
 //! Desktop Notifications for Rust.
 //!
-//! Desktop notifications are popup messages generated to notify the user of certain events.
+//! Desktop notifications are popup messages generated to notify the user of
+//! certain events.
 //!
 //! ## Platform Support
 //!
@@ -8,9 +9,9 @@
 //! Since version 3.3 this crate also builds on macOS, however the semantics of the [XDG](https://en.wikipedia.org/wiki/XDG) specification and macOS `NSNotifications`
 //! are quite different.
 //! Therefore only a very small subset of functions is supported on macOS.
-//! Certain methods don't have any effect there, others will explicitly fail to compile,
-//! in these cases you will have to add platform specific toggles to your code.
-//! For more see [platform differences](#platform-differences)
+//! Certain methods don't have any effect there, others will explicitly fail to
+//! compile, in these cases you will have to add platform specific toggles to
+//! your code. For more see [platform differences](#platform-differences)
 //!
 //! # Platform Differences
 //! <details>
@@ -64,7 +65,6 @@
 //! // #### #[cfg(all(unix, not(target_os = "macos")))]
 //! ```
 //! </details>
-//!
 
 #![deny(
 	missing_copy_implementations,
@@ -119,31 +119,31 @@ mod image;
 #[cfg(all(feature = "server", feature = "dbus", unix, not(target_os = "macos")))]
 pub mod server;
 
-#[cfg(target_os = "macos")]
-pub use mac_notification_sys::{get_bundle_identifier_or_default, set_application};
-
-#[cfg(target_os = "macos")]
-pub use macos::NotificationHandle;
-
-#[cfg(all(any(feature = "dbus", feature = "zbus"), unix, not(target_os = "macos")))]
-pub use xdg::{
-	dbus_stack, get_capabilities, get_server_information, handle_action, ActionResponse,
-	CloseHandler, CloseReason, DbusStack, NotificationHandle,
-};
-
-#[cfg(all(feature = "server", unix, not(target_os = "macos")))]
-pub use xdg::stop_server;
-
 pub use hints::Hint;
-
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 pub use image::{Image, ImageError};
-
-#[cfg_attr(target_os = "macos", deprecated(note = "Urgency is not supported on macOS"))]
-pub use urgency::Urgency;
-
+#[cfg(target_os = "macos")]
+pub use mac_notification_sys::{get_bundle_identifier_or_default, set_application};
+#[cfg(target_os = "macos")]
+pub use macos::NotificationHandle;
 pub use notification::Notification;
 pub use timeout::Timeout;
+#[cfg_attr(target_os = "macos", deprecated(note = "Urgency is not supported on macOS"))]
+pub use urgency::Urgency;
+#[cfg(all(feature = "server", unix, not(target_os = "macos")))]
+pub use xdg::stop_server;
+#[cfg(all(any(feature = "dbus", feature = "zbus"), unix, not(target_os = "macos")))]
+pub use xdg::{
+	dbus_stack,
+	get_capabilities,
+	get_server_information,
+	handle_action,
+	ActionResponse,
+	CloseHandler,
+	CloseReason,
+	DbusStack,
+	NotificationHandle,
+};
 
 #[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 lazy_static! {
@@ -157,11 +157,11 @@ lazy_static! {
 #[derive(Debug)]
 pub struct ServerInformation {
 	/// The product name of the server.
-	pub name: String,
+	pub name:String,
 	/// The vendor name.
-	pub vendor: String,
+	pub vendor:String,
 	/// The server's version string.
-	pub version: String,
+	pub version:String,
 	/// The specification version the server is compliant with.
-	pub spec_version: String,
+	pub spec_version:String,
 }

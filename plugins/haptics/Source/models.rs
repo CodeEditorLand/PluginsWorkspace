@@ -11,9 +11,7 @@ use specta::Type;
 // pub duration: u32,
 // }
 
-#[derive(
-	Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, Type,
-)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
 pub enum ImpactFeedbackStyle {
 	Light,
@@ -24,9 +22,7 @@ pub enum ImpactFeedbackStyle {
 	Rigid,
 }
 
-#[derive(
-	Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, Type,
-)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]
 pub enum NotificationFeedbackType {
 	#[default]

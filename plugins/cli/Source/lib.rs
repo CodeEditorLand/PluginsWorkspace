@@ -46,10 +46,7 @@ impl<R:Runtime, T:Manager<R>> CliExt<R> for T {
 }
 
 #[tauri::command]
-fn cli_matches<R:Runtime>(
-	_app:AppHandle<R>,
-	cli:State<'_, Cli<R>>,
-) -> Result<parser::Matches> {
+fn cli_matches<R:Runtime>(_app:AppHandle<R>, cli:State<'_, Cli<R>>) -> Result<parser::Matches> {
 	cli.matches()
 }
 

@@ -2,14 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-const COMMANDS:&[&str] = &[
-	"write_text",
-	"read_text",
-	"write_image",
-	"read_image",
-	"write_html",
-	"clear",
-];
+const COMMANDS:&[&str] =
+	&["write_text", "read_text", "write_image", "read_image", "write_html", "clear"];
 
 fn main() {
 	let result = tauri_plugin::Builder::new(COMMANDS)

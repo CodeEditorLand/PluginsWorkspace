@@ -22,15 +22,9 @@ use tokio::{
 use crate::{ChangePayload, StoreCollection};
 
 type SerializeFn =
-	fn(
-		&HashMap<String, JsonValue>,
-	) -> Result<Vec<u8>, Box<dyn std::error::Error + Send + Sync>>;
-pub(crate) type DeserializeFn = fn(
-	&[u8],
-) -> Result<
-	HashMap<String, JsonValue>,
-	Box<dyn std::error::Error + Send + Sync>,
->;
+	fn(&HashMap<String, JsonValue>) -> Result<Vec<u8>, Box<dyn std::error::Error + Send + Sync>>;
+pub(crate) type DeserializeFn =
+	fn(&[u8]) -> Result<HashMap<String, JsonValue>, Box<dyn std::error::Error + Send + Sync>>;
 
 fn default_serialize(
 	cache:&HashMap<String, JsonValue>,
@@ -40,8 +34,7 @@ fn default_serialize(
 
 fn default_deserialize(
 	bytes:&[u8],
-) -> Result<HashMap<String, JsonValue>, Box<dyn std::error::Error + Send + Sync>>
-{
+) -> Result<HashMap<String, JsonValue>, Box<dyn std::error::Error + Send + Sync>> {
 	serde_json::from_slice(bytes).map_err(Into::into)
 }
 
@@ -64,8 +57,7 @@ impl<R:Runtime> StoreBuilder<R> {
 	/// tauri::Builder::default()
 	/// 	.plugin(tauri_plugin_store::Builder::default().build())
 	/// 	.setup(|app| {
-	/// 		let builder =
-	/// 			tauri_plugin_store::StoreBuilder::new(app, "store.bin");
+	/// 		let builder = tauri_plugin_store::StoreBuilder::new(app, "store.bin");
 	/// 		Ok(())
 	/// 	});
 	/// ```
@@ -118,11 +110,7 @@ impl<R:Runtime> StoreBuilder<R> {
 	/// 		Ok(())
 	/// 	});
 	/// ```
-	pub fn default(
-		mut self,
-		key:impl Into<String>,
-		value:impl Into<JsonValue>,
-	) -> Self {
+	pub fn default(mut self, key:impl Into<String>, value:impl Into<JsonValue>) -> Self {
 		let key = key.into();
 		let value = value.into();
 		self.cache.insert(key.clone(), value.clone());
@@ -137,12 +125,9 @@ impl<R:Runtime> StoreBuilder<R> {
 	/// tauri::Builder::default()
 	/// 	.plugin(tauri_plugin_store::Builder::default().build())
 	/// 	.setup(|app| {
-	/// 		let store =
-	/// 			tauri_plugin_store::StoreBuilder::new(app, "store.json")
-	/// 				.serialize(|cache| {
-	/// 					serde_json::to_vec(&cache).map_err(Into::into)
-	/// 				})
-	/// 				.build();
+	/// 		let store = tauri_plugin_store::StoreBuilder::new(app, "store.json")
+	/// 			.serialize(|cache| serde_json::to_vec(&cache).map_err(Into::into))
+	/// 			.build();
 	/// 		Ok(())
 	/// 	});
 	/// ```
@@ -158,12 +143,9 @@ impl<R:Runtime> StoreBuilder<R> {
 	/// tauri::Builder::default()
 	/// 	.plugin(tauri_plugin_store::Builder::default().build())
 	/// 	.setup(|app| {
-	/// 		let store =
-	/// 			tauri_plugin_store::StoreBuilder::new(app, "store.json")
-	/// 				.deserialize(|bytes| {
-	/// 					serde_json::from_slice(&bytes).map_err(Into::into)
-	/// 				})
-	/// 				.build();
+	/// 		let store = tauri_plugin_store::StoreBuilder::new(app, "store.json")
+	/// 			.deserialize(|bytes| serde_json::from_slice(&bytes).map_err(Into::into))
+	/// 			.build();
 	/// 		Ok(())
 	/// 	});
 	/// ```
@@ -182,10 +164,9 @@ impl<R:Runtime> StoreBuilder<R> {
 	/// tauri::Builder::default()
 	/// 	.plugin(tauri_plugin_store::Builder::default().build())
 	/// 	.setup(|app| {
-	/// 		let store =
-	/// 			tauri_plugin_store::StoreBuilder::new(app, "store.json")
-	/// 				.auto_save(std::time::Duration::from_millis(100))
-	/// 				.build();
+	/// 		let store = tauri_plugin_store::StoreBuilder::new(app, "store.json")
+	/// 			.auto_save(std::time::Duration::from_millis(100))
+	/// 			.build();
 	/// 		Ok(())
 	/// 	});
 	/// ```
@@ -201,29 +182,20 @@ impl<R:Runtime> StoreBuilder<R> {
 	/// tauri::Builder::default()
 	/// 	.plugin(tauri_plugin_store::Builder::default().build())
 	/// 	.setup(|app| {
-	/// 		let store =
-	/// 			tauri_plugin_store::StoreBuilder::new(app, "store.json")
-	/// 				.build();
+	/// 		let store = tauri_plugin_store::StoreBuilder::new(app, "store.json").build();
 	/// 		Ok(())
 	/// 	});
 	/// ```
 	pub fn build(self) -> Store<R> {
 		let collection = self.app.state::<StoreCollection<R>>();
 		let mut stores = collection.stores.lock().unwrap();
-		let store = stores
-			.get(&self.path)
-			.and_then(|store| store.upgrade())
-			.unwrap_or_else(|| {
-				let mut store =
-					StoreInner::new(self.app.clone(), self.path.clone());
-				let _ = store.load(self.deserialize);
-				let store = Arc::new(Mutex::new(store));
-				stores.insert(
-					self.path.clone(),
-					Arc::<Mutex<StoreInner<R>>>::downgrade(&store),
-				);
-				store
-			});
+		let store = stores.get(&self.path).and_then(|store| store.upgrade()).unwrap_or_else(|| {
+			let mut store = StoreInner::new(self.app.clone(), self.path.clone());
+			let _ = store.load(self.deserialize);
+			let store = Arc::new(Mutex::new(store));
+			stores.insert(self.path.clone(), Arc::<Mutex<StoreInner<R>>>::downgrade(&store));
+			store
+		});
 		drop(stores);
 		Store {
 			defaults:self.defaults,
@@ -249,19 +221,15 @@ pub struct StoreInner<R:Runtime> {
 }
 
 impl<R:Runtime> StoreInner<R> {
-	pub fn new(app:AppHandle<R>, path:PathBuf) -> Self {
-		Self { app, path, cache:HashMap::new() }
-	}
+	pub fn new(app:AppHandle<R>, path:PathBuf) -> Self { Self { app, path, cache:HashMap::new() } }
 
 	pub fn save(&self, serialize_fn:SerializeFn) -> crate::Result<()> {
-		let app_dir =
-			self.app.path().app_data_dir().expect("failed to resolve app dir");
+		let app_dir = self.app.path().app_data_dir().expect("failed to resolve app dir");
 		let store_path = app_dir.join(&self.path);
 
 		create_dir_all(store_path.parent().expect("invalid store path"))?;
 
-		let bytes =
-			serialize_fn(&self.cache).map_err(crate::Error::Serialize)?;
+		let bytes = serialize_fn(&self.cache).map_err(crate::Error::Serialize)?;
 		let mut f = File::create(&store_path)?;
 		f.write_all(&bytes)?;
 
@@ -270,36 +238,26 @@ impl<R:Runtime> StoreInner<R> {
 
 	/// Update the store from the on-disk state
 	pub fn load(&mut self, deserialize_fn:DeserializeFn) -> crate::Result<()> {
-		let app_dir =
-			self.app.path().app_data_dir().expect("failed to resolve app dir");
+		let app_dir = self.app.path().app_data_dir().expect("failed to resolve app dir");
 		let store_path = app_dir.join(&self.path);
 
 		let bytes = read(store_path)?;
 
-		self.cache
-			.extend(deserialize_fn(&bytes).map_err(crate::Error::Deserialize)?);
+		self.cache.extend(deserialize_fn(&bytes).map_err(crate::Error::Deserialize)?);
 
 		Ok(())
 	}
 
-	pub fn insert(
-		&mut self,
-		key:impl Into<String>,
-		value:impl Into<JsonValue>,
-	) {
+	pub fn insert(&mut self, key:impl Into<String>, value:impl Into<JsonValue>) {
 		let key = key.into();
 		let value = value.into();
 		self.cache.insert(key.clone(), value.clone());
 		let _ = self.emit_change_event(&key, &value);
 	}
 
-	pub fn get(&self, key:impl AsRef<str>) -> Option<&JsonValue> {
-		self.cache.get(key.as_ref())
-	}
+	pub fn get(&self, key:impl AsRef<str>) -> Option<&JsonValue> { self.cache.get(key.as_ref()) }
 
-	pub fn has(&self, key:impl AsRef<str>) -> bool {
-		self.cache.contains_key(key.as_ref())
-	}
+	pub fn has(&self, key:impl AsRef<str>) -> bool { self.cache.contains_key(key.as_ref()) }
 
 	pub fn delete(&mut self, key:impl AsRef<str>) -> bool {
 		let flag = self.cache.remove(key.as_ref()).is_some();
@@ -321,10 +279,8 @@ impl<R:Runtime> StoreInner<R> {
 		if let Some(defaults) = &defaults {
 			for (key, value) in &self.cache {
 				if defaults.get(key) != Some(value) {
-					let _ = self.emit_change_event(
-						key,
-						defaults.get(key).unwrap_or(&JsonValue::Null),
-					);
+					let _ =
+						self.emit_change_event(key, defaults.get(key).unwrap_or(&JsonValue::Null));
 				}
 			}
 			for (key, value) in defaults {
@@ -340,27 +296,16 @@ impl<R:Runtime> StoreInner<R> {
 
 	pub fn keys(&self) -> impl Iterator<Item = &String> { self.cache.keys() }
 
-	pub fn values(&self) -> impl Iterator<Item = &JsonValue> {
-		self.cache.values()
-	}
+	pub fn values(&self) -> impl Iterator<Item = &JsonValue> { self.cache.values() }
 
-	pub fn entries(&self) -> impl Iterator<Item = (&String, &JsonValue)> {
-		self.cache.iter()
-	}
+	pub fn entries(&self) -> impl Iterator<Item = (&String, &JsonValue)> { self.cache.iter() }
 
 	pub fn len(&self) -> usize { self.cache.len() }
 
 	pub fn is_empty(&self) -> bool { self.cache.is_empty() }
 
-	fn emit_change_event(
-		&self,
-		key:&str,
-		value:&JsonValue,
-	) -> crate::Result<()> {
-		self.app.emit(
-			"store://change",
-			ChangePayload { path:&self.path, key, value },
-		)?;
+	fn emit_change_event(&self, key:&str, value:&JsonValue) -> crate::Result<()> {
+		self.app.emit("store://change", ChangePayload { path:&self.path, key, value })?;
 		Ok(())
 	}
 }
@@ -379,8 +324,7 @@ pub struct Store<R:Runtime> {
 	serialize:SerializeFn,
 	deserialize:DeserializeFn,
 	auto_save:Option<Duration>,
-	auto_save_debounce_sender:
-		Arc<Mutex<Option<UnboundedSender<AutoSaveMessage>>>>,
+	auto_save_debounce_sender:Arc<Mutex<Option<UnboundedSender<AutoSaveMessage>>>>,
 	store:Arc<Mutex<StoreInner<R>>>,
 }
 
@@ -404,9 +348,7 @@ impl<R:Runtime> Store<R> {
 		self.store.lock().unwrap().get(key).cloned()
 	}
 
-	pub fn has(&self, key:impl AsRef<str>) -> bool {
-		self.store.lock().unwrap().has(key)
-	}
+	pub fn has(&self, key:impl AsRef<str>) -> bool { self.store.lock().unwrap().has(key) }
 
 	pub fn delete(&self, key:impl AsRef<str>) -> bool {
 		let deleted = self.store.lock().unwrap().delete(key);
@@ -426,9 +368,7 @@ impl<R:Runtime> Store<R> {
 		let _ = self.trigger_auto_save();
 	}
 
-	pub fn keys(&self) -> Vec<String> {
-		self.store.lock().unwrap().keys().cloned().collect()
-	}
+	pub fn keys(&self) -> Vec<String> { self.store.lock().unwrap().keys().cloned().collect() }
 
 	pub fn values(&self) -> Vec<JsonValue> {
 		self.store.lock().unwrap().values().cloned().collect()
@@ -445,14 +385,10 @@ impl<R:Runtime> Store<R> {
 
 	pub fn length(&self) -> usize { self.store.lock().unwrap().len() }
 
-	pub fn load(&self) -> crate::Result<()> {
-		self.store.lock().unwrap().load(self.deserialize)
-	}
+	pub fn load(&self) -> crate::Result<()> { self.store.lock().unwrap().load(self.deserialize) }
 
 	pub fn save(&self) -> crate::Result<()> {
-		if let Some(sender) =
-			self.auto_save_debounce_sender.lock().unwrap().take()
-		{
+		if let Some(sender) = self.auto_save_debounce_sender.lock().unwrap().take() {
 			let _ = sender.send(AutoSaveMessage::Cancel);
 		}
 		self.store.lock().unwrap().save(self.serialize)
@@ -465,8 +401,7 @@ impl<R:Runtime> Store<R> {
 		if auto_save_delay.is_zero() {
 			return self.save();
 		}
-		let mut auto_save_debounce_sender =
-			self.auto_save_debounce_sender.lock().unwrap();
+		let mut auto_save_debounce_sender = self.auto_save_debounce_sender.lock().unwrap();
 		if let Some(ref sender) = *auto_save_debounce_sender {
 			let _ = sender.send(AutoSaveMessage::Reset);
 			return Ok(());

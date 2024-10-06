@@ -105,18 +105,12 @@ impl Scope {
 	}
 
 	/// List of allowed paths.
-	pub fn allowed(&self) -> Vec<PathBuf> {
-		self.allowed.lock().unwrap().clone()
-	}
+	pub fn allowed(&self) -> Vec<PathBuf> { self.allowed.lock().unwrap().clone() }
 
 	/// List of forbidden paths.
-	pub fn forbidden(&self) -> Vec<PathBuf> {
-		self.denied.lock().unwrap().clone()
-	}
+	pub fn forbidden(&self) -> Vec<PathBuf> { self.denied.lock().unwrap().clone() }
 
-	fn next_event_id(&self) -> u32 {
-		self.next_event_id.fetch_add(1, Ordering::Relaxed)
-	}
+	fn next_event_id(&self) -> u32 { self.next_event_id.fetch_add(1, Ordering::Relaxed) }
 
 	fn emit(&self, event:Event) {
 		let listeners = self.event_listeners.lock().unwrap();

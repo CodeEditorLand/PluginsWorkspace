@@ -38,20 +38,13 @@ impl<R:Runtime> Geolocation<R> {
 		let channel = Channel::new(move |event| {
 			let payload = match event {
 				InvokeResponseBody::Json(payload) => {
-					serde_json::from_str::<WatchEvent>(&payload).unwrap_or_else(
-						|error| {
-							WatchEvent::Error(format!(
-								"Couldn't deserialize watch event payload: \
-								 `{error}`"
-							))
-						},
-					)
+					serde_json::from_str::<WatchEvent>(&payload).unwrap_or_else(|error| {
+						WatchEvent::Error(format!(
+							"Couldn't deserialize watch event payload: `{error}`"
+						))
+					})
 				},
-				_ => {
-					WatchEvent::Error(
-						"Unexpected watch event payload.".to_string(),
-					)
-				},
+				_ => WatchEvent::Error("Unexpected watch event payload.".to_string()),
 			};
 
 			callback(payload);

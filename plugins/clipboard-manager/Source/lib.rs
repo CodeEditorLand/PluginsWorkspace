@@ -39,9 +39,7 @@ pub trait ClipboardExt<R:Runtime> {
 }
 
 impl<R:Runtime, T:Manager<R>> crate::ClipboardExt<R> for T {
-	fn clipboard(&self) -> &Clipboard<R> {
-		self.state::<Clipboard<R>>().inner()
-	}
+	fn clipboard(&self) -> &Clipboard<R> { self.state::<Clipboard<R>>().inner() }
 }
 
 /// Initializes the plugin.

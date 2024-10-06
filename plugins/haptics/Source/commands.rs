@@ -4,19 +4,11 @@
 
 use tauri::{command, AppHandle, Runtime};
 
-use crate::{
-	HapticsExt,
-	ImpactFeedbackStyle,
-	NotificationFeedbackType,
-	Result,
-};
+use crate::{HapticsExt, ImpactFeedbackStyle, NotificationFeedbackType, Result};
 
 #[command]
 #[specta::specta]
-pub(crate) async fn vibrate<R:Runtime>(
-	app:AppHandle<R>,
-	duration:u32,
-) -> Result<()> {
+pub(crate) async fn vibrate<R:Runtime>(app:AppHandle<R>, duration:u32) -> Result<()> {
 	app.haptics().vibrate(duration)
 }
 
@@ -40,8 +32,6 @@ pub(crate) async fn notification_feedback<R:Runtime>(
 
 #[command]
 #[specta::specta]
-pub(crate) async fn selection_feedback<R:Runtime>(
-	app:AppHandle<R>,
-) -> Result<()> {
+pub(crate) async fn selection_feedback<R:Runtime>(app:AppHandle<R>) -> Result<()> {
 	app.haptics().selection_feedback()
 }

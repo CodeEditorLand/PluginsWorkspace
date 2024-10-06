@@ -38,15 +38,10 @@ pub(crate) async fn close(
 ) -> Result<bool, crate::Error> {
 	let mut instances = db_instances.0.lock().await;
 
-	let pools = if let Some(db) = db {
-		vec![db]
-	} else {
-		instances.keys().cloned().collect()
-	};
+	let pools = if let Some(db) = db { vec![db] } else { instances.keys().cloned().collect() };
 
 	for pool in pools {
-		let db =
-			instances.get_mut(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
+		let db = instances.get_mut(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
 		db.close().await;
 	}
 

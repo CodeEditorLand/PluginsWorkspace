@@ -57,9 +57,7 @@ pub struct Matches {
 
 impl Matches {
 	/// Set a arg match.
-	pub(crate) fn set_arg(&mut self, name:String, value:ArgData) {
-		self.args.insert(name, value);
-	}
+	pub(crate) fn set_arg(&mut self, name:String, value:ArgData) { self.args.insert(name, value); }
 
 	/// Sets the subcommand matches.
 	pub(crate) fn set_subcommand(&mut self, name:String, matches:Matches) {
@@ -81,22 +79,10 @@ impl Matches {
 /// 	Ok(())
 /// });
 /// ```
-pub fn get_matches(
-	cli:&Config,
-	package_info:&PackageInfo,
-) -> crate::Result<Matches> {
-	let about = cli
-		.description()
-		.unwrap_or(&package_info.description.to_string())
-		.to_string();
+pub fn get_matches(cli:&Config, package_info:&PackageInfo) -> crate::Result<Matches> {
+	let about = cli.description().unwrap_or(&package_info.description.to_string()).to_string();
 	let version = package_info.version.to_string();
-	let app = get_app(
-		package_info,
-		version,
-		package_info.name.clone(),
-		Some(&about),
-		cli,
-	);
+	let app = get_app(package_info, version, package_info.name.clone(), Some(&about), cli);
 	match app.try_get_matches() {
 		Ok(matches) => Ok(get_matches_internal(cli, &matches)),
 		Err(e) => {
@@ -106,18 +92,13 @@ pub fn get_matches(
 					let help_text = e.to_string();
 					matches.args.insert(
 						"help".to_string(),
-						ArgData {
-							value:Value::String(help_text),
-							occurrences:0,
-						},
+						ArgData { value:Value::String(help_text), occurrences:0 },
 					);
 					Ok(matches)
 				},
 				ErrorKind::DisplayVersion => {
 					let mut matches = Matches::default();
-					matches
-						.args
-						.insert("version".to_string(), Default::default());
+					matches.args.insert("version".to_string(), Default::default());
 					Ok(matches)
 				},
 				_ => Err(e.into()),
@@ -170,8 +151,7 @@ fn map_matches(config:&Config, matches:&ArgMatches, cli_matches:&mut Matches) {
 				(occurrences, Value::Bool(occurrences > 0))
 			};
 
-			cli_matches
-				.set_arg(arg.name.clone(), ArgData { value, occurrences });
+			cli_matches.set_arg(arg.name.clone(), ArgData { value, occurrences });
 		}
 	}
 }
@@ -183,9 +163,7 @@ fn get_app(
 	about:Option<&String>,
 	config:&Config,
 ) -> Command {
-	let mut app = Command::new(command_name)
-		.author(package_info.authors)
-		.version(version.clone());
+	let mut app = Command::new(command_name).author(package_info.authors).version(version.clone());
 
 	if let Some(about) = about {
 		app = app.about(about);
@@ -249,10 +227,7 @@ fn get_arg(arg_name:String, arg:&Arg) -> ClapArg {
 
 	if let Some(values) = &arg.possible_values {
 		clap_arg = clap_arg.value_parser(PossibleValuesParser::new(
-			values
-				.iter()
-				.map(PossibleValue::new)
-				.collect::<Vec<PossibleValue>>(),
+			values.iter().map(PossibleValue::new).collect::<Vec<PossibleValue>>(),
 		));
 	}
 
@@ -263,16 +238,9 @@ fn get_arg(arg_name:String, arg:&Arg) -> ClapArg {
 		(None, None) => clap_arg,
 	};
 	clap_arg = clap_arg.required(arg.required);
-	clap_arg = bind_string_arg!(
-		arg,
-		clap_arg,
-		required_unless_present,
-		required_unless_present
-	);
-	clap_arg =
-		bind_string_slice_arg!(arg, clap_arg, required_unless_present_all);
-	clap_arg =
-		bind_string_slice_arg!(arg, clap_arg, required_unless_present_any);
+	clap_arg = bind_string_arg!(arg, clap_arg, required_unless_present, required_unless_present);
+	clap_arg = bind_string_slice_arg!(arg, clap_arg, required_unless_present_all);
+	clap_arg = bind_string_slice_arg!(arg, clap_arg, required_unless_present_any);
 	clap_arg = bind_string_arg!(arg, clap_arg, conflicts_with, conflicts_with);
 	if let Some(value) = &arg.conflicts_with_all {
 		clap_arg = clap_arg.conflicts_with_all(value);

@@ -88,9 +88,7 @@ pub fn exe_extension() -> &'static str { std::env::consts::EXE_EXTENSION }
 pub fn locale() -> Option<String> { sys_locale::get_locale() }
 
 /// Returns the current operating system hostname.
-pub fn hostname() -> String {
-	gethostname::gethostname().to_string_lossy().to_string()
-}
+pub fn hostname() -> String { gethostname::gethostname().to_string_lossy().to_string() }
 
 #[derive(Template)]
 #[default_template("./init.js")]
@@ -129,9 +127,6 @@ pub fn init<R:Runtime>() -> TauriPlugin<R> {
 
 	Builder::new("os")
 		.js_init_script(init_js.to_string())
-		.invoke_handler(tauri::generate_handler![
-			commands::locale,
-			commands::hostname
-		])
+		.invoke_handler(tauri::generate_handler![commands::locale, commands::hostname])
 		.build()
 }

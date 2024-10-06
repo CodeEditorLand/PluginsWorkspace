@@ -56,9 +56,7 @@ impl FilePath {
 	pub fn into_path(self) -> Result<PathBuf> {
 		match self {
 			Self::Url(url) => {
-				url.to_file_path()
-					.map(PathBuf::from)
-					.map_err(|_| Error::InvalidPathUrl)
+				url.to_file_path().map(PathBuf::from).map_err(|_| Error::InvalidPathUrl)
 			},
 			Self::Path(p) => Ok(p),
 		}
@@ -98,9 +96,7 @@ impl SafeFilePath {
 	pub fn into_path(self) -> Result<PathBuf> {
 		match self {
 			Self::Url(url) => {
-				url.to_file_path()
-					.map(PathBuf::from)
-					.map_err(|_| Error::InvalidPathUrl)
+				url.to_file_path().map(PathBuf::from).map_err(|_| Error::InvalidPathUrl)
 			},
 			Self::Path(p) => Ok(p.as_ref().to_owned()),
 		}
@@ -115,12 +111,7 @@ impl SafeFilePath {
 			Self::Url(url) => Self::Url(url),
 			Self::Path(p) => {
 				// Safe to unwrap since it was a safe file path already
-				Self::Path(
-					SafePathBuf::new(
-						dunce::simplified(p.as_ref()).to_path_buf(),
-					)
-					.unwrap(),
-				)
+				Self::Path(SafePathBuf::new(dunce::simplified(p.as_ref()).to_path_buf()).unwrap())
 			},
 		}
 	}
@@ -153,18 +144,11 @@ impl<'de> serde::Deserialize<'de> for FilePath {
 		impl<'de> serde::de::Visitor<'de> for FilePathVisitor {
 			type Value = FilePath;
 
-			fn expecting(
-				&self,
-				formatter:&mut std::fmt::Formatter,
-			) -> std::fmt::Result {
-				formatter
-					.write_str("a string representing an file URL or a path")
+			fn expecting(&self, formatter:&mut std::fmt::Formatter) -> std::fmt::Result {
+				formatter.write_str("a string representing an file URL or a path")
 			}
 
-			fn visit_str<E>(
-				self,
-				s:&str,
-			) -> std::result::Result<Self::Value, E>
+			fn visit_str<E>(self, s:&str) -> std::result::Result<Self::Value, E>
 			where
 				E: serde::de::Error, {
 				FilePath::from_str(s).map_err(|e| {
@@ -189,18 +173,11 @@ impl<'de> serde::Deserialize<'de> for SafeFilePath {
 		impl<'de> serde::de::Visitor<'de> for SafeFilePathVisitor {
 			type Value = SafeFilePath;
 
-			fn expecting(
-				&self,
-				formatter:&mut std::fmt::Formatter,
-			) -> std::fmt::Result {
-				formatter
-					.write_str("a string representing an file URL or a path")
+			fn expecting(&self, formatter:&mut std::fmt::Formatter) -> std::fmt::Result {
+				formatter.write_str("a string representing an file URL or a path")
 			}
 
-			fn visit_str<E>(
-				self,
-				s:&str,
-			) -> std::result::Result<Self::Value, E>
+			fn visit_str<E>(self, s:&str) -> std::result::Result<Self::Value, E>
 			where
 				E: serde::de::Error, {
 				SafeFilePath::from_str(s).map_err(|e| {
@@ -239,9 +216,7 @@ impl FromStr for SafeFilePath {
 			}
 		}
 
-		SafePathBuf::new(s.into())
-			.map(SafeFilePath::Path)
-			.map_err(Error::UnsafePathBuf)
+		SafePathBuf::new(s.into()).map(SafeFilePath::Path).map_err(Error::UnsafePathBuf)
 	}
 }
 
@@ -253,9 +228,7 @@ impl TryFrom<PathBuf> for SafeFilePath {
 	type Error = Error;
 
 	fn try_from(value:PathBuf) -> Result<Self> {
-		SafePathBuf::new(value)
-			.map(SafeFilePath::Path)
-			.map_err(Error::UnsafePathBuf)
+		SafePathBuf::new(value).map(SafeFilePath::Path).map_err(Error::UnsafePathBuf)
 	}
 }
 
@@ -323,9 +296,7 @@ impl TryFrom<FilePath> for SafeFilePath {
 		match value {
 			FilePath::Url(url) => Ok(SafeFilePath::Url(url)),
 			FilePath::Path(p) => {
-				SafePathBuf::new(p)
-					.map(SafeFilePath::Path)
-					.map_err(Error::UnsafePathBuf)
+				SafePathBuf::new(p).map(SafeFilePath::Path).map_err(Error::UnsafePathBuf)
 			},
 		}
 	}

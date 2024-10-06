@@ -15,10 +15,7 @@ fn path_or_err<P:Into<FilePath>>(p:P) -> std::io::Result<PathBuf> {
 		FilePath::Path(p) => Ok(p),
 		FilePath::Url(u) if u.scheme() == "file" => {
 			u.to_file_path().map_err(|_| {
-				std::io::Error::new(
-					std::io::ErrorKind::InvalidInput,
-					"invalid file URL",
-				)
+				std::io::Error::new(std::io::ErrorKind::InvalidInput, "invalid file URL")
 			})
 		},
 		FilePath::Url(_) => {

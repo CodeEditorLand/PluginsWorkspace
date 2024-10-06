@@ -23,12 +23,7 @@ use futures_core::future::BoxFuture;
 use serde::{Deserialize, Serialize};
 use sqlx::{
 	error::BoxDynError,
-	migrate::{
-		Migration as SqlxMigration,
-		MigrationSource,
-		MigrationType,
-		Migrator,
-	},
+	migrate::{Migration as SqlxMigration, MigrationSource, MigrationType, Migrator},
 };
 use tauri::{
 	plugin::{Builder as PluginBuilder, TauriPlugin},
@@ -51,11 +46,7 @@ pub(crate) enum LastInsertId {
 	MySql(u64),
 	#[cfg(feature = "postgres")]
 	Postgres(()),
-	#[cfg(not(any(
-		feature = "sqlite",
-		feature = "mysql",
-		feature = "postgres"
-	)))]
+	#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 	None,
 }
 
@@ -95,10 +86,7 @@ pub struct Migration {
 struct MigrationList(Vec<Migration>);
 
 impl MigrationSource<'static> for MigrationList {
-	fn resolve(
-		self,
-	) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>>
-	{
+	fn resolve(self) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>> {
 		Box::pin(async move {
 			let mut migrations = Vec::new();
 			for migration in self.0 {
@@ -125,14 +113,10 @@ pub struct Builder {
 
 impl Builder {
 	pub fn new() -> Self {
-		#[cfg(not(any(
-			feature = "sqlite",
-			feature = "mysql",
-			feature = "postgres"
-		)))]
+		#[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
 		eprintln!(
-			"No sql driver enabled. Please set at least one of the \
-			 \"sqlite\", \"mysql\", \"postgres\" feature flags."
+			"No sql driver enabled. Please set at least one of the \"sqlite\", \"mysql\", \
+			 \"postgres\" feature flags."
 		);
 
 		Self::default()
@@ -140,11 +124,7 @@ impl Builder {
 
 	/// Add migrations to a database.
 	#[must_use]
-	pub fn add_migrations(
-		mut self,
-		db_url:&str,
-		migrations:Vec<Migration>,
-	) -> Self {
+	pub fn add_migrations(mut self, db_url:&str, migrations:Vec<Migration>) -> Self {
 		self.migrations
 			.get_or_insert(Default::default())
 			.insert(db_url.to_string(), MigrationList(migrations));
@@ -169,9 +149,7 @@ impl Builder {
 					for db in config.preload {
 						let pool = DbPool::connect(&db, app).await?;
 
-						if let Some(migrations) =
-							self.migrations.as_mut().unwrap().remove(&db)
-						{
+						if let Some(migrations) = self.migrations.as_mut().unwrap().remove(&db) {
 							let migrator = Migrator::new(migrations).await?;
 							pool.migrate(&migrator).await?;
 						}
@@ -181,9 +159,7 @@ impl Builder {
 					drop(lock);
 
 					app.manage(instances);
-					app.manage(Migrations(Mutex::new(
-						self.migrations.take().unwrap_or_default(),
-					)));
+					app.manage(Migrations(Mutex::new(self.migrations.take().unwrap_or_default())));
 
 					Ok(())
 				})

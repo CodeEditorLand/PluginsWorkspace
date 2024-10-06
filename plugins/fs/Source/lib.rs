@@ -318,10 +318,7 @@ impl OpenOptions {
 }
 
 impl<R:Runtime> Fs<R> {
-	pub fn read_to_string<P:Into<FilePath>>(
-		&self,
-		path:P,
-	) -> std::io::Result<String> {
+	pub fn read_to_string<P:Into<FilePath>>(&self, path:P) -> std::io::Result<String> {
 		let mut s = String::new();
 		self.open(path, OpenOptions { read:true, ..Default::default() })?
 			.read_to_string(&mut s)?;
@@ -373,9 +370,7 @@ pub trait FsExt<R:Runtime> {
 impl<R:Runtime, T:Manager<R>> FsExt<R> for T {
 	fn fs_scope(&self) -> &Scope { self.state::<Scope>().inner() }
 
-	fn try_fs_scope(&self) -> Option<&Scope> {
-		self.try_state::<Scope>().map(|s| s.inner())
-	}
+	fn try_fs_scope(&self) -> Option<&Scope> { self.try_state::<Scope>().map(|s| s.inner()) }
 
 	fn fs(&self) -> &Fs<R> { self.state::<Fs<R>>().inner() }
 }
@@ -413,10 +408,8 @@ pub fn init<R:Runtime>() -> TauriPlugin<R, Option<config::Config>> {
 		])
 		.setup(|app, api| {
 			let mut scope = Scope::default();
-			scope.require_literal_leading_dot = api
-				.config()
-				.as_ref()
-				.and_then(|c| c.require_literal_leading_dot);
+			scope.require_literal_leading_dot =
+				api.config().as_ref().and_then(|c| c.require_literal_leading_dot);
 
 			#[cfg(target_os = "android")]
 			{
@@ -432,11 +425,7 @@ pub fn init<R:Runtime>() -> TauriPlugin<R, Option<config::Config>> {
 		.on_event(|app, event| {
 			if let RunEvent::WindowEvent {
 				label: _,
-				event:
-					WindowEvent::DragDrop(DragDropEvent::Drop {
-						paths,
-						position: _,
-					}),
+				event: WindowEvent::DragDrop(DragDropEvent::Drop { paths, position: _ }),
 				..
 			} = event
 			{

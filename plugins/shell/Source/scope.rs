@@ -71,33 +71,21 @@ impl ScopeObject for ScopeAllowedCommand {
 		app:&tauri::AppHandle<R>,
 		raw:tauri::utils::acl::Value,
 	) -> Result<Self, Self::Error> {
-		let scope =
-			serde_json::from_value::<crate::scope_entry::Entry>(raw.into())?;
+		let scope = serde_json::from_value::<crate::scope_entry::Entry>(raw.into())?;
 
 		let args = match scope.args.clone() {
 			crate::scope_entry::ShellAllowedArgs::Flag(true) => None,
-			crate::scope_entry::ShellAllowedArgs::Flag(false) => {
-				Some(Vec::new())
-			},
+			crate::scope_entry::ShellAllowedArgs::Flag(false) => Some(Vec::new()),
 			crate::scope_entry::ShellAllowedArgs::List(list) => {
 				let list = list.into_iter().map(|arg| {
 					match arg {
 						crate::scope_entry::ShellAllowedArg::Fixed(fixed) => {
 							crate::scope::ScopeAllowedArg::Fixed(fixed)
 						},
-						crate::scope_entry::ShellAllowedArg::Var {
-							validator,
-							raw,
-						} => {
-							let regex = if raw {
-								validator
-							} else {
-								format!("^{validator}$")
-							};
-							let validator =
-								Regex::new(&regex).unwrap_or_else(|e| {
-									panic!("invalid regex {regex}: {e}")
-								});
+						crate::scope_entry::ShellAllowedArg::Var { validator, raw } => {
+							let regex = if raw { validator } else { format!("^{validator}$") };
+							let validator = Regex::new(&regex)
+								.unwrap_or_else(|e| panic!("invalid regex {regex}: {e}"));
 							crate::scope::ScopeAllowedArg::Var { validator }
 						},
 					}
@@ -158,8 +146,8 @@ pub enum Error {
 
 	/// The sidecar program validated but failed to find the sidecar path.
 	#[error(
-		"The scoped sidecar command was validated, but failed to create the \
-		 path to the command: {0}"
+		"The scoped sidecar command was validated, but failed to create the path to the command: \
+		 {0}"
 	)]
 	Sidecar(String),
 
@@ -169,15 +157,15 @@ pub enum Error {
 
 	/// A command variable has no value set in the arguments.
 	#[error(
-		"Scoped command argument at position {0} must match regex validation \
-		 {1} but it was not found"
+		"Scoped command argument at position {0} must match regex validation {1} but it was not \
+		 found"
 	)]
 	MissingVar(usize, String),
 
 	/// At least one argument did not pass input validation.
 	#[error(
-		"Scoped command argument at position {index} was found, but failed \
-		 regex validation {validation}"
+		"Scoped command argument at position {index} was found, but failed regex validation \
+		 {validation}"
 	)]
 	Validation {
 		/// Index of the variable.
@@ -208,10 +196,7 @@ impl OpenScope {
 		// ensure we pass validation if the configuration has one
 		if let Some(regex) = &self.open {
 			if !regex.is_match(path) {
-				return Err(Error::Validation {
-					index:0,
-					validation:regex.as_str().into(),
-				});
+				return Err(Error::Validation { index:0, validation:regex.as_str().into() });
 			}
 		}
 
@@ -238,11 +223,7 @@ impl<'a> ShellScope<'a> {
 	}
 
 	/// Validates argument inputs and creates a Tauri [`Command`].
-	pub fn prepare(
-		&self,
-		command_name:&str,
-		args:ExecuteArgs,
-	) -> Result<Command, Error> {
+	pub fn prepare(&self, command_name:&str, args:ExecuteArgs) -> Result<Command, Error> {
 		self._prepare(command_name, args, None)
 	}
 
@@ -253,8 +234,7 @@ impl<'a> ShellScope<'a> {
 		args:ExecuteArgs,
 		sidecar:Option<&str>,
 	) -> Result<Command, Error> {
-		let command = match self.scopes.iter().find(|s| s.name == command_name)
-		{
+		let command = match self.scopes.iter().find(|s| s.name == command_name) {
 			Some(command) => command,
 			None => return Err(Error::NotFound(command_name.into())),
 		};
@@ -272,18 +252,11 @@ impl<'a> ShellScope<'a> {
 					.enumerate()
 					.map(|(i, arg)| {
 						match arg {
-							ScopeAllowedArg::Fixed(fixed) => {
-								Ok(fixed.to_string())
-							},
+							ScopeAllowedArg::Fixed(fixed) => Ok(fixed.to_string()),
 							ScopeAllowedArg::Var { validator } => {
 								let value = args
 									.get(i)
-									.ok_or_else(|| {
-										Error::MissingVar(
-											i,
-											validator.to_string(),
-										)
-									})?
+									.ok_or_else(|| Error::MissingVar(i, validator.to_string()))?
 									.to_string();
 								if validator.is_match(&value) {
 									Ok(value)
@@ -298,24 +271,17 @@ impl<'a> ShellScope<'a> {
 					})
 					.collect()
 			},
-			(Some(list), arg)
-				if arg.is_empty()
-					&& list.iter().all(ScopeAllowedArg::is_fixed) =>
-			{
+			(Some(list), arg) if arg.is_empty() && list.iter().all(ScopeAllowedArg::is_fixed) => {
 				list.iter()
 					.map(|arg| {
 						match arg {
-							ScopeAllowedArg::Fixed(fixed) => {
-								Ok(fixed.to_string())
-							},
+							ScopeAllowedArg::Fixed(fixed) => Ok(fixed.to_string()),
 							_ => unreachable!(),
 						}
 					})
 					.collect()
 			},
-			(Some(list), _) if list.is_empty() => {
-				Err(Error::InvalidInput(command_name.into()))
-			},
+			(Some(list), _) if list.is_empty() => Err(Error::InvalidInput(command_name.into())),
 			(Some(_), _) => Err(Error::InvalidInput(command_name.into())),
 		}?;
 
@@ -331,8 +297,7 @@ impl<'a> ShellScope<'a> {
 			})
 			.unwrap_or_else(|| command.command.to_string_lossy().into_owned());
 		let command = if command.sidecar {
-			Command::new_sidecar(command_s)
-				.map_err(|e| Error::Sidecar(e.to_string()))?
+			Command::new_sidecar(command_s).map_err(|e| Error::Sidecar(e.to_string()))?
 		} else {
 			Command::new(command_s)
 		};

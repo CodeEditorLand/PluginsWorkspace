@@ -67,11 +67,7 @@ impl Default for WindowsUpdateInstallMode {
 #[serde(rename_all = "camelCase")]
 pub struct WindowsConfig {
 	/// Additional arguments given to the NSIS or WiX installer.
-	#[serde(
-		default,
-		alias = "installer-args",
-		deserialize_with = "deserialize_os_string"
-	)]
+	#[serde(default, alias = "installer-args", deserialize_with = "deserialize_os_string")]
 	pub installer_args:Vec<OsString>,
 	/// Updating mode, defaults to `passive` mode.
 	///
@@ -80,9 +76,7 @@ pub struct WindowsConfig {
 	pub install_mode:WindowsUpdateInstallMode,
 }
 
-fn deserialize_os_string<'de, D>(
-	deserializer:D,
-) -> Result<Vec<OsString>, D::Error>
+fn deserialize_os_string<'de, D>(deserializer:D) -> Result<Vec<OsString>, D::Error>
 where
 	D: Deserializer<'de>, {
 	Ok(Vec::<String>::deserialize(deserializer)?
@@ -122,15 +116,11 @@ impl<'de> Deserialize<'de> for Config {
 
 		let config = Config::deserialize(deserializer)?;
 
-		validate_endpoints(
-			&config.endpoints,
-			config.dangerous_insecure_transport_protocol,
-		)
-		.map_err(serde::de::Error::custom)?;
+		validate_endpoints(&config.endpoints, config.dangerous_insecure_transport_protocol)
+			.map_err(serde::de::Error::custom)?;
 
 		Ok(Self {
-			dangerous_insecure_transport_protocol:config
-				.dangerous_insecure_transport_protocol,
+			dangerous_insecure_transport_protocol:config.dangerous_insecure_transport_protocol,
 			endpoints:config.endpoints,
 			pubkey:config.pubkey,
 			windows:config.windows,
@@ -148,16 +138,13 @@ pub(crate) fn validate_endpoints(
 				#[cfg(debug_assertions)]
 				{
 					eprintln!(
-						"[\x1b[33mWARNING\x1b[0m] The updater endpoint \
-						 \"{url}\" doesn't use `https` protocol. This is \
-						 allowed in development but will fail in release \
-						 builds."
+						"[\x1b[33mWARNING\x1b[0m] The updater endpoint \"{url}\" doesn't use \
+						 `https` protocol. This is allowed in development but will fail in \
+						 release builds."
 					);
 					eprintln!(
-						"[\x1b[33mWARNING\x1b[0m] if this is a desired \
-						 behavior, you can enable \
-						 `dangerousInsecureTransportProtocol` in the plugin \
-						 configuration"
+						"[\x1b[33mWARNING\x1b[0m] if this is a desired behavior, you can enable \
+						 `dangerousInsecureTransportProtocol` in the plugin configuration"
 					);
 				}
 				#[cfg(not(debug_assertions))]

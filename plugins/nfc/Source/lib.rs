@@ -49,9 +49,7 @@ impl<R:Runtime> Nfc<R> {
 	}
 
 	pub fn write(&self, records:Vec<NfcRecord>) -> crate::Result<()> {
-		self.0
-			.run_mobile_plugin("write", WriteRequest { records })
-			.map_err(Into::into)
+		self.0.run_mobile_plugin("write", WriteRequest { records }).map_err(Into::into)
 	}
 }
 

@@ -15,16 +15,13 @@ pub struct AssociatedDomain {
 	pub path_prefix:Vec<String>,
 }
 
-fn deserialize_associated_host<'de, D>(
-	deserializer:D,
-) -> Result<String, D::Error>
+fn deserialize_associated_host<'de, D>(deserializer:D) -> Result<String, D::Error>
 where
 	D: Deserializer<'de>, {
 	let host = String::deserialize(deserializer)?;
 	if let Some((scheme, _host)) = host.split_once("://") {
 		Err(serde::de::Error::custom(format!(
-			"host `{host}` cannot start with a scheme, please remove the \
-			 `{scheme}://` prefix"
+			"host `{host}` cannot start with a scheme, please remove the `{scheme}://` prefix"
 		)))
 	} else {
 		Ok(host)
@@ -61,9 +58,7 @@ impl DesktopProtocol {
 		match self {
 			Self::One(protocol) => protocol.schemes.contains(scheme),
 			Self::List(protocols) => {
-				protocols
-					.iter()
-					.any(|protocol| protocol.schemes.contains(scheme))
+				protocols.iter().any(|protocol| protocol.schemes.contains(scheme))
 			},
 		}
 	}
@@ -73,10 +68,7 @@ impl DesktopProtocol {
 		match self {
 			Self::One(protocol) => protocol.schemes.clone(),
 			Self::List(protocols) => {
-				protocols
-					.iter()
-					.flat_map(|protocol| protocol.schemes.clone())
-					.collect()
+				protocols.iter().flat_map(|protocol| protocol.schemes.clone()).collect()
 			},
 		}
 	}

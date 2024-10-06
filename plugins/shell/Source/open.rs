@@ -63,8 +63,7 @@ impl<'de> Deserialize<'de> for Program {
 	where
 		D: Deserializer<'de>, {
 		let s = String::deserialize(deserializer)?;
-		Program::from_str(&s)
-			.map_err(|e| serde::de::Error::custom(e.to_string()))
+		Program::from_str(&s).map_err(|e| serde::de::Error::custom(e.to_string()))
 	}
 }
 
@@ -119,10 +118,6 @@ impl Program {
 /// 	Ok(())
 /// });
 /// ```
-pub fn open<P:AsRef<str>>(
-	scope:&OpenScope,
-	path:P,
-	with:Option<Program>,
-) -> crate::Result<()> {
+pub fn open<P:AsRef<str>>(scope:&OpenScope, path:P, with:Option<Program>) -> crate::Result<()> {
 	scope.open(path.as_ref(), with).map_err(Into::into)
 }

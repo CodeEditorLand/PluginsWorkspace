@@ -94,12 +94,8 @@ enum LocationDto {
 impl From<LocationDto> for Location {
 	fn from(dto:LocationDto) -> Location {
 		match dto {
-			LocationDto::Generic { vault, record } => {
-				Location::generic(vault, record)
-			},
-			LocationDto::Counter { vault, counter } => {
-				Location::counter(vault, counter)
-			},
+			LocationDto::Generic { vault, record } => Location::generic(vault, record),
+			LocationDto::Counter { vault, counter } => Location::counter(vault, counter),
 		}
 	}
 }
@@ -115,12 +111,8 @@ enum Slip10DeriveInputDto {
 impl From<Slip10DeriveInputDto> for Slip10DeriveInput {
 	fn from(dto:Slip10DeriveInputDto) -> Slip10DeriveInput {
 		match dto {
-			Slip10DeriveInputDto::Seed(location) => {
-				Slip10DeriveInput::Seed(location.into())
-			},
-			Slip10DeriveInputDto::Key(location) => {
-				Slip10DeriveInput::Key(location.into())
-			},
+			Slip10DeriveInputDto::Seed(location) => Slip10DeriveInput::Seed(location.into()),
+			Slip10DeriveInputDto::Key(location) => Slip10DeriveInput::Key(location.into()),
 		}
 	}
 }
@@ -152,10 +144,7 @@ impl<'de> Deserialize<'de> for KeyType {
 				formatter.write_str("ed25519 or x25519")
 			}
 
-			fn visit_str<E>(
-				self,
-				value:&str,
-			) -> std::result::Result<Self::Value, E>
+			fn visit_str<E>(self, value:&str) -> std::result::Result<Self::Value, E>
 			where
 				E: serde::de::Error, {
 				match value.to_lowercase().as_str() {
@@ -226,17 +215,13 @@ impl From<ProcedureDto> for StrongholdProcedure {
 			ProcedureDto::BIP39Recover { mnemonic, passphrase, output } => {
 				StrongholdProcedure::BIP39Recover(BIP39Recover {
 					mnemonic:bip39::Mnemonic::from(mnemonic),
-					passphrase:bip39::Passphrase::from(
-						passphrase.unwrap_or_default(),
-					),
+					passphrase:bip39::Passphrase::from(passphrase.unwrap_or_default()),
 					output:output.into(),
 				})
 			},
 			ProcedureDto::BIP39Generate { passphrase, output } => {
 				StrongholdProcedure::BIP39Generate(BIP39Generate {
-					passphrase:bip39::Passphrase::from(
-						passphrase.unwrap_or_default(),
-					),
+					passphrase:bip39::Passphrase::from(passphrase.unwrap_or_default()),
 					output:output.into(),
 					language:MnemonicLanguage::English,
 				})
@@ -274,10 +259,7 @@ async fn initialize(
 }
 
 #[tauri::command]
-async fn destroy(
-	collection:State<'_, StrongholdCollection>,
-	snapshot_path:PathBuf,
-) -> Result<()> {
+async fn destroy(collection:State<'_, StrongholdCollection>, snapshot_path:PathBuf) -> Result<()> {
 	let mut collection = collection.0.lock().unwrap();
 	if let Some(stronghold) = collection.remove(&snapshot_path) {
 		if let Err(e) = stronghold.save() {
@@ -289,10 +271,7 @@ async fn destroy(
 }
 
 #[tauri::command]
-async fn save(
-	collection:State<'_, StrongholdCollection>,
-	snapshot_path:PathBuf,
-) -> Result<()> {
+async fn save(collection:State<'_, StrongholdCollection>, snapshot_path:PathBuf) -> Result<()> {
 	let collection = collection.0.lock().unwrap();
 	if let Some(stronghold) = collection.get(&snapshot_path) {
 		stronghold.save()?;
@@ -372,10 +351,7 @@ async fn save_secret(
 	let client = get_client(collection, snapshot_path, client)?;
 	client
 		.vault(&vault)
-		.write_secret(
-			Location::generic(vault, record_path),
-			Zeroizing::new(secret),
-		)
+		.write_secret(Location::generic(vault, record_path), Zeroizing::new(secret))
 		.map_err(Into::into)
 }
 
@@ -388,11 +364,7 @@ async fn remove_secret(
 	record_path:BytesDto,
 ) -> Result<()> {
 	let client = get_client(collection, snapshot_path, client)?;
-	client
-		.vault(vault)
-		.delete_secret(record_path)
-		.map(|_| ())
-		.map_err(Into::into)
+	client.vault(vault).delete_secret(record_path).map(|_| ()).map_err(Into::into)
 }
 
 #[tauri::command]
@@ -445,9 +417,7 @@ pub struct Builder {
 }
 
 impl Builder {
-	pub fn new<F:Fn(&str) -> Vec<u8> + Send + Sync + 'static>(
-		password_hash_function:F,
-	) -> Self {
+	pub fn new<F:Fn(&str) -> Vec<u8> + Send + Sync + 'static>(password_hash_function:F) -> Self {
 		Self {
 			password_hash_function:PasswordHashFunctionKind::Custom(Box::new(
 				password_hash_function,
@@ -467,47 +437,35 @@ impl Builder {
 	/// 		.app_local_data_dir()
 	/// 		.expect("could not resolve app local data path")
 	/// 		.join("salt.txt");
-	/// 	app.handle().plugin(
-	/// 		tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build(),
-	/// 	)?;
+	/// 	app.handle()
+	/// 		.plugin(tauri_plugin_stronghold::Builder::with_argon2(&salt_path).build())?;
 	/// 	Ok(())
 	/// });
 	/// ```
 	#[cfg(feature = "kdf")]
 	pub fn with_argon2(salt_path:&std::path::Path) -> Self {
-		Self {
-			password_hash_function:PasswordHashFunctionKind::Argon2(
-				salt_path.to_owned(),
-			),
-		}
+		Self { password_hash_function:PasswordHashFunctionKind::Argon2(salt_path.to_owned()) }
 	}
 
 	pub fn build<R:Runtime>(self) -> TauriPlugin<R> {
 		let password_hash_function = self.password_hash_function;
 
-		let plugin_builder =
-			PluginBuilder::new("stronghold").setup(move |app, _api| {
-				app.manage(StrongholdCollection::default());
-				app.manage(PasswordHashFunction(
-					match password_hash_function {
-						#[cfg(feature = "kdf")]
-						PasswordHashFunctionKind::Argon2(path) => {
-							Box::new(move |p| {
-								kdf::KeyDerivation::argon2(p, &path)
-							})
-						},
-						PasswordHashFunctionKind::Custom(f) => f,
-					},
-				));
-				Ok(())
-			});
+		let plugin_builder = PluginBuilder::new("stronghold").setup(move |app, _api| {
+			app.manage(StrongholdCollection::default());
+			app.manage(PasswordHashFunction(match password_hash_function {
+				#[cfg(feature = "kdf")]
+				PasswordHashFunctionKind::Argon2(path) => {
+					Box::new(move |p| kdf::KeyDerivation::argon2(p, &path))
+				},
+				PasswordHashFunctionKind::Custom(f) => f,
+			}));
+			Ok(())
+		});
 
 		Builder::invoke_stronghold_handlers_and_build(plugin_builder)
 	}
 
-	fn invoke_stronghold_handlers_and_build<R:Runtime>(
-		builder:PluginBuilder<R>,
-	) -> TauriPlugin<R> {
+	fn invoke_stronghold_handlers_and_build<R:Runtime>(builder:PluginBuilder<R>) -> TauriPlugin<R> {
 		builder
 			.invoke_handler(tauri::generate_handler![
 				initialize,

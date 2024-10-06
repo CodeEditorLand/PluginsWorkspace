@@ -13,10 +13,7 @@ pub fn init<R:Runtime, C:DeserializeOwned>(
 	app:&AppHandle<R>,
 	_api:PluginApi<R, C>,
 ) -> crate::Result<Clipboard<R>> {
-	Ok(Clipboard {
-		app:app.clone(),
-		clipboard:arboard::Clipboard::new().map(Mutex::new),
-	})
+	Ok(Clipboard { app:app.clone(), clipboard:arboard::Clipboard::new().map(Mutex::new) })
 }
 
 /// Access to the clipboard APIs.
@@ -27,14 +24,9 @@ pub struct Clipboard<R:Runtime> {
 }
 
 impl<R:Runtime> Clipboard<R> {
-	pub fn write_text<'a, T:Into<Cow<'a, str>>>(
-		&self,
-		text:T,
-	) -> crate::Result<()> {
+	pub fn write_text<'a, T:Into<Cow<'a, str>>>(&self, text:T) -> crate::Result<()> {
 		match &self.clipboard {
-			Ok(clipboard) => {
-				clipboard.lock().unwrap().set_text(text).map_err(Into::into)
-			},
+			Ok(clipboard) => clipboard.lock().unwrap().set_text(text).map_err(Into::into),
 			Err(e) => Err(crate::Error::Clipboard(e.to_string())),
 		}
 	}
@@ -72,22 +64,14 @@ impl<R:Runtime> Clipboard<R> {
 		alt_text:Option<T>,
 	) -> crate::Result<()> {
 		match &self.clipboard {
-			Ok(clipboard) => {
-				clipboard
-					.lock()
-					.unwrap()
-					.set_html(html, alt_text)
-					.map_err(Into::into)
-			},
+			Ok(clipboard) => clipboard.lock().unwrap().set_html(html, alt_text).map_err(Into::into),
 			Err(e) => Err(crate::Error::Clipboard(e.to_string())),
 		}
 	}
 
 	pub fn clear(&self) -> crate::Result<()> {
 		match &self.clipboard {
-			Ok(clipboard) => {
-				clipboard.lock().unwrap().clear().map_err(Into::into)
-			},
+			Ok(clipboard) => clipboard.lock().unwrap().clear().map_err(Into::into),
 			Err(e) => Err(crate::Error::Clipboard(e.to_string())),
 		}
 	}
@@ -105,11 +89,7 @@ impl<R:Runtime> Clipboard<R> {
 					image::ExtendedColorType::Rgba8,
 				)?;
 
-				let image = Image::new_owned(
-					buffer,
-					image.width as u32,
-					image.height as u32,
-				);
+				let image = Image::new_owned(buffer, image.width as u32, image.height as u32);
 				Ok(image)
 			},
 			Err(e) => Err(crate::Error::Clipboard(e.to_string())),

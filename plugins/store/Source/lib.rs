@@ -86,21 +86,13 @@ async fn get<R:Runtime>(
 }
 
 #[tauri::command]
-async fn has<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-	key:String,
-) -> Result<bool> {
+async fn has<R:Runtime>(webview:Webview<R>, rid:ResourceId, key:String) -> Result<bool> {
 	let store = webview.resources_table().get::<Store<R>>(rid)?;
 	Ok(store.has(key))
 }
 
 #[tauri::command]
-async fn delete<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-	key:String,
-) -> Result<bool> {
+async fn delete<R:Runtime>(webview:Webview<R>, rid:ResourceId, key:String) -> Result<bool> {
 	let store = webview.resources_table().get::<Store<R>>(rid)?;
 	Ok(store.delete(key))
 }
@@ -120,19 +112,13 @@ async fn reset<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> Result<()> {
 }
 
 #[tauri::command]
-async fn keys<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-) -> Result<Vec<String>> {
+async fn keys<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> Result<Vec<String>> {
 	let store = webview.resources_table().get::<Store<R>>(rid)?;
 	Ok(store.keys())
 }
 
 #[tauri::command]
-async fn values<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-) -> Result<Vec<JsonValue>> {
+async fn values<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> Result<Vec<JsonValue>> {
 	let store = webview.resources_table().get::<Store<R>>(rid)?;
 	Ok(store.values())
 }
@@ -147,10 +133,7 @@ async fn entries<R:Runtime>(
 }
 
 #[tauri::command]
-async fn length<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-) -> Result<usize> {
+async fn length<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> Result<usize> {
 	let store = webview.resources_table().get::<Store<R>>(rid)?;
 	Ok(store.length())
 }
@@ -270,8 +253,7 @@ impl<R:Runtime> Builder<R> {
 	/// tauri::Builder::default()
 	/// 	.plugin(tauri_plugin_store::Builder::default().build())
 	/// 	.setup(|app| {
-	/// 		let store =
-	/// 			tauri_plugin_store::StoreBuilder::new(app, "store.bin").build();
+	/// 		let store = tauri_plugin_store::StoreBuilder::new(app, "store.bin").build();
 	/// 		Ok(())
 	/// 	});
 	/// ```
@@ -297,8 +279,8 @@ impl<R:Runtime> Builder<R> {
 					// ignore loading errors, just use the default
 					if let Err(err) = store.load() {
 						warn!(
-							"Failed to load store {path:?} from disk: {err}. \
-							 Falling back to default values."
+							"Failed to load store {path:?} from disk: {err}. Falling back to \
+							 default values."
 						);
 					}
 				}

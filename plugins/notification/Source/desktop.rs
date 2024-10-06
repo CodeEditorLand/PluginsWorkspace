@@ -23,12 +23,9 @@ pub struct Notification<R:Runtime>(AppHandle<R>);
 
 impl<R:Runtime> crate::NotificationBuilder<R> {
 	pub fn show(self) -> crate::Result<()> {
-		let mut notification =
-			imp::Notification::new(self.app.config().identifier.clone());
+		let mut notification = imp::Notification::new(self.app.config().identifier.clone());
 
-		if let Some(title) =
-			self.data.title.or_else(|| self.app.config().product_name.clone())
-		{
+		if let Some(title) = self.data.title.or_else(|| self.app.config().product_name.clone()) {
 			notification = notification.title(title);
 		}
 		if let Some(body) = self.data.body {
@@ -49,9 +46,7 @@ impl<R:Runtime> crate::NotificationBuilder<R> {
 }
 
 impl<R:Runtime> Notification<R> {
-	pub fn builder(&self) -> NotificationBuilder<R> {
-		NotificationBuilder::new(self.0.clone())
-	}
+	pub fn builder(&self) -> NotificationBuilder<R> { NotificationBuilder::new(self.0.clone()) }
 
 	pub fn request_permission(&self) -> crate::Result<PermissionState> {
 		Ok(PermissionState::Granted)
@@ -158,8 +153,7 @@ mod imp {
 		///   enable the `windows7-compat` feature and use [`Self::notify`].
 		#[cfg_attr(
 			all(not(docsrs), feature = "windows7-compat"),
-			deprecated = "This function does not work on Windows 7. Use \
-			              `Self::notify` instead."
+			deprecated = "This function does not work on Windows 7. Use `Self::notify` instead."
 		)]
 		pub fn show(self) -> crate::Result<()> {
 			let mut notification = notify_rust::Notification::new();
@@ -177,15 +171,12 @@ mod imp {
 			#[cfg(windows)]
 			{
 				let exe = tauri::utils::platform::current_exe()?;
-				let exe_dir =
-					exe.parent().expect("failed to get exe directory");
+				let exe_dir = exe.parent().expect("failed to get exe directory");
 				let curr_dir = exe_dir.display().to_string();
 				// set the notification's System.AppUserModel.ID only when
 				// running the installed app
-				if !(curr_dir
-					.ends_with(format!("{SEP}target{SEP}debug").as_str())
-					|| curr_dir
-						.ends_with(format!("{SEP}target{SEP}release").as_str()))
+				if !(curr_dir.ends_with(format!("{SEP}target{SEP}debug").as_str())
+					|| curr_dir.ends_with(format!("{SEP}target{SEP}release").as_str()))
 				{
 					notification.app_id(&self.identifier);
 				}
@@ -230,10 +221,7 @@ mod imp {
 		#[cfg(feature = "windows7-compat")]
 		#[cfg_attr(docsrs, doc(cfg(feature = "windows7-compat")))]
 		#[allow(unused_variables)]
-		pub fn notify<R:tauri::Runtime>(
-			self,
-			app:&tauri::AppHandle<R>,
-		) -> crate::Result<()> {
+		pub fn notify<R:tauri::Runtime>(self, app:&tauri::AppHandle<R>) -> crate::Result<()> {
 			#[cfg(windows)]
 			{
 				fn is_windows_7() -> bool {
@@ -257,10 +245,7 @@ mod imp {
 		}
 
 		#[cfg(all(windows, feature = "windows7-compat"))]
-		fn notify_win7<R:tauri::Runtime>(
-			self,
-			app:&tauri::AppHandle<R>,
-		) -> crate::Result<()> {
+		fn notify_win7<R:tauri::Runtime>(self, app:&tauri::AppHandle<R>) -> crate::Result<()> {
 			let app_ = app.clone();
 			let _ = app.clone().run_on_main_thread(move || {
 				let mut notification = win7_notifications::Notification::new();
@@ -271,11 +256,7 @@ mod imp {
 					notification.summary(&title);
 				}
 				if let Some(icon) = app_.default_window_icon() {
-					notification.icon(
-						icon.rgba().to_vec(),
-						icon.width(),
-						icon.height(),
-					);
+					notification.icon(icon.rgba().to_vec(), icon.width(), icon.height());
 				}
 				let _ = notification.show();
 			});

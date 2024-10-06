@@ -53,16 +53,11 @@ impl From<String> for CommandError {
 }
 
 impl From<&str> for CommandError {
-	fn from(value:&str) -> Self {
-		Self::Anyhow(anyhow::anyhow!(value.to_string()))
-	}
+	fn from(value:&str) -> Self { Self::Anyhow(anyhow::anyhow!(value.to_string())) }
 }
 
 impl Serialize for CommandError {
-	fn serialize<S>(
-		&self,
-		serializer:S,
-	) -> std::result::Result<S::Ok, S::Error>
+	fn serialize<S>(&self, serializer:S) -> std::result::Result<S::Ok, S::Error>
 	where
 		S: Serializer, {
 		if let Self::Anyhow(err) = self {
@@ -97,10 +92,7 @@ pub fn create<R:Runtime>(
 		options.and_then(|o| o.base_dir),
 	)?;
 	let file = File::create(&resolved_path).map_err(|e| {
-		format!(
-			"failed to create file at path: {} with error: {e}",
-			resolved_path.display()
-		)
+		format!("failed to create file at path: {} with error: {e}", resolved_path.display())
 	})?;
 	let rid = webview.resources_table().add(StdFileResource::new(file));
 	Ok(rid)
@@ -153,10 +145,7 @@ pub fn open<R:Runtime>(
 }
 
 #[tauri::command]
-pub fn close<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-) -> CommandResult<()> {
+pub fn close<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> CommandResult<()> {
 	webview.resources_table().close(rid).map_err(Into::into)
 }
 
@@ -226,14 +215,12 @@ pub fn mkdir<R:Runtime>(
 	)?;
 
 	let mut builder = std::fs::DirBuilder::new();
-	builder
-		.recursive(options.as_ref().and_then(|o| o.recursive).unwrap_or(false));
+	builder.recursive(options.as_ref().and_then(|o| o.recursive).unwrap_or(false));
 
 	#[cfg(unix)]
 	{
 		use std::os::unix::fs::DirBuilderExt;
-		let mode =
-			options.as_ref().and_then(|o| o.mode).unwrap_or(0o777) & 0o777;
+		let mode = options.as_ref().and_then(|o| o.mode).unwrap_or(0o777) & 0o777;
 		builder.mode(mode);
 	}
 
@@ -269,10 +256,7 @@ fn read_dir_inner<P:AsRef<Path>>(path:P) -> crate::Result<Vec<DirEntry>> {
 			is_symlink:std::fs::symlink_metadata(&path)
 				.map(|md| md.file_type().is_symlink())
 				.unwrap_or(false),
-			name:path
-				.file_name()
-				.map(|name| name.to_string_lossy())
-				.map(|name| name.to_string()),
+			name:path.file_name().map(|name| name.to_string_lossy()).map(|name| name.to_string()),
 		});
 	}
 	Result::Ok(files_and_dirs)
@@ -296,10 +280,7 @@ pub async fn read_dir<R:Runtime>(
 
 	read_dir_inner(&resolved_path)
 		.map_err(|e| {
-			format!(
-				"failed to read directory at path: {} with error: {e}",
-				resolved_path.display()
-			)
+			format!("failed to read directory at path: {} with error: {e}", resolved_path.display())
 		})
 		.map_err(Into::into)
 }
@@ -312,11 +293,8 @@ pub async fn read<R:Runtime>(
 ) -> CommandResult<(Vec<u8>, usize)> {
 	let mut data = vec![0; len as usize];
 	let file = webview.resources_table().get::<StdFileResource>(rid)?;
-	let nread =
-		StdFileResource::with_lock(&file, |mut file| file.read(&mut data))
-			.map_err(|e| {
-				format!("faied to read bytes from file with error: {e}")
-			})?;
+	let nread = StdFileResource::with_lock(&file, |mut file| file.read(&mut data))
+		.map_err(|e| format!("faied to read bytes from file with error: {e}"))?;
 	Ok((data, nread))
 }
 
@@ -334,9 +312,7 @@ pub async fn read_file<R:Runtime>(
 		&command_scope,
 		path,
 		OpenOptions {
-			base:BaseOptions {
-				base_dir:options.as_ref().and_then(|o| o.base_dir),
-			},
+			base:BaseOptions { base_dir:options.as_ref().and_then(|o| o.base_dir) },
 			options:crate::OpenOptions { read:true, ..Default::default() },
 		},
 	)?;
@@ -344,10 +320,7 @@ pub async fn read_file<R:Runtime>(
 	let mut contents = Vec::new();
 
 	file.read_to_end(&mut contents).map_err(|e| {
-		format!(
-			"failed to read file as text at path: {} with error: {e}",
-			path.display()
-		)
+		format!("failed to read file as text at path: {} with error: {e}", path.display())
 	})?;
 
 	Ok(tauri::ipc::Response::new(contents))
@@ -367,9 +340,7 @@ pub async fn read_text_file<R:Runtime>(
 		&command_scope,
 		path,
 		OpenOptions {
-			base:BaseOptions {
-				base_dir:options.as_ref().and_then(|o| o.base_dir),
-			},
+			base:BaseOptions { base_dir:options.as_ref().and_then(|o| o.base_dir) },
 			options:crate::OpenOptions { read:true, ..Default::default() },
 		},
 	)?;
@@ -377,10 +348,7 @@ pub async fn read_text_file<R:Runtime>(
 	let mut contents = String::new();
 
 	file.read_to_string(&mut contents).map_err(|e| {
-		format!(
-			"failed to read file as text at path: {} with error: {e}",
-			path.display()
-		)
+		format!("failed to read file as text at path: {} with error: {e}", path.display())
 	})?;
 
 	Ok(contents)
@@ -405,10 +373,7 @@ pub fn read_text_file_lines<R:Runtime>(
 	)?;
 
 	let file = File::open(&resolved_path).map_err(|e| {
-		format!(
-			"failed to open file at path: {} with error: {e}",
-			resolved_path.display()
-		)
+		format!("failed to open file at path: {} with error: {e}", resolved_path.display())
 	})?;
 
 	let lines = BufReader::new(file).lines();
@@ -459,10 +424,7 @@ pub fn remove<R:Runtime>(
 	)?;
 
 	let metadata = std::fs::symlink_metadata(&resolved_path).map_err(|e| {
-		format!(
-			"failed to get metadata of path: {} with error: {e}",
-			resolved_path.display()
-		)
+		format!("failed to get metadata of path: {} with error: {e}", resolved_path.display())
 	})?;
 
 	let file_type = metadata.file_type();
@@ -494,13 +456,8 @@ pub fn remove<R:Runtime>(
 		std::fs::remove_file(&resolved_path)
 	};
 
-	res.map_err(|e| {
-		format!(
-			"failed to remove path: {} with error: {e}",
-			resolved_path.display()
-		)
-	})
-	.map_err(Into::into)
+	res.map_err(|e| format!("failed to remove path: {} with error: {e}", resolved_path.display()))
+		.map_err(Into::into)
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -573,10 +530,7 @@ pub async fn seek<R:Runtime>(
 }
 
 #[cfg(target_os = "android")]
-fn get_metadata<
-	R:Runtime,
-	F:FnOnce(&PathBuf) -> std::io::Result<std::fs::Metadata>,
->(
+fn get_metadata<R:Runtime, F:FnOnce(&PathBuf) -> std::io::Result<std::fs::Metadata>>(
 	metadata_fn:F,
 	webview:&Webview<R>,
 	global_scope:&GlobalScope<Entry>,
@@ -593,18 +547,11 @@ fn get_metadata<
 				SafeFilePath::Url(url),
 				OpenOptions {
 					base:BaseOptions { base_dir:None },
-					options:crate::OpenOptions {
-						read:true,
-						..Default::default()
-					},
+					options:crate::OpenOptions { read:true, ..Default::default() },
 				},
 			)?;
 			file.metadata().map_err(|e| {
-				format!(
-					"failed to get metadata of path: {} with error: {e}",
-					path.display()
-				)
-				.into()
+				format!("failed to get metadata of path: {} with error: {e}", path.display()).into()
 			})
 		},
 		SafeFilePath::Path(p) => {
@@ -621,10 +568,7 @@ fn get_metadata<
 }
 
 #[cfg(not(target_os = "android"))]
-fn get_metadata<
-	R:Runtime,
-	F:FnOnce(&PathBuf) -> std::io::Result<std::fs::Metadata>,
->(
+fn get_metadata<R:Runtime, F:FnOnce(&PathBuf) -> std::io::Result<std::fs::Metadata>>(
 	metadata_fn:F,
 	webview:&Webview<R>,
 	global_scope:&GlobalScope<Entry>,
@@ -632,20 +576,10 @@ fn get_metadata<
 	path:SafeFilePath,
 	options:Option<BaseOptions>,
 ) -> CommandResult<std::fs::Metadata> {
-	get_fs_metadata(
-		metadata_fn,
-		webview,
-		global_scope,
-		command_scope,
-		path,
-		options,
-	)
+	get_fs_metadata(metadata_fn, webview, global_scope, command_scope, path, options)
 }
 
-fn get_fs_metadata<
-	R:Runtime,
-	F:FnOnce(&PathBuf) -> std::io::Result<std::fs::Metadata>,
->(
+fn get_fs_metadata<R:Runtime, F:FnOnce(&PathBuf) -> std::io::Result<std::fs::Metadata>>(
 	metadata_fn:F,
 	webview:&Webview<R>,
 	global_scope:&GlobalScope<Entry>,
@@ -661,10 +595,7 @@ fn get_fs_metadata<
 		options.as_ref().and_then(|o| o.base_dir),
 	)?;
 	let metadata = metadata_fn(&resolved_path).map_err(|e| {
-		format!(
-			"failed to get metadata of path: {} with error: {e}",
-			resolved_path.display()
-		)
+		format!("failed to get metadata of path: {} with error: {e}", resolved_path.display())
 	})?;
 	Ok(metadata)
 }
@@ -709,15 +640,10 @@ pub fn lstat<R:Runtime>(
 }
 
 #[tauri::command]
-pub fn fstat<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-) -> CommandResult<FileInfo> {
+pub fn fstat<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> CommandResult<FileInfo> {
 	let file = webview.resources_table().get::<StdFileResource>(rid)?;
 	let metadata = StdFileResource::with_lock(&file, |file| file.metadata())
-		.map_err(|e| {
-			format!("failed to get metadata of file with error: {e}")
-		})?;
+		.map_err(|e| format!("failed to get metadata of file with error: {e}"))?;
 	Ok(get_stat(metadata))
 }
 
@@ -737,21 +663,12 @@ pub async fn truncate<R:Runtime>(
 		path,
 		options.as_ref().and_then(|o| o.base_dir),
 	)?;
-	let f = std::fs::OpenOptions::new()
-		.write(true)
-		.open(&resolved_path)
-		.map_err(|e| {
-			format!(
-				"failed to open file at path: {} with error: {e}",
-				resolved_path.display()
-			)
-		})?;
+	let f = std::fs::OpenOptions::new().write(true).open(&resolved_path).map_err(|e| {
+		format!("failed to open file at path: {} with error: {e}", resolved_path.display())
+	})?;
 	f.set_len(len.unwrap_or(0))
 		.map_err(|e| {
-			format!(
-				"failed to truncate file at path: {} with error: {e}",
-				resolved_path.display()
-			)
+			format!("failed to truncate file at path: {} with error: {e}", resolved_path.display())
 		})
 		.map_err(Into::into)
 }
@@ -843,10 +760,7 @@ fn write_file_inner<R:Runtime>(
 
 	file.write_all(data)
 		.map_err(|e| {
-			format!(
-				"failed to write bytes to file at path: {} with error: {e}",
-				path.display()
-			)
+			format!("failed to write bytes to file at path: {} with error: {e}", path.display())
 		})
 		.map_err(Into::into)
 }
@@ -863,9 +777,7 @@ pub async fn write_file<R:Runtime>(
 		tauri::ipc::InvokeBody::Json(serde_json::Value::Array(data)) => {
 			Cow::Owned(
 				data.iter()
-					.flat_map(|v| {
-						v.as_number().and_then(|v| v.as_u64().map(|v| v as u8))
-					})
+					.flat_map(|v| v.as_number().and_then(|v| v.as_u64().map(|v| v as u8)))
 					.collect(),
 			)
 		},
@@ -877,9 +789,9 @@ pub async fn write_file<R:Runtime>(
 		.get("path")
 		.ok_or_else(|| anyhow::anyhow!("missing file path").into())
 		.and_then(|p| {
-			percent_encoding::percent_decode(p.as_ref()).decode_utf8().map_err(
-				|_| anyhow::anyhow!("path is not a valid UTF-8").into(),
-			)
+			percent_encoding::percent_decode(p.as_ref())
+				.decode_utf8()
+				.map_err(|_| anyhow::anyhow!("path is not a valid UTF-8").into())
 		})
 		.and_then(|p| SafeFilePath::from_str(&p).map_err(CommandError::from))?;
 	let options = request
@@ -887,14 +799,7 @@ pub async fn write_file<R:Runtime>(
 		.get("options")
 		.and_then(|p| p.to_str().ok())
 		.and_then(|opts| serde_json::from_str(opts).ok());
-	write_file_inner(
-		webview,
-		&global_scope,
-		&command_scope,
-		path,
-		&data,
-		options,
-	)
+	write_file_inner(webview, &global_scope, &command_scope, path, &data, options)
 }
 
 #[tauri::command]
@@ -907,14 +812,7 @@ pub async fn write_text_file<R:Runtime>(
 	data:String,
 	#[allow(unused)] options:Option<WriteFileOptions>,
 ) -> CommandResult<()> {
-	write_file_inner(
-		webview,
-		&global_scope,
-		&command_scope,
-		path,
-		data.as_bytes(),
-		options,
-	)
+	write_file_inner(webview, &global_scope, &command_scope, path, data.as_bytes(), options)
 }
 
 #[tauri::command]
@@ -953,22 +851,12 @@ fn resolve_file_in_fs<R:Runtime>(
 	path:SafeFilePath,
 	open_options:OpenOptions,
 ) -> CommandResult<(File, PathBuf)> {
-	let path = resolve_path(
-		webview,
-		global_scope,
-		command_scope,
-		path,
-		open_options.base.base_dir,
-	)?;
+	let path =
+		resolve_path(webview, global_scope, command_scope, path, open_options.base.base_dir)?;
 
 	let file = std::fs::OpenOptions::from(open_options.options)
 		.open(&path)
-		.map_err(|e| {
-			format!(
-				"failed to open file at path: {} with error: {e}",
-				path.display()
-			)
-		})?;
+		.map_err(|e| format!("failed to open file at path: {} with error: {e}", path.display()))?;
 	Ok((file, path))
 }
 
@@ -983,9 +871,7 @@ pub fn resolve_file<R:Runtime>(
 	match path {
 		SafeFilePath::Url(url) => {
 			let path = url.as_str().into();
-			let file = webview
-				.fs()
-				.open(SafeFilePath::Url(url), open_options.options)?;
+			let file = webview.fs().open(SafeFilePath::Url(url), open_options.options)?;
 			Ok((file, path))
 		},
 		SafeFilePath::Path(path) => {
@@ -1024,15 +910,8 @@ pub fn resolve_path<R:Runtime>(
 				.unwrap()
 				.clone()
 				.into_iter()
-				.chain(
-					global_scope.allows().iter().filter_map(|e| e.path.clone()),
-				)
-				.chain(
-					command_scope
-						.allows()
-						.iter()
-						.filter_map(|e| e.path.clone()),
-				)
+				.chain(global_scope.allows().iter().filter_map(|e| e.path.clone()))
+				.chain(command_scope.allows().iter().filter_map(|e| e.path.clone()))
 				.collect(),
 			deny:webview
 				.fs_scope()
@@ -1041,19 +920,10 @@ pub fn resolve_path<R:Runtime>(
 				.unwrap()
 				.clone()
 				.into_iter()
-				.chain(
-					global_scope.denies().iter().filter_map(|e| e.path.clone()),
-				)
-				.chain(
-					command_scope
-						.denies()
-						.iter()
-						.filter_map(|e| e.path.clone()),
-				)
+				.chain(global_scope.denies().iter().filter_map(|e| e.path.clone()))
+				.chain(command_scope.denies().iter().filter_map(|e| e.path.clone()))
 				.collect(),
-			require_literal_leading_dot:webview
-				.fs_scope()
-				.require_literal_leading_dot,
+			require_literal_leading_dot:webview.fs_scope().require_literal_leading_dot,
 		},
 	)?;
 
@@ -1082,10 +952,7 @@ struct StdLinesResource(Mutex<Lines<BufReader<File>>>);
 impl StdLinesResource {
 	fn new(lines:Lines<BufReader<File>>) -> Self { Self(Mutex::new(lines)) }
 
-	fn with_lock<R, F:FnMut(&mut Lines<BufReader<File>>) -> R>(
-		&self,
-		mut f:F,
-	) -> R {
+	fn with_lock<R, F:FnMut(&mut Lines<BufReader<File>>) -> R>(&self, mut f:F) -> R {
 		let mut lines = self.0.lock().unwrap();
 		f(&mut lines)
 	}
@@ -1095,9 +962,7 @@ impl Resource for StdLinesResource {}
 
 // taken from deno source code: https://github.com/denoland/deno/blob/ffffa2f7c44bd26aec5ae1957e0534487d099f48/runtime/ops/fs.rs#L913
 #[inline]
-fn to_msec(
-	maybe_time:std::result::Result<SystemTime, std::io::Error>,
-) -> Option<u64> {
+fn to_msec(maybe_time:std::result::Result<SystemTime, std::io::Error>) -> Option<u64> {
 	match maybe_time {
 		Ok(time) => {
 			let msec = time

@@ -23,8 +23,7 @@ pub fn init<R:Runtime, C:DeserializeOwned>(
 	api:PluginApi<R, C>,
 ) -> crate::Result<Haptics<R>> {
 	#[cfg(target_os = "android")]
-	let handle =
-		api.register_android_plugin(PLUGIN_IDENTIFIER, "HapticsPlugin")?;
+	let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "HapticsPlugin")?;
 	#[cfg(target_os = "ios")]
 	let handle = api.register_ios_plugin(init_plugin_haptics)?;
 	Ok(Haptics(handle))
@@ -40,27 +39,15 @@ impl<R:Runtime> Haptics<R> {
 			.map_err(Into::into)
 	}
 
-	pub fn impact_feedback(
-		&self,
-		style:ImpactFeedbackStyle,
-	) -> crate::Result<()> {
+	pub fn impact_feedback(&self, style:ImpactFeedbackStyle) -> crate::Result<()> {
 		self.0
-			.run_mobile_plugin(
-				"impactFeedback",
-				ImpactFeedbackPayload { style },
-			)
+			.run_mobile_plugin("impactFeedback", ImpactFeedbackPayload { style })
 			.map_err(Into::into)
 	}
 
-	pub fn notification_feedback(
-		&self,
-		r#type:NotificationFeedbackType,
-	) -> crate::Result<()> {
+	pub fn notification_feedback(&self, r#type:NotificationFeedbackType) -> crate::Result<()> {
 		self.0
-			.run_mobile_plugin(
-				"notificationFeedback",
-				NotificationFeedbackPayload { r#type },
-			)
+			.run_mobile_plugin("notificationFeedback", NotificationFeedbackPayload { r#type })
 			.map_err(Into::into)
 	}
 

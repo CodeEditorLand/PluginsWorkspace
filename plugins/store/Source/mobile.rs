@@ -27,9 +27,7 @@ impl<R:Runtime> Store<R> {
 	pub fn save(&self) -> Result<()> {
 		self.mobile_plugin_handle
 			.as_ref()
-			.ok_or_else(|| {
-				crate::error::Error::MobilePluginHandleUnInitialized
-			})?
+			.ok_or_else(|| crate::error::Error::MobilePluginHandleUnInitialized)?
 			.run_mobile_plugin(
 				"save",
 				SaveStore {
@@ -44,13 +42,8 @@ impl<R:Runtime> Store<R> {
 		let result:Value = self
 			.mobile_plugin_handle
 			.as_ref()
-			.ok_or_else(|| {
-				crate::error::Error::MobilePluginHandleUnInitialized
-			})?
-			.run_mobile_plugin(
-				"load",
-				self.path.to_string_lossy().to_string(),
-			)?;
+			.ok_or_else(|| crate::error::Error::MobilePluginHandleUnInitialized)?
+			.run_mobile_plugin("load", self.path.to_string_lossy().to_string())?;
 
 		let map = serde_json::from_value::<HashMap<String, Value>>(result)?;
 		self.cache.extend(map);

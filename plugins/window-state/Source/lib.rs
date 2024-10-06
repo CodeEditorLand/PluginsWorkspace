@@ -133,9 +133,7 @@ impl<R:Runtime> AppHandleExt for tauri::AppHandle<R> {
 			for (label, s) in state.iter_mut() {
 				let window = match &plugin_state.map_label {
 					Some(map) => {
-						windows.iter().find_map(|(l, window)| {
-							(map(l) == label).then_some(window)
-						})
+						windows.iter().find_map(|(l, window)| (map(l) == label).then_some(window))
 					},
 					None => windows.get(label),
 				};
@@ -148,18 +146,13 @@ impl<R:Runtime> AppHandleExt for tauri::AppHandle<R> {
 			create_dir_all(&app_dir)
 				.map_err(Error::Io)
 				.and_then(|_| File::create(state_path).map_err(Into::into))
-				.and_then(|mut f| {
-					serde_json::to_writer_pretty(&mut f, &*state)
-						.map_err(Into::into)
-				})
+				.and_then(|mut f| serde_json::to_writer_pretty(&mut f, &*state).map_err(Into::into))
 		} else {
 			Ok(())
 		}
 	}
 
-	fn filename(&self) -> String {
-		self.state::<PluginState>().filename.clone()
-	}
+	fn filename(&self) -> String { self.state::<PluginState>().filename.clone() }
 }
 
 pub trait WindowExt {
@@ -188,18 +181,13 @@ impl<R:Runtime> WindowExt for Window<R> {
 
 		let mut should_show = true;
 
-		if let Some(state) =
-			c.get(label).filter(|state| state != &&WindowState::default())
-		{
+		if let Some(state) = c.get(label).filter(|state| state != &&WindowState::default()) {
 			if flags.contains(StateFlags::DECORATIONS) {
 				self.set_decorations(state.decorated)?;
 			}
 
 			if flags.contains(StateFlags::SIZE) {
-				self.set_size(PhysicalSize {
-					width:state.width,
-					height:state.height,
-				})?;
+				self.set_size(PhysicalSize { width:state.width, height:state.height })?;
 			}
 
 			if flags.contains(StateFlags::POSITION) {
@@ -210,16 +198,8 @@ impl<R:Runtime> WindowExt for Window<R> {
 				for m in self.available_monitors()? {
 					if m.intersects(position, size) {
 						self.set_position(PhysicalPosition {
-							x:if state.maximized {
-								state.prev_x
-							} else {
-								state.x
-							},
-							y:if state.maximized {
-								state.prev_y
-							} else {
-								state.y
-							},
+							x:if state.maximized { state.prev_x } else { state.x },
+							y:if state.maximized { state.prev_y } else { state.y },
 						})?;
 					}
 				}
@@ -278,35 +258,22 @@ impl<R:Runtime> WindowExt for Window<R> {
 }
 
 trait WindowExtInternal {
-	fn update_state(
-		&self,
-		state:&mut WindowState,
-		flags:StateFlags,
-	) -> tauri::Result<()>;
+	fn update_state(&self, state:&mut WindowState, flags:StateFlags) -> tauri::Result<()>;
 }
 
 impl<R:Runtime> WindowExtInternal for WebviewWindow<R> {
-	fn update_state(
-		&self,
-		state:&mut WindowState,
-		flags:StateFlags,
-	) -> tauri::Result<()> {
+	fn update_state(&self, state:&mut WindowState, flags:StateFlags) -> tauri::Result<()> {
 		self.as_ref().window().update_state(state, flags)
 	}
 }
 
 impl<R:Runtime> WindowExtInternal for Window<R> {
-	fn update_state(
-		&self,
-		state:&mut WindowState,
-		flags:StateFlags,
-	) -> tauri::Result<()> {
-		let is_maximized = flags.intersects(
-			StateFlags::MAXIMIZED | StateFlags::POSITION | StateFlags::SIZE,
-		) && self.is_maximized()?;
-		let is_minimized = flags
-			.intersects(StateFlags::POSITION | StateFlags::SIZE)
-			&& self.is_minimized()?;
+	fn update_state(&self, state:&mut WindowState, flags:StateFlags) -> tauri::Result<()> {
+		let is_maximized = flags
+			.intersects(StateFlags::MAXIMIZED | StateFlags::POSITION | StateFlags::SIZE)
+			&& self.is_maximized()?;
+		let is_minimized =
+			flags.intersects(StateFlags::POSITION | StateFlags::SIZE) && self.is_minimized()?;
 
 		if flags.contains(StateFlags::MAXIMIZED) {
 			state.maximized = is_maximized;
@@ -333,10 +300,7 @@ impl<R:Runtime> WindowExtInternal for Window<R> {
 			}
 		}
 
-		if flags.contains(StateFlags::POSITION)
-			&& !is_maximized
-			&& !is_minimized
-		{
+		if flags.contains(StateFlags::POSITION) && !is_maximized && !is_minimized {
 			let position = self.outer_position()?;
 			state.x = position.x;
 			state.y = position.y;
@@ -415,8 +379,7 @@ impl Builder {
 								std::fs::read(state_path)
 									.map_err(Error::from)
 									.and_then(|state| {
-										serde_json::from_slice(&state)
-											.map_err(Into::into)
+										serde_json::from_slice(&state).map_err(Into::into)
 									})
 									.unwrap_or_default(),
 							))
@@ -456,11 +419,7 @@ impl Builder {
 				// insert a default state if this window should be tracked and
 				// the disk cache doesn't have a state for it
 				{
-					cache
-						.lock()
-						.unwrap()
-						.entry(label.clone())
-						.or_insert_with(WindowState::default);
+					cache.lock().unwrap().entry(label.clone()).or_insert_with(WindowState::default);
 				}
 
 				window.on_window_event(move |e| {
@@ -472,16 +431,9 @@ impl Builder {
 							}
 						},
 
-						WindowEvent::Moved(position)
-							if flags.contains(StateFlags::POSITION) =>
-						{
-							if window_clone
-								.state::<RestoringWindowState>()
-								.0
-								.try_lock()
-								.is_ok() && !window_clone
-								.is_minimized()
-								.unwrap_or_default()
+						WindowEvent::Moved(position) if flags.contains(StateFlags::POSITION) => {
+							if window_clone.state::<RestoringWindowState>().0.try_lock().is_ok()
+								&& !window_clone.is_minimized().unwrap_or_default()
 							{
 								let mut c = cache.lock().unwrap();
 								if let Some(state) = c.get_mut(&label) {
@@ -493,18 +445,10 @@ impl Builder {
 								}
 							}
 						},
-						WindowEvent::Resized(size)
-							if flags.contains(StateFlags::SIZE) =>
-						{
-							if window_clone
-								.state::<RestoringWindowState>()
-								.0
-								.try_lock()
-								.is_ok() && !window_clone
-								.is_minimized()
-								.unwrap_or_default() && !window_clone
-								.is_maximized()
-								.unwrap_or_default()
+						WindowEvent::Resized(size) if flags.contains(StateFlags::SIZE) => {
+							if window_clone.state::<RestoringWindowState>().0.try_lock().is_ok()
+								&& !window_clone.is_minimized().unwrap_or_default()
+								&& !window_clone.is_maximized().unwrap_or_default()
 							{
 								let mut c = cache.lock().unwrap();
 								if let Some(state) = c.get_mut(&label) {
@@ -527,19 +471,11 @@ impl Builder {
 }
 
 trait MonitorExt {
-	fn intersects(
-		&self,
-		position:PhysicalPosition<i32>,
-		size:PhysicalSize<u32>,
-	) -> bool;
+	fn intersects(&self, position:PhysicalPosition<i32>, size:PhysicalSize<u32>) -> bool;
 }
 
 impl MonitorExt for Monitor {
-	fn intersects(
-		&self,
-		position:PhysicalPosition<i32>,
-		size:PhysicalSize<u32>,
-	) -> bool {
+	fn intersects(&self, position:PhysicalPosition<i32>, size:PhysicalSize<u32>) -> bool {
 		let PhysicalPosition { x, y } = *self.position();
 		let PhysicalSize { width, height } = *self.size();
 

@@ -7,9 +7,6 @@ use tauri::{command, AppHandle, Runtime, Window};
 use crate::Result;
 
 #[command]
-pub(crate) async fn execute<R:Runtime>(
-	_app:AppHandle<R>,
-	_window:Window<R>,
-) -> Result<String> {
+pub(crate) async fn execute<R:Runtime>(_app:AppHandle<R>, _window:Window<R>) -> Result<String> {
 	Ok("success".to_string())
 }

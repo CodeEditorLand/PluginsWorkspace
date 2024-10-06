@@ -13,12 +13,7 @@ use std::{
 };
 
 use notify::{Config, Event, RecommendedWatcher, RecursiveMode, Watcher};
-use notify_debouncer_full::{
-	new_debouncer,
-	DebounceEventResult,
-	Debouncer,
-	FileIdMap,
-};
+use notify_debouncer_full::{new_debouncer, DebounceEventResult, Debouncer, FileIdMap};
 use serde::Deserialize;
 use tauri::{
 	ipc::{Channel, CommandScope, GlobalScope},
@@ -118,8 +113,7 @@ pub async fn watch<R:Runtime>(
 
 	let kind = if let Some(delay) = options.delay_ms {
 		let (tx, rx) = channel();
-		let mut debouncer =
-			new_debouncer(Duration::from_millis(delay), None, tx)?;
+		let mut debouncer = new_debouncer(Duration::from_millis(delay), None, tx)?;
 		for path in &resolved_paths {
 			debouncer.watcher().watch(path.as_ref(), recursive_mode)?;
 			debouncer.cache().add_root(path, recursive_mode);
@@ -136,40 +130,27 @@ pub async fn watch<R:Runtime>(
 		WatcherKind::Watcher(watcher)
 	};
 
-	let rid = webview
-		.resources_table()
-		.add(WatcherResource::new(kind, resolved_paths));
+	let rid = webview.resources_table().add(WatcherResource::new(kind, resolved_paths));
 
 	Ok(rid)
 }
 
 #[tauri::command]
-pub async fn unwatch<R:Runtime>(
-	webview:Webview<R>,
-	rid:ResourceId,
-) -> CommandResult<()> {
+pub async fn unwatch<R:Runtime>(webview:Webview<R>, rid:ResourceId) -> CommandResult<()> {
 	let watcher = webview.resources_table().take::<WatcherResource>(rid)?;
 	WatcherResource::with_lock(&watcher, |watcher| {
 		match &mut watcher.kind {
 			WatcherKind::Debouncer(ref mut debouncer) => {
 				for path in &watcher.paths {
-					debouncer.watcher().unwatch(path.as_ref()).map_err(
-						|e| {
-							format!(
-								"failed to unwatch path: {} with error: {e}",
-								path.display()
-							)
-						},
-					)?;
+					debouncer.watcher().unwatch(path.as_ref()).map_err(|e| {
+						format!("failed to unwatch path: {} with error: {e}", path.display())
+					})?;
 				}
 			},
 			WatcherKind::Watcher(ref mut w) => {
 				for path in &watcher.paths {
 					w.unwatch(path.as_ref()).map_err(|e| {
-						format!(
-							"failed to unwatch path: {} with error: {e}",
-							path.display()
-						)
+						format!("failed to unwatch path: {} with error: {e}", path.display())
 					})?;
 				}
 			},

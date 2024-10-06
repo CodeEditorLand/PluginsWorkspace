@@ -25,8 +25,7 @@ pub fn init<R:Runtime, C:DeserializeOwned>(
 	api:PluginApi<R, C>,
 ) -> crate::Result<Notification<R>> {
 	#[cfg(target_os = "android")]
-	let handle =
-		api.register_android_plugin(PLUGIN_IDENTIFIER, "NotificationPlugin")?;
+	let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "NotificationPlugin")?;
 	#[cfg(target_os = "ios")]
 	let handle = api.register_ios_plugin(init_plugin_notification)?;
 	Ok(Notification(handle))
@@ -63,15 +62,10 @@ impl<R:Runtime> Notification<R> {
 			.map_err(Into::into)
 	}
 
-	pub fn register_action_types(
-		&self,
-		types:Vec<ActionType>,
-	) -> crate::Result<()> {
+	pub fn register_action_types(&self, types:Vec<ActionType>) -> crate::Result<()> {
 		let mut args = HashMap::new();
 		args.insert("types", types);
-		self.0
-			.run_mobile_plugin("registerActionTypes", args)
-			.map_err(Into::into)
+		self.0.run_mobile_plugin("registerActionTypes", args).map_err(Into::into)
 	}
 
 	pub fn remove_active(&self, notifications:Vec<i32>) -> crate::Result<()> {

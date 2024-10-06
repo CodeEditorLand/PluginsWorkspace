@@ -1,20 +1,20 @@
-use super::{error::*, notification::Notification};
+use std::ops::{Deref, DerefMut};
 
 pub use mac_notification_sys::error::{ApplicationError, Error as MacOsError, NotificationError};
 
-use std::ops::{Deref, DerefMut};
+use super::{error::*, notification::Notification};
 
 /// A handle to a shown notification.
 ///
 /// This keeps a connection alive to ensure actions work on certain desktops.
 #[derive(Debug)]
 pub struct NotificationHandle {
-	notification: Notification,
+	notification:Notification,
 }
 
 impl NotificationHandle {
 	#[allow(missing_docs)]
-	pub fn new(notification: Notification) -> NotificationHandle {
+	pub fn new(notification:Notification) -> NotificationHandle {
 		NotificationHandle { notification }
 	}
 }
@@ -22,19 +22,15 @@ impl NotificationHandle {
 impl Deref for NotificationHandle {
 	type Target = Notification;
 
-	fn deref(&self) -> &Notification {
-		&self.notification
-	}
+	fn deref(&self) -> &Notification { &self.notification }
 }
 
 /// Allow to easily modify notification properties
 impl DerefMut for NotificationHandle {
-	fn deref_mut(&mut self) -> &mut Notification {
-		&mut self.notification
-	}
+	fn deref_mut(&mut self) -> &mut Notification { &mut self.notification }
 }
 
-pub(crate) fn show_notification(notification: &Notification) -> Result<NotificationHandle> {
+pub(crate) fn show_notification(notification:&Notification) -> Result<NotificationHandle> {
 	mac_notification_sys::Notification::default()
 		.title(notification.summary.as_str())
 		.message(&notification.body)
@@ -46,8 +42,8 @@ pub(crate) fn show_notification(notification: &Notification) -> Result<Notificat
 }
 
 pub(crate) fn schedule_notification(
-	notification: &Notification,
-	delivery_date: f64,
+	notification:&Notification,
+	delivery_date:f64,
 ) -> Result<NotificationHandle> {
 	mac_notification_sys::Notification::default()
 		.title(notification.summary.as_str())

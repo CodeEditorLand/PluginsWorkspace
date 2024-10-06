@@ -38,16 +38,9 @@ impl<R:Runtime> Biometric<R> {
 		self.0.run_mobile_plugin("status", ()).map_err(Into::into)
 	}
 
-	pub fn authenticate(
-		&self,
-		reason:String,
-		options:AuthOptions,
-	) -> crate::Result<()> {
+	pub fn authenticate(&self, reason:String, options:AuthOptions) -> crate::Result<()> {
 		self.0
-			.run_mobile_plugin(
-				"authenticate",
-				AuthenticatePayload { reason, options },
-			)
+			.run_mobile_plugin("authenticate", AuthenticatePayload { reason, options })
 			.map_err(Into::into)
 	}
 }
@@ -60,9 +53,7 @@ pub trait BiometricExt<R:Runtime> {
 }
 
 impl<R:Runtime, T:Manager<R>> crate::BiometricExt<R> for T {
-	fn biometric(&self) -> &Biometric<R> {
-		self.state::<Biometric<R>>().inner()
-	}
+	fn biometric(&self) -> &Biometric<R> { self.state::<Biometric<R>>().inner() }
 }
 
 /// Initializes the plugin.
@@ -70,10 +61,7 @@ pub fn init<R:Runtime>() -> TauriPlugin<R> {
 	Builder::new("biometric")
 		.setup(|app, api| {
 			#[cfg(target_os = "android")]
-			let handle = api.register_android_plugin(
-				PLUGIN_IDENTIFIER,
-				"BiometricPlugin",
-			)?;
+			let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "BiometricPlugin")?;
 			#[cfg(target_os = "ios")]
 			let handle = api.register_ios_plugin(init_plugin_biometric)?;
 			app.manage(Biometric(handle));
