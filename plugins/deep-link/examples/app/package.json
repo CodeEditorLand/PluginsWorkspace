@@ -1,10 +1,10 @@
 {
 	"dependencies": {
-		"@tauri-apps/api": "2.0.1",
+		"@tauri-apps/api": "2.0.2",
 		"@tauri-apps/plugin-deep-link": "2.0.0"
 	},
 	"devDependencies": {
-		"@tauri-apps/cli": "2.0.0"
+		"@tauri-apps/cli": "2.0.2"
 	},
 	"name": "deep-link-example",
 	"scripts": {

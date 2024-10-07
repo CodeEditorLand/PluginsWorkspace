@@ -1,6 +1,6 @@
 {
 	"dependencies": {
-		"@tauri-apps/api": "2.0.1",
+		"@tauri-apps/api": "2.0.2",
 		"@tauri-apps/plugin-barcode-scanner": "2.0.0",
 		"@tauri-apps/plugin-biometric": "2.0.0",
 		"@tauri-apps/plugin-cli": "2.0.0",
@@ -20,11 +20,11 @@
 		"@tauri-apps/plugin-updater": "2.0.0"
 	},
 	"devDependencies": {
-		"@iconify-json/codicon": "1.1.37",
-		"@iconify-json/ph": "1.1.8",
-		"@tauri-apps/cli": "2.0.0",
-		"@unocss/extractor-svelte": "0.63.0",
-		"unocss": "0.63.0"
+		"@iconify-json/codicon": "1.2.2",
+		"@iconify-json/ph": "1.2.0",
+		"@tauri-apps/cli": "2.0.2",
+		"@unocss/extractor-svelte": "0.63.3",
+		"unocss": "0.63.3"
 	},
 	"name": "svelte-app",
 	"scripts": {
