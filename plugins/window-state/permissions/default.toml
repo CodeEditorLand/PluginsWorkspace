@@ -11,7 +11,7 @@ All operations are enabled by default.
 
 """
 permissions = [
-  "allow-filename",
-  "allow-restore-state",
-  "allow-save-window-state",
+	"allow-filename",
+	"allow-restore-state",
+	"allow-save-window-state",
 ]

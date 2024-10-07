@@ -11,12 +11,12 @@ All non-destructive operations are enabled by default.
 
 """
 permissions = [
-  "allow-create-client",
-  "allow-get-store-record",
-  "allow-initialize",
-  "allow-execute-procedure",
-  "allow-load-client",
-  "allow-save-secret",
-  "allow-save-store-record",
-  "allow-save",
+	"allow-create-client",
+	"allow-get-store-record",
+	"allow-initialize",
+	"allow-execute-procedure",
+	"allow-load-client",
+	"allow-save-secret",
+	"allow-save-store-record",
+	"allow-save",
 ]
