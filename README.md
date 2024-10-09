@@ -34,7 +34,9 @@ _This repo and all plugins require a Rust version of at least **1.77.2**_
 
 ## Contributing
 
-PRs accepted. Please make sure to read the [Contributing Guide](https://github.com/tauri-apps/tauri/blob/dev/.github/CONTRIBUTING.md) before making a pull request.
+PRs accepted. Please make sure to read the
+[Contributing Guide](https://github.com/tauri-apps/tauri/blob/dev/.github/CONTRIBUTING.md)
+before making a pull request.
 
 ## Partners
 
@@ -50,4 +52,6 @@ PRs accepted. Please make sure to read the [Contributing Guide](https://github.c
   </tbody>
 </table>
 
-For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).
+For the complete list of sponsors please visit our
+[website](https://tauri.app#sponsors) and
+[Open Collective](https://opencollective.com/tauri).

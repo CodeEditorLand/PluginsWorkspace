@@ -1,4 +1,4 @@
 packages:
-  - plugins/*
-  - plugins/*/examples/*
-  - examples/*
+    - plugins/*
+    - plugins/*/examples/*
+    - examples/*

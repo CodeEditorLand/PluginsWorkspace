@@ -2,7 +2,9 @@
 
 Position your windows at well-known locations.
 
-This plugin is a port of [electron-positioner](https://github.com/jenslind/electron-positioner) for Tauri.
+This plugin is a port of
+[electron-positioner](https://github.com/jenslind/electron-positioner) for
+Tauri.
 
 | Platform | Supported |
 | -------- | --------- |
@@ -18,9 +20,12 @@ _This plugin requires a Rust version of at least **1.77.2**_
 
 There are three general methods of installation that we can recommend.
 
-1. Use crates.io and npm (easiest, and requires you to trust that our publishing pipeline worked)
-2. Pull sources directly from Github using git tags / revision hashes (most secure)
-3. Git submodule install this repo in your tauri project and then use file protocol to ingest the source (most secure, but inconvenient to use)
+1. Use crates.io and npm (easiest, and requires you to trust that our publishing
+   pipeline worked)
+2. Pull sources directly from Github using git tags / revision hashes (most
+   secure)
+3. Git submodule install this repo in your tauri project and then use file
+   protocol to ingest the source (most secure, but inconvenient to use)
 
 Install the Core plugin by adding the following to your `Cargo.toml` file:
 
@@ -33,9 +38,12 @@ tauri-plugin-positioner = "2.0.0"
 tauri-plugin-positioner = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
 
-You can install the JavaScript Guest bindings using your preferred JavaScript package manager:
+You can install the JavaScript Guest bindings using your preferred JavaScript
+package manager:
 
-> Note: Since most JavaScript package managers are unable to install packages from git monorepos we provide read-only mirrors of each plugin. This makes installation option 2 more ergonomic to use.
+> Note: Since most JavaScript package managers are unable to install packages
+> from git monorepos we provide read-only mirrors of each plugin. This makes
+> installation option 2 more ergonomic to use.
 
 ```sh
 pnpm add @tauri-apps/plugin-positioner
@@ -79,7 +87,8 @@ fn main() {
 }
 ```
 
-Alternatively, you may handle the tray events through JavaScript. Register the plugin as previously noted.
+Alternatively, you may handle the tray events through JavaScript. Register the
+plugin as previously noted.
 
 ```rust
 fn main() {
@@ -90,7 +99,8 @@ fn main() {
 }
 ```
 
-And in JavaScript, the `action` passed to the TrayIcon should include the handler.
+And in JavaScript, the `action` passed to the TrayIcon should include the
+handler.
 
 ```javascript
 import {
@@ -113,7 +123,8 @@ const action = async (event: TrayIconEvent) => {
 const tray = await TrayIcon.new({ id: "main", action });
 ```
 
-Afterwards all the plugin's APIs are available through the JavaScript guest bindings:
+Afterwards all the plugin's APIs are available through the JavaScript guest
+bindings:
 
 ```javascript
 import { moveWindow, Position } from '@tauri-apps/plugin-positioner'
@@ -121,7 +132,8 @@ import { moveWindow, Position } from '@tauri-apps/plugin-positioner'
 moveWindow(Position.TopRight)
 ```
 
-If you only intend on moving the window from rust code, you can import the Window trait extension instead of registering the plugin:
+If you only intend on moving the window from rust code, you can import the
+Window trait extension instead of registering the plugin:
 
 ```rust
 use tauri_plugin_positioner::{WindowExt, Position};
@@ -132,7 +144,8 @@ let _ = win.move_window(Position::TopRight);
 
 ## Contributing
 
-PRs accepted. Please make sure to read the Contributing Guide before making a pull request.
+PRs accepted. Please make sure to read the Contributing Guide before making a
+pull request.
 
 ## Partners
 
@@ -148,10 +161,13 @@ PRs accepted. Please make sure to read the Contributing Guide before making a pu
   </tbody>
 </table>
 
-For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).
+For the complete list of sponsors please visit our
+[website](https://tauri.app#sponsors) and
+[Open Collective](https://opencollective.com/tauri).
 
 ## License
 
-Code: (c) 2021 - Jonas Kruckenberg. 2021 - Present - The Tauri Programme within The Commons Conservancy.
+Code: (c) 2021 - Jonas Kruckenberg. 2021 - Present - The Tauri Programme within
+The Commons Conservancy.
 
 MIT or MIT/Apache 2.0 where applicable.

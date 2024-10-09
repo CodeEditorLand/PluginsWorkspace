@@ -1,6 +1,8 @@
 ![geolocation](https://github.com/tauri-apps/plugins-workspace/raw/v2/plugins/geolocation/banner.png)
 
-This plugin provides APIs for getting and tracking the device's current position, including information about altitude, heading, and speed (if available).
+This plugin provides APIs for getting and tracking the device's current
+position, including information about altitude, heading, and speed (if
+available).
 
 | Platform | Supported |
 | -------- | --------- |
@@ -16,9 +18,12 @@ _This plugin requires a Rust version of at least **1.77.2**_
 
 There are three general methods of installation that we can recommend.
 
-1. Use crates.io and npm (easiest, and requires you to trust that our publishing pipeline worked)
-2. Pull sources directly from Github using git tags / revision hashes (most secure)
-3. Git submodule install this repo in your tauri project and then use file protocol to ingest the source (most secure, but inconvenient to use)
+1. Use crates.io and npm (easiest, and requires you to trust that our publishing
+   pipeline worked)
+2. Pull sources directly from Github using git tags / revision hashes (most
+   secure)
+3. Git submodule install this repo in your tauri project and then use file
+   protocol to ingest the source (most secure, but inconvenient to use)
 
 Install the Core plugin by adding the following to your `Cargo.toml` file:
 
@@ -31,9 +36,12 @@ tauri-plugin-geolocation = "2.0.0"
 tauri-plugin-geolocation = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v2" }
 ```
 
-You can install the JavaScript Guest bindings using your preferred JavaScript package manager:
+You can install the JavaScript Guest bindings using your preferred JavaScript
+package manager:
 
-> Note: Since most JavaScript package managers are unable to install packages from git monorepos we provide read-only mirrors of each plugin. This makes installation option 2 more ergonomic to use.
+> Note: Since most JavaScript package managers are unable to install packages
+> from git monorepos we provide read-only mirrors of each plugin. This makes
+> installation option 2 more ergonomic to use.
 
 <!-- Add the branch for installations using git! -->
 
@@ -56,26 +64,30 @@ yarn add https://github.com/tauri-apps/tauri-plugin-geolocation#v2
 
 ### iOS
 
-Apple requires privacy descriptions to be specified in `Info.plist` for location information:
+Apple requires privacy descriptions to be specified in `Info.plist` for location
+information:
 
-- `NSLocationWhenInUseDescription`
+-   `NSLocationWhenInUseDescription`
 
 ### Android
 
-This plugin automatically adds the following permissions to your `AndroidManifest.xml` file:
+This plugin automatically adds the following permissions to your
+`AndroidManifest.xml` file:
 
 ```xml
 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 ```
 
-If your app requires GPS functionality to function, **you** should add the following to your `AndroidManifest.xml` file:
+If your app requires GPS functionality to function, **you** should add the
+following to your `AndroidManifest.xml` file:
 
 ```xml
 <uses-feature android:name="android.hardware.gps" android:required="true" />
 ```
 
-The Google Play Store uses this property to decide whether it should show the app to devices without GPS capabilities.
+The Google Play Store uses this property to decide whether it should show the
+app to devices without GPS capabilities.
 
 ## Usage
 
@@ -92,7 +104,8 @@ fn main() {
 }
 ```
 
-Afterwards all the plugin's APIs are available through the JavaScript guest bindings:
+Afterwards all the plugin's APIs are available through the JavaScript guest
+bindings:
 
 ```javascript
 import {
@@ -124,7 +137,8 @@ if (permissions.location === 'granted') {
 
 ## Contributing
 
-PRs accepted. Please make sure to read the Contributing Guide before making a pull request.
+PRs accepted. Please make sure to read the Contributing Guide before making a
+pull request.
 
 ## Contributed By
 
@@ -159,7 +173,9 @@ PRs accepted. Please make sure to read the Contributing Guide before making a pu
   </tbody>
 </table>
 
-For the complete list of sponsors please visit our [website](https://tauri.app#sponsors) and [Open Collective](https://opencollective.com/tauri).
+For the complete list of sponsors please visit our
+[website](https://tauri.app#sponsors) and
+[Open Collective](https://opencollective.com/tauri).
 
 ## License
 

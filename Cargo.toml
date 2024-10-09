@@ -1,10 +1,10 @@
 [workspace]
 members = [
-  "plugins/*",
-  "plugins/*/tests/*",
-  "plugins/updater/tests/updater-migration/v2-app",
-  "plugins/*/examples/*/src-tauri",
-  "examples/*/src-tauri",
+	"plugins/*",
+	"plugins/*/tests/*",
+	"plugins/updater/tests/updater-migration/v2-app",
+	"plugins/*/examples/*/src-tauri",
+	"examples/*/src-tauri",
 ]
 resolver = "2"
 
