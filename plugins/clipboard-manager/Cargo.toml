@@ -21,6 +21,7 @@ macos = { level = "full", notes = "" }
 android = { level = "partial", notes = "Only plain-text content support" }
 ios = { level = "partial", notes = "Only plain-text content support" }
 
+
 [build-dependencies]
 tauri-plugin = { workspace = true, features = ["build"] }
 
