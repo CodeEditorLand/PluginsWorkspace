@@ -21,7 +21,6 @@ macos = { level = "unknown", notes = "" }
 android = { level = "unknown", notes = "" }
 ios = { level = "unknown", notes = "" }
 
-
 [build-dependencies]
 tauri-plugin = { workspace = true, features = ["build"] }
 
