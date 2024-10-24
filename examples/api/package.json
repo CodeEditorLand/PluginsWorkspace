@@ -20,7 +20,7 @@
 		"@tauri-apps/plugin-updater": "2.0.0"
 	},
 	"devDependencies": {
-		"@iconify-json/codicon": "^1.2.2",
+		"@iconify-json/codicon": "^1.2.3",
 		"@iconify-json/ph": "^1.2.1",
 		"@tauri-apps/cli": "2.0.4",
 		"@unocss/extractor-svelte": "^0.63.6",
