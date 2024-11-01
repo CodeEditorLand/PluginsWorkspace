@@ -120,30 +120,30 @@ export default class Database {
 		};
 	}
 
-	/**
-	 * **select**
-	 *
-	 * Passes in a SELECT query to the database for execution.
-	 *
-	 * @example
-	 * ```ts
-	 * // for sqlite & postgres
-	 * const result = await db.select(
-	 *    "SELECT * from todos WHERE id = $1", id
-	 * );
-	 *
-	 * // for mysql
-	 * const result = await db.select(
-	 *    "SELECT * from todos WHERE id = ?", id
-	 * );
-	 * ```
-	 */
-	async select<T>(query: string, bindValues?: unknown[]): Promise<T> {
-		const result = await invoke<T>("plugin:sql|select", {
-			db: this.path,
-			query,
-			values: bindValues ?? [],
-		});
+  /**
+   * **select**
+   *
+   * Passes in a SELECT query to the database for execution.
+   *
+   * @example
+   * ```ts
+   * // for sqlite & postgres
+   * const result = await db.select(
+   *    "SELECT * from todos WHERE id = $1", [ id ]
+   * );
+   *
+   * // for mysql
+   * const result = await db.select(
+   *    "SELECT * from todos WHERE id = ?", [ id ]
+   * );
+   * ```
+   */
+  async select<T>(query: string, bindValues?: unknown[]): Promise<T> {
+    const result = await invoke<T>('plugin:sql|select', {
+      db: this.path,
+      query,
+      values: bindValues ?? []
+    })
 
 		return result;
 	}
