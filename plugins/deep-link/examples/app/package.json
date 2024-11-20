@@ -1,16 +1,16 @@
 {
-	"name": "deep-link-example",
-	"scripts": {
-		"build": "tsc && vite build",
-		"dev": "vite",
-		"preview": "vite preview",
-		"tauri": "tauri"
-	},
 	"dependencies": {
 		"@tauri-apps/api": "2.1.1",
 		"@tauri-apps/plugin-deep-link": "2.0.0"
 	},
 	"devDependencies": {
 		"@tauri-apps/cli": "2.1.0"
+	},
+	"name": "deep-link-example",
+	"scripts": {
+		"build": "tsc && vite build",
+		"dev": "vite",
+		"preview": "vite preview",
+		"tauri": "tauri"
 	}
 }
