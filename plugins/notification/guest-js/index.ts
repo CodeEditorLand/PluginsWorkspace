@@ -235,6 +235,7 @@ interface Action {
 	id: string;
 	title: string;
 	requiresAuthentication?: boolean;
+
 	foreground?: boolean;
 	destructive?: boolean;
 	input?: boolean;
@@ -302,6 +303,7 @@ interface Channel {
 	lights?: boolean;
 	lightColor?: string;
 	vibration?: boolean;
+
 	importance?: Importance;
 	visibility?: Visibility;
 }

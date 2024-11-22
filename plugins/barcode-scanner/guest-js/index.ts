@@ -28,12 +28,14 @@ export enum Format {
 
 export interface ScanOptions {
 	cameraDirection?: "back" | "front";
+
 	formats?: Format[];
 	windowed?: boolean;
 }
 
 export interface Scanned {
 	content: string;
+
 	format: Format;
 	bounds: unknown;
 }

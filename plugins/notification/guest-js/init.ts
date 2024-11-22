@@ -8,6 +8,7 @@ import type { Options } from "./index";
 
 (function () {
 	let permissionSettable = false;
+
 	let permissionValue = "default";
 
 	async function isPermissionGranted(): Promise<boolean> {
@@ -40,6 +41,7 @@ import type { Options } from "./index";
 					? "default"
 					: permission,
 			);
+
 			return permission;
 		});
 	}

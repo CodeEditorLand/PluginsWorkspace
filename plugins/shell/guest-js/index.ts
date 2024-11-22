@@ -174,6 +174,7 @@ class EventEmitter<E extends Record<string, any>> {
 			this.removeListener(eventName, wrapper);
 			listener(arg);
 		};
+
 		return this.addListener(eventName, wrapper);
 	}
 
@@ -227,7 +228,9 @@ class EventEmitter<E extends Record<string, any>> {
 		if (eventName in this.eventListeners) {
 			// eslint-disable-next-line security/detect-object-injection
 			const listeners = this.eventListeners[eventName];
+
 			for (const listener of listeners) listener(arg);
+
 			return true;
 		}
 		return false;
@@ -242,6 +245,7 @@ class EventEmitter<E extends Record<string, any>> {
 		if (eventName in this.eventListeners)
 			// eslint-disable-next-line security/detect-object-injection
 			return this.eventListeners[eventName].length;
+
 		return 0;
 	}
 
@@ -287,6 +291,7 @@ class EventEmitter<E extends Record<string, any>> {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			listener(arg);
 		};
+
 		return this.prependListener(eventName, wrapper);
 	}
 }
@@ -466,6 +471,7 @@ class Command<O extends IOPayload> extends EventEmitter<CommandEvents> {
 	): Command<O> {
 		const instance = new Command<O>(program, args, options);
 		instance.options.sidecar = true;
+
 		return instance;
 	}
 
@@ -478,7 +484,9 @@ class Command<O extends IOPayload> extends EventEmitter<CommandEvents> {
 	 */
 	async spawn(): Promise<Child> {
 		const program = this.program;
+
 		const args = this.args;
+
 		const options = this.options;
 
 		if (typeof args === "object") {
@@ -490,15 +498,22 @@ class Command<O extends IOPayload> extends EventEmitter<CommandEvents> {
 			switch (event.event) {
 				case "Error":
 					this.emit("error", event.payload);
+
 					break;
+
 				case "Terminated":
 					this.emit("close", event.payload);
+
 					break;
+
 				case "Stdout":
 					this.stdout.emit("data", event.payload);
+
 					break;
+
 				case "Stderr":
 					this.stderr.emit("data", event.payload);
+
 					break;
 			}
 		};
@@ -529,7 +544,9 @@ class Command<O extends IOPayload> extends EventEmitter<CommandEvents> {
 	 */
 	async execute(): Promise<ChildProcess<O>> {
 		const program = this.program;
+
 		const args = this.args;
+
 		const options = this.options;
 
 		if (typeof args === "object") {

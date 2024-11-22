@@ -137,6 +137,7 @@ export function textRecord(
 ): NFCRecord {
 	const payload = Array.from(new TextEncoder().encode(language + text));
 	payload.unshift(language.length);
+
 	return record(NFCTypeNameFormat.NfcWellKnown, RTD_TEXT, id ?? [], payload);
 }
 
@@ -198,6 +199,7 @@ function encodeURI(uri: string): number[] {
 	const encoded = Array.from(
 		new TextEncoder().encode(uri.slice(prefix.length)),
 	);
+
 	const protocolCode = protocols.indexOf(prefix);
 	// prepend protocol code
 	encoded.unshift(protocolCode);
@@ -216,6 +218,7 @@ export function uriRecord(uri: string, id?: string | number[]): NFCRecord {
 
 function mapScanKind(kind: ScanKind): Record<string, unknown> {
 	const { type: scanKind, ...kindOptions } = kind;
+
 	return { [scanKind]: kindOptions };
 }
 
@@ -263,6 +266,7 @@ export async function write(
 	options?: WriteOptions,
 ): Promise<void> {
 	const { kind, ...opts } = options ?? {};
+
 	if (kind) {
 		// @ts-expect-error map the property
 		opts.kind = mapScanKind(kind);

@@ -253,6 +253,7 @@ type LoggerFn = (fn: RecordPayload) => void;
 export async function attachLogger(fn: LoggerFn): Promise<UnlistenFn> {
 	return await listen("log://log", (event: Event<RecordPayload>) => {
 		const { level } = event.payload;
+
 		let { message } = event.payload;
 
 		// Strip ANSI escape codes
@@ -276,19 +277,29 @@ export async function attachConsole(): Promise<UnlistenFn> {
 		switch (level) {
 			case LogLevel.Trace:
 				console.log(message);
+
 				break;
+
 			case LogLevel.Debug:
 				console.debug(message);
+
 				break;
+
 			case LogLevel.Info:
 				console.info(message);
+
 				break;
+
 			case LogLevel.Warn:
 				console.warn(message);
+
 				break;
+
 			case LogLevel.Error:
 				console.error(message);
+
 				break;
+
 			default:
 				// eslint-disable-next-line @typescript-eslint/restrict-template-expressions
 				throw new Error(`unknown log level ${level}`);

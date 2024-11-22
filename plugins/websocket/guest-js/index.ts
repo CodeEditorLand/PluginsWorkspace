@@ -69,6 +69,7 @@ export default class WebSocket {
 
 	async send(message: Message | string | number[]): Promise<void> {
 		let m: Message;
+
 		if (typeof message === "string") {
 			m = { type: "Text", data: message };
 		} else if (typeof message === "object" && "type" in message) {

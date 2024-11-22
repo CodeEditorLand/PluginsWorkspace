@@ -26,6 +26,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -41,6 +42,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -59,6 +61,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -70,6 +73,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -136,9 +140,11 @@ function __makeEvents__<T extends Record<string, any>>(
 							case "listen":
 								return (arg: any) =>
 									TAURI_API_EVENT.listen(name, arg);
+
 							case "once":
 								return (arg: any) =>
 									TAURI_API_EVENT.once(name, arg);
+
 							case "emit":
 								return (arg: any) =>
 									TAURI_API_EVENT.emit(name, arg);

@@ -21,9 +21,11 @@ async function upload(
 ): Promise<string> {
 	const ids = new Uint32Array(1);
 	window.crypto.getRandomValues(ids);
+
 	const id = ids[0];
 
 	const onProgress = new Channel<ProgressPayload>();
+
 	if (progressHandler) {
 		onProgress.onmessage = progressHandler;
 	}
@@ -49,9 +51,11 @@ async function download(
 ): Promise<void> {
 	const ids = new Uint32Array(1);
 	window.crypto.getRandomValues(ids);
+
 	const id = ids[0];
 
 	const onProgress = new Channel<ProgressPayload>();
+
 	if (progressHandler) {
 		onProgress.onmessage = progressHandler;
 	}

@@ -108,6 +108,7 @@ export async function watchPosition(
 		options,
 		channel,
 	});
+
 	return channel.id;
 }
 

@@ -19,6 +19,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 	document.querySelector("#intent-form")?.addEventListener("submit", (e) => {
 		e.preventDefault();
+
 		getCurrentDeepLinkUrls()
 			.then((res) => {
 				// eslint-disable-next-line @typescript-eslint/no-non-null-assertion

@@ -74,6 +74,7 @@ class Update extends Resource {
 		options?: DownloadOptions,
 	): Promise<void> {
 		const channel = new Channel<DownloadEvent>();
+
 		if (onEvent) {
 			channel.onmessage = onEvent;
 		}
@@ -109,6 +110,7 @@ class Update extends Resource {
 		options?: DownloadOptions,
 	): Promise<void> {
 		const channel = new Channel<DownloadEvent>();
+
 		if (onEvent) {
 			channel.onmessage = onEvent;
 		}
