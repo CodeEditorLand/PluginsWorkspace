@@ -18,7 +18,7 @@
  * @module
  */
 
-import { invoke } from '@tauri-apps/api/core'
+import { invoke } from "@tauri-apps/api/core";
 
 /**
  * Opens a url with the system's default app, or the one specified with {@linkcode openWith}.
@@ -39,10 +39,10 @@ import { invoke } from '@tauri-apps/api/core'
  * @since 2.0.0
  */
 export async function openUrl(url: string, openWith?: string): Promise<void> {
-  await invoke('plugin:opener|open_url', {
-    url,
-    with: openWith
-  })
+	await invoke("plugin:opener|open_url", {
+		url,
+		with: openWith,
+	});
 }
 
 /**
@@ -64,10 +64,10 @@ export async function openUrl(url: string, openWith?: string): Promise<void> {
  * @since 2.0.0
  */
 export async function openPath(path: string, openWith?: string): Promise<void> {
-  await invoke('plugin:opener|open_path', {
-    path,
-    with: openWith
-  })
+	await invoke("plugin:opener|open_path", {
+		path,
+		with: openWith,
+	});
 }
 
 /**
@@ -88,5 +88,5 @@ export async function openPath(path: string, openWith?: string): Promise<void> {
  * @since 2.0.0
  */
 export async function revealItemInDir(path: string) {
-  return invoke('plugin:opener|reveal_item_in_dir', { path })
+	return invoke("plugin:opener|reveal_item_in_dir", { path });
 }

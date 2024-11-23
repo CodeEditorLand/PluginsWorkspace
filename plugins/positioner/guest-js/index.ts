@@ -47,9 +47,9 @@ export async function moveWindow(to: Position): Promise<void> {
  * @param to The (tray) {@link Position} to move to.
  */
 export async function moveWindowConstrained(to: Position): Promise<void> {
-  await invoke('plugin:positioner|move_window_constrained', {
-    position: to
-  })
+	await invoke("plugin:positioner|move_window_constrained", {
+		position: to,
+	});
 }
 
 export async function handleIconState(event: TrayIconEvent): Promise<void> {
