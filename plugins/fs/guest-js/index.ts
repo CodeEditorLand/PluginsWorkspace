@@ -262,15 +262,16 @@ type FixedSizeArray<T, N extends number> = ReadonlyArray<T> & {
 // https://gist.github.com/zapthedingbat/38ebfbedd98396624e5b5f2ff462611d
 /** Converts a big-endian eight byte array to number  */
 function fromBytes(buffer: FixedSizeArray<number, 8>): number {
-	const bytes = new Uint8ClampedArray(buffer);
-	const size = bytes.byteLength;
-	let x = 0;
-	for (let i = 0; i < size; i++) {
-		const byte = bytes[i];
-		x *= 0x100;
-		x += byte;
-	}
-	return x;
+  const bytes = new Uint8ClampedArray(buffer)
+  const size = bytes.byteLength
+  let x = 0
+  for (let i = 0; i < size; i++) {
+    // eslint-disable-next-line security/detect-object-injection
+    const byte = bytes[i]
+    x *= 0x100
+    x += byte
+  }
+  return x
 }
 
 /**
@@ -426,32 +427,32 @@ class FileHandle extends Resource {
 		});
 	}
 
-	/**
-	 * Writes `p.byteLength` bytes from `p` to the underlying data stream. It
-	 * resolves to the number of bytes written from `p` (`0` <= `n` <=
-	 * `p.byteLength`) or reject with the error encountered that caused the
-	 * write to stop early. `write()` must reject with a non-null error if
-	 * would resolve to `n` < `p.byteLength`. `write()` must not modify the
-	 * slice data, even temporarily.
-	 *
-	 * @example
-	 * ```typescript
-	 * import { open, write, BaseDirectory } from '@tauri-apps/plugin-fs';
-	 * const encoder = new TextEncoder();
-	 * const data = encoder.encode("Hello world");
-	 * const file = await open("bar.txt", { write: true, baseDir: BaseDirectory.AppLocalData });
-	 * const bytesWritten = await file.write(data); // 11
-	 * await file.close();
-	 * ```
-	 *
-	 * @since 2.0.0
-	 */
-	async write(data: Uint8Array): Promise<number> {
-		return await invoke("plugin:fs|write", {
-			rid: this.rid,
-			data,
-		});
-	}
+  /**
+   * Writes `data.byteLength` bytes from `data` to the underlying data stream. It
+   * resolves to the number of bytes written from `data` (`0` <= `n` <=
+   * `data.byteLength`) or reject with the error encountered that caused the
+   * write to stop early. `write()` must reject with a non-null error if
+   * would resolve to `n` < `data.byteLength`. `write()` must not modify the
+   * slice data, even temporarily.
+   *
+   * @example
+   * ```typescript
+   * import { open, write, BaseDirectory } from '@tauri-apps/plugin-fs';
+   * const encoder = new TextEncoder();
+   * const data = encoder.encode("Hello world");
+   * const file = await open("bar.txt", { write: true, baseDir: BaseDirectory.AppLocalData });
+   * const bytesWritten = await file.write(data); // 11
+   * await file.close();
+   * ```
+   *
+   * @since 2.0.0
+   */
+  async write(data: Uint8Array): Promise<number> {
+    return await invoke('plugin:fs|write', {
+      rid: this.rid,
+      data
+    })
+  }
 }
 
 /**
@@ -771,10 +772,14 @@ async function readTextFile(
 		throw new TypeError("Must be a file URL.");
 	}
 
-	return await invoke<string>("plugin:fs|read_text_file", {
-		path: path instanceof URL ? path.toString() : path,
-		options,
-	});
+  const arr = await invoke<ArrayBuffer | number[]>('plugin:fs|read_text_file', {
+    path: path instanceof URL ? path.toString() : path,
+    options
+  })
+
+  const bytes = arr instanceof ArrayBuffer ? arr : Uint8Array.from(arr)
+
+  return new TextDecoder().decode(bytes)
 }
 
 /**
@@ -802,37 +807,51 @@ async function readTextFileLines(
 
 	const pathStr = path instanceof URL ? path.toString() : path;
 
-	return await Promise.resolve({
-		path: pathStr,
-		rid: null as number | null,
-		async next(): Promise<IteratorResult<string>> {
-			if (this.rid === null) {
-				this.rid = await invoke<number>(
-					"plugin:fs|read_text_file_lines",
-					{
-						path: pathStr,
-						options,
-					},
-				);
-			}
+  return await Promise.resolve({
+    path: pathStr,
+    rid: null as number | null,
 
-			const [line, done] = await invoke<[string | null, boolean]>(
-				"plugin:fs|read_text_file_lines_next",
-				{ rid: this.rid },
-			);
+    async next(): Promise<IteratorResult<string>> {
+      if (this.rid === null) {
+        this.rid = await invoke<number>('plugin:fs|read_text_file_lines', {
+          path: pathStr,
+          options
+        })
+      }
 
-			// an iteration is over, reset rid for next iteration
-			if (done) this.rid = null;
+      const arr = await invoke<ArrayBuffer | number[]>(
+        'plugin:fs|read_text_file_lines_next',
+        { rid: this.rid }
+      )
 
-			return {
-				value: done ? "" : line!,
-				done,
-			};
-		},
-		[Symbol.asyncIterator](): AsyncIterableIterator<string> {
-			return this;
-		},
-	});
+      const bytes =
+        arr instanceof ArrayBuffer ? new Uint8Array(arr) : Uint8Array.from(arr)
+
+      // Rust side will never return an empty array for this command and
+      // ensure there is at least one elements there.
+      //
+      // This is an optimization to include whether we finished iteration or not (1 or 0)
+      // at the end of returned array to avoid serialization overhead of separate values.
+      const done = bytes[bytes.byteLength - 1] === 1
+
+      if (done) {
+        // a full iteration is over, reset rid for next iteration
+        this.rid = null
+        return { value: null, done }
+      }
+
+      const line = new TextDecoder().decode(bytes.slice(0, bytes.byteLength))
+
+      return {
+        value: line,
+        done
+      }
+    },
+
+    [Symbol.asyncIterator](): AsyncIterableIterator<string> {
+      return this
+    }
+  })
 }
 
 /**
@@ -1048,22 +1067,28 @@ interface WriteFileOptions {
  * @since 2.0.0
  */
 async function writeFile(
-	path: string | URL,
-	data: Uint8Array,
-	options?: WriteFileOptions,
+  path: string | URL,
+  data: Uint8Array | ReadableStream<Uint8Array>,
+  options?: WriteFileOptions
 ): Promise<void> {
 	if (path instanceof URL && path.protocol !== "file:") {
 		throw new TypeError("Must be a file URL.");
 	}
 
-	await invoke("plugin:fs|write_file", data, {
-		headers: {
-			path: encodeURIComponent(
-				path instanceof URL ? path.toString() : path,
-			),
-			options: JSON.stringify(options),
-		},
-	});
+  if (data instanceof ReadableStream) {
+    const file = await open(path, options)
+    for await (const chunk of data) {
+      await file.write(chunk)
+    }
+    await file.close()
+  } else {
+    await invoke('plugin:fs|write_file', data, {
+      headers: {
+        path: encodeURIComponent(path instanceof URL ? path.toString() : path),
+        options: JSON.stringify(options)
+      }
+    })
+  }
 }
 
 /**
