@@ -120,11 +120,11 @@ async function readImage(): Promise<Image> {
  *
  * @since 2.0.0
  */
-async function writeHtml(html: string, altHtml?: string): Promise<void> {
-	await invoke("plugin:clipboard-manager|write_html", {
-		html,
-		altHtml,
-	});
+async function writeHtml(html: string, altText?: string): Promise<void> {
+  await invoke('plugin:clipboard-manager|write_html', {
+    html,
+    altText
+  })
 }
 
 /**
