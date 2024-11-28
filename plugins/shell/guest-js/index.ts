@@ -623,6 +623,7 @@ async function open(path: string, openWith?: string): Promise<void> {
 }
 
 export { Command, Child, EventEmitter, open };
+
 export type {
 	IOPayload,
 	CommandEvents,

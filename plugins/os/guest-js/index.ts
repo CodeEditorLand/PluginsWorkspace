@@ -193,4 +193,5 @@ export {
 	exeExtension,
 	hostname,
 };
+
 export type { Platform, OsType, Arch, Family };

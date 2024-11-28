@@ -139,4 +139,5 @@ async function check(options?: CheckOptions): Promise<Update | null> {
 }
 
 export type { CheckOptions, DownloadOptions, DownloadEvent };
+
 export { check, Update };

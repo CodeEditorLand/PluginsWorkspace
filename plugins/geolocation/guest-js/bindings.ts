@@ -137,6 +137,7 @@ export type Coordinates = {
 	 */
 	heading: number | null;
 };
+
 export type Error = never;
 /**
  * Permission state.
@@ -154,6 +155,7 @@ export type PermissionState =
 	 * The end user should be prompted for permission.
 	 */
 	| "prompt";
+
 export type PermissionStatus = {
 	/**
 	 * Permission state for the location alias.
@@ -174,7 +176,9 @@ export type PermissionStatus = {
 	 */
 	coarseLocation: PermissionState;
 };
+
 export type PermissionType = "location" | "coarseLocation";
+
 export type Position = {
 	/**
 	 * Creation time for these coordinates.
@@ -185,6 +189,7 @@ export type Position = {
 	 */
 	coords: Coordinates;
 };
+
 export type PositionOptions = {
 	/**
 	 * High accuracy mode (such as GPS, if available)

@@ -9,16 +9,19 @@ export type ClientPath =
 	| Iterable<number>
 	| ArrayLike<number>
 	| ArrayBuffer;
+
 export type VaultPath =
 	| string
 	| Iterable<number>
 	| ArrayLike<number>
 	| ArrayBuffer;
+
 export type RecordPath =
 	| string
 	| Iterable<number>
 	| ArrayLike<number>
 	| ArrayBuffer;
+
 export type StoreKey =
 	| string
 	| Iterable<number>

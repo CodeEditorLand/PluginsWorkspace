@@ -88,12 +88,14 @@ export const commands = {
 /** user-defined types **/
 
 export type Error = never;
+
 export type ImpactFeedbackStyle =
 	| "light"
 	| "medium"
 	| "heavy"
 	| "soft"
 	| "rigid";
+
 export type NotificationFeedbackType = "success" | "warning" | "error";
 
 type __EventObj__<T> = {
