@@ -1,6 +1,6 @@
 ## Default Permission
 
-This permission set allows opening `mailto:`, `tel:`, `https://` and `http://` urls using their default application
+This permission set allows opening `mailto:`, `tel:`, `HTTPS://` and `HTTP://` urls using their default application
 as well as reveal file in directories using default file explorer
 
 - `allow-open-url`
@@ -24,7 +24,7 @@ as well as reveal file in directories using default file explorer
 </td>
 <td>
 
-This enables opening `mailto:`, `tel:`, `https://` and `http://` urls using their default application.
+This enables opening `mailto:`, `tel:`, `HTTPS://` and `HTTP://` urls using their default application.
 
 </td>
 </tr>
