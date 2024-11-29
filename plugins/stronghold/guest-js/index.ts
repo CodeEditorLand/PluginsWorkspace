@@ -30,10 +30,15 @@ export type StoreKey =
 
 export interface ConnectionLimits {
 	maxPendingIncoming?: number;
+
 	maxPendingOutgoing?: number;
+
 	maxEstablishedIncoming?: number;
+
 	maxEstablishedOutgoing?: number;
+
 	maxEstablishedPerPeer?: number;
+
 	maxEstablishedTotal?: number;
 }
 
@@ -44,33 +49,49 @@ export interface PeerAddress {
 
 export interface AddressInfo {
 	peers: Map<string, PeerAddress>;
+
 	relays: string[]; // peers
 }
 
 export interface ClientAccess {
 	useVaultDefault?: boolean;
+
 	useVaultExceptions?: Map<VaultPath, boolean>;
+
 	writeVaultDefault?: boolean;
+
 	writeVaultExceptions?: Map<VaultPath, boolean>;
+
 	cloneVaultDefault?: boolean;
+
 	cloneVaultExceptions?: Map<VaultPath, boolean>;
+
 	readStore?: boolean;
+
 	writeStore?: boolean;
 }
 
 export interface Permissions {
 	default?: ClientAccess;
+
 	exceptions?: Map<VaultPath, ClientAccess>;
 }
 
 export interface NetworkConfig {
 	requestTimeout?: Duration;
+
 	connectionTimeout?: Duration;
+
 	connectionsLimit?: ConnectionLimits;
+
 	enableMdns?: boolean;
+
 	enableRelay?: boolean;
+
 	addresses?: AddressInfo;
+
 	peerPermissions?: Map<string, Permissions>;
+
 	permissionsDefault?: Permissions;
 }
 
@@ -84,10 +105,12 @@ export interface Duration {
 
 export class Location {
 	type: string;
+
 	payload: Record<string, unknown>;
 
 	constructor(type: string, payload: Record<string, unknown>) {
 		this.type = type;
+
 		this.payload = payload;
 	}
 
@@ -265,10 +288,12 @@ class ProcedureExecutor {
 
 export class Client {
 	path: string;
+
 	name: ClientPath;
 
 	constructor(path: string, name: ClientPath) {
 		this.path = path;
+
 		this.name = name;
 	}
 
@@ -289,10 +314,12 @@ export class Client {
 
 export class Store {
 	path: string;
+
 	client: ClientPath;
 
 	constructor(path: string, client: ClientPath) {
 		this.path = path;
+
 		this.client = client;
 	}
 
@@ -341,6 +368,7 @@ export class Store {
 export class Vault extends ProcedureExecutor {
 	/** The vault path. */
 	path: string;
+
 	client: ClientPath;
 	/** The vault name. */
 	name: VaultPath;
@@ -351,8 +379,11 @@ export class Vault extends ProcedureExecutor {
 			client,
 			vault: name,
 		});
+
 		this.path = path;
+
 		this.client = client;
+
 		this.name = name;
 	}
 

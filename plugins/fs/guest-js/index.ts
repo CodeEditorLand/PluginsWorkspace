@@ -213,22 +213,39 @@ interface FileInfo {
 
 interface UnparsedFileInfo {
 	isFile: boolean;
+
 	isDirectory: boolean;
+
 	isSymlink: boolean;
+
 	size: number;
+
 	mtime: number | null;
+
 	atime: number | null;
+
 	birthtime: number | null;
+
 	readonly: boolean;
+
 	fileAttributes: number;
+
 	dev: number | null;
+
 	ino: number | null;
+
 	mode: number | null;
+
 	nlink: number | null;
+
 	uid: number | null;
+
 	gid: number | null;
+
 	rdev: number | null;
+
 	blksize: number | null;
+
 	blocks: number | null;
 }
 function parseFileInfo(r: UnparsedFileInfo): FileInfo {
@@ -263,14 +280,20 @@ type FixedSizeArray<T, N extends number> = ReadonlyArray<T> & {
 /** Converts a big-endian eight byte array to number  */
 function fromBytes(buffer: FixedSizeArray<number, 8>): number {
 	const bytes = new Uint8ClampedArray(buffer);
+
 	const size = bytes.byteLength;
+
 	let x = 0;
+
 	for (let i = 0; i < size; i++) {
 		// eslint-disable-next-line security/detect-object-injection
 		const byte = bytes[i];
+
 		x *= 0x100;
+
 		x += byte;
 	}
+
 	return x;
 }
 
@@ -329,6 +352,7 @@ class FileHandle extends Resource {
 		const nread = fromBytes(data.slice(-8) as FixedSizeArray<number, 8>);
 
 		const bytes = data instanceof ArrayBuffer ? new Uint8Array(data) : data;
+
 		buffer.set(bytes.slice(0, bytes.length - 8));
 
 		return nread === 0 ? null : nread;
@@ -845,6 +869,7 @@ async function readTextFileLines(
 			if (done) {
 				// a full iteration is over, reset rid for next iteration
 				this.rid = null;
+
 				return { value: null, done };
 			}
 
@@ -1087,9 +1112,11 @@ async function writeFile(
 
 	if (data instanceof ReadableStream) {
 		const file = await open(path, options);
+
 		for await (const chunk of data) {
 			await file.write(chunk);
 		}
+
 		await file.close();
 	} else {
 		await invoke("plugin:fs|write_file", data, {
@@ -1191,7 +1218,9 @@ interface DebouncedWatchOptions extends WatchOptions {
  */
 interface WatchEvent {
 	type: WatchEventKind;
+
 	paths: string[];
+
 	attrs: unknown;
 }
 
@@ -1232,6 +1261,7 @@ type WatchEventKindModify =
 	| { kind: "data"; mode: "any" | "size" | "content" | "other" }
 	| {
 			kind: "metadata";
+
 			mode:
 				| "any"
 				| "access-time"
@@ -1287,6 +1317,7 @@ async function watch(
 	}
 
 	const onEvent = new Channel<WatchEvent>();
+
 	onEvent.onmessage = cb;
 
 	const rid: number = await invoke("plugin:fs|watch", {
@@ -1325,6 +1356,7 @@ async function watchImmediate(
 	}
 
 	const onEvent = new Channel<WatchEvent>();
+
 	onEvent.onmessage = cb;
 
 	const rid: number = await invoke("plugin:fs|watch", {

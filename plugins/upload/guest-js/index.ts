@@ -6,8 +6,11 @@ import { Channel, invoke } from "@tauri-apps/api/core";
 
 interface ProgressPayload {
 	progress: number;
+
 	progressTotal: number;
+
 	total: number;
+
 	transferSpeed: number;
 }
 
@@ -20,6 +23,7 @@ async function upload(
 	headers?: Map<string, string>,
 ): Promise<string> {
 	const ids = new Uint32Array(1);
+
 	window.crypto.getRandomValues(ids);
 
 	const id = ids[0];
@@ -50,6 +54,7 @@ async function download(
 	headers?: Map<string, string>,
 ): Promise<void> {
 	const ids = new Uint32Array(1);
+
 	window.crypto.getRandomValues(ids);
 
 	const id = ids[0];

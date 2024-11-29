@@ -26,6 +26,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -41,6 +42,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -59,6 +61,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -70,6 +73,7 @@ export const commands = {
 			};
 		} catch (e) {
 			if (e instanceof Error) throw e;
+
 			else return { status: "error", error: e as any };
 		}
 	},
@@ -102,9 +106,11 @@ type __EventObj__<T> = {
 	listen: (
 		cb: TAURI_API_EVENT.EventCallback<T>,
 	) => ReturnType<typeof TAURI_API_EVENT.listen<T>>;
+
 	once: (
 		cb: TAURI_API_EVENT.EventCallback<T>,
 	) => ReturnType<typeof TAURI_API_EVENT.once<T>>;
+
 	emit: T extends null
 		? (payload?: T) => ReturnType<typeof TAURI_API_EVENT.emit>
 		: (payload: T) => ReturnType<typeof TAURI_API_EVENT.emit>;

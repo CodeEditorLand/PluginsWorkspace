@@ -12,7 +12,9 @@ import { Channel, invoke } from "@tauri-apps/api/core";
 
 export interface ShortcutEvent {
 	shortcut: string;
+
 	id: number;
+
 	state: "Released" | "Pressed";
 }
 
@@ -53,6 +55,7 @@ async function register(
 	handler: ShortcutHandler,
 ): Promise<void> {
 	const h = new Channel<ShortcutEvent>();
+
 	h.onmessage = handler;
 
 	return await invoke("plugin:global-shortcut|register", {

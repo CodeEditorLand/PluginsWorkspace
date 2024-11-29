@@ -31,6 +31,7 @@ export type Coordinates = {
 	 * The altitude the user is at, if available.
 	 */
 	altitude: number | null;
+
 	speed: number | null;
 	/**
 	 * The heading the user is facing, if available.
@@ -97,6 +98,7 @@ export async function watchPosition(
 	cb: (location: Position | null, error?: string) => void,
 ): Promise<number> {
 	const channel = new Channel<Position | string>();
+
 	channel.onmessage = (message) => {
 		if (typeof message === "string") {
 			cb(null, message);
@@ -104,6 +106,7 @@ export async function watchPosition(
 			cb(message);
 		}
 	};
+
 	await invoke("plugin:geolocation|watch_position", {
 		options,
 		channel,

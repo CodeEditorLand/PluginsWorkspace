@@ -16,8 +16,11 @@ export enum BiometryType {
 
 export interface Status {
 	isAvailable: boolean;
+
 	biometryType: BiometryType;
+
 	error?: string;
+
 	errorCode?:
 		| "appCancel"
 		| "authenticationFailed"
@@ -34,6 +37,7 @@ export interface Status {
 
 export interface AuthOptions {
 	allowDeviceCredential?: boolean;
+
 	cancelTitle?: string;
 
 	// iOS options
@@ -41,8 +45,11 @@ export interface AuthOptions {
 
 	// android options
 	title?: string;
+
 	subtitle?: string;
+
 	confirmationRequired?: boolean;
+
 	maxAttemps?: number;
 }
 

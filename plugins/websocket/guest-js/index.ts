@@ -6,20 +6,27 @@ import { Channel, invoke } from "@tauri-apps/api/core";
 
 export interface ConnectionConfig {
 	writeBufferSize?: number;
+
 	maxWriteBufferSize?: number;
+
 	maxMessageSize?: number;
+
 	maxFrameSize?: number;
+
 	acceptUnmaskedFrames?: boolean;
+
 	headers?: HeadersInit;
 }
 
 export interface MessageKind<T, D> {
 	type: T;
+
 	data: D;
 }
 
 export interface CloseFrame {
 	code: number;
+
 	reason: string;
 }
 
@@ -32,10 +39,12 @@ export type Message =
 
 export default class WebSocket {
 	id: number;
+
 	private readonly listeners: Array<(arg: Message) => void>;
 
 	constructor(id: number, listeners: Array<(arg: Message) => void>) {
 		this.id = id;
+
 		this.listeners = listeners;
 	}
 
@@ -46,6 +55,7 @@ export default class WebSocket {
 		const listeners: Array<(arg: Message) => void> = [];
 
 		const onMessage = new Channel<Message>();
+
 		onMessage.onmessage = (message: Message): void => {
 			listeners.forEach((l) => {
 				l(message);
@@ -81,6 +91,7 @@ export default class WebSocket {
 				"invalid `message` type, expected a `{ type: string, data: any }` object, a string or a numeric array",
 			);
 		}
+
 		await invoke("plugin:websocket|send", {
 			id: this.id,
 			message: m,

@@ -7,9 +7,13 @@ import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 
 interface ChangePayload<T> {
 	path: string;
+
 	resourceId?: number;
+
 	key: string;
+
 	value: T;
+
 	exists: boolean;
 }
 
@@ -84,6 +88,7 @@ export class LazyStore implements IStore {
 		if (!this._store) {
 			this._store = load(this.path, this.options);
 		}
+
 		return this._store;
 	}
 
@@ -197,6 +202,7 @@ export class Store extends Resource implements IStore {
 			path,
 			...options,
 		});
+
 		return new Store(rid);
 	}
 
@@ -238,6 +244,7 @@ export class Store extends Resource implements IStore {
 			rid: this.rid,
 			key,
 		});
+
 		return exists ? value : undefined;
 	}
 

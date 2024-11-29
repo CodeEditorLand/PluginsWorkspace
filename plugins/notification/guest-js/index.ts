@@ -134,7 +134,9 @@ interface Options {
 
 interface ScheduleInterval {
 	year?: number;
+
 	month?: number;
+
 	day?: number;
 	/**
 	 * 1 - Sunday
@@ -146,8 +148,11 @@ interface ScheduleInterval {
 	 * 7 - Saturday
 	 */
 	weekday?: number;
+
 	hour?: number;
+
 	minute?: number;
+
 	second?: number;
 }
 
@@ -169,7 +174,9 @@ class Schedule {
 	at:
 		| {
 				date: Date;
+
 				repeating: boolean;
+
 				allowWhileIdle: boolean;
 		  }
 		| undefined;
@@ -177,6 +184,7 @@ class Schedule {
 	interval:
 		| {
 				interval: ScheduleInterval;
+
 				allowWhileIdle: boolean;
 		  }
 		| undefined;
@@ -184,7 +192,9 @@ class Schedule {
 	every:
 		| {
 				interval: ScheduleEvery;
+
 				count: number;
+
 				allowWhileIdle: boolean;
 		  }
 		| undefined;
@@ -233,13 +243,19 @@ interface Attachment {
 
 interface Action {
 	id: string;
+
 	title: string;
+
 	requiresAuthentication?: boolean;
 
 	foreground?: boolean;
+
 	destructive?: boolean;
+
 	input?: boolean;
+
 	inputButtonTitle?: string;
+
 	inputPlaceholder?: string;
 }
 
@@ -252,32 +268,51 @@ interface ActionType {
 	 * The list of associated actions
 	 */
 	actions: Action[];
+
 	hiddenPreviewsBodyPlaceholder?: string;
+
 	customDismissAction?: boolean;
+
 	allowInCarPlay?: boolean;
+
 	hiddenPreviewsShowTitle?: boolean;
+
 	hiddenPreviewsShowSubtitle?: boolean;
 }
 
 interface PendingNotification {
 	id: number;
+
 	title?: string;
+
 	body?: string;
+
 	schedule: Schedule;
 }
 
 interface ActiveNotification {
 	id: number;
+
 	tag?: string;
+
 	title?: string;
+
 	body?: string;
+
 	group?: string;
+
 	groupSummary: boolean;
+
 	data: Record<string, string>;
+
 	extra: Record<string, unknown>;
+
 	attachments: Attachment[];
+
 	actionTypeId?: string;
+
 	schedule?: Schedule;
+
 	sound?: string;
 }
 
@@ -297,14 +332,21 @@ enum Visibility {
 
 interface Channel {
 	id: string;
+
 	name: string;
+
 	description?: string;
+
 	sound?: string;
+
 	lights?: boolean;
+
 	lightColor?: string;
+
 	vibration?: boolean;
 
 	importance?: Importance;
+
 	visibility?: Visibility;
 }
 
@@ -324,6 +366,7 @@ async function isPermissionGranted(): Promise<boolean> {
 			window.Notification.permission === "granted",
 		);
 	}
+
 	return await invoke("plugin:notification|is_permission_granted");
 }
 

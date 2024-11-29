@@ -38,10 +38,15 @@ interface DownloadOptions {
 
 interface UpdateMetadata {
 	rid: number;
+
 	available: boolean;
+
 	currentVersion: string;
+
 	version: string;
+
 	date?: string;
+
 	body?: string;
 }
 
@@ -53,18 +58,28 @@ type DownloadEvent =
 
 class Update extends Resource {
 	available: boolean;
+
 	currentVersion: string;
+
 	version: string;
+
 	date?: string;
+
 	body?: string;
+
 	private downloadedBytes?: Resource;
 
 	constructor(metadata: UpdateMetadata) {
 		super(metadata.rid);
+
 		this.available = metadata.available;
+
 		this.currentVersion = metadata.currentVersion;
+
 		this.version = metadata.version;
+
 		this.date = metadata.date;
+
 		this.body = metadata.body;
 	}
 
@@ -78,6 +93,7 @@ class Update extends Resource {
 		if (onEvent) {
 			channel.onmessage = onEvent;
 		}
+
 		const downloadedBytesRid = await invoke<number>(
 			"plugin:updater|download",
 			{
@@ -86,6 +102,7 @@ class Update extends Resource {
 				...options,
 			},
 		);
+
 		this.downloadedBytes = new Resource(downloadedBytesRid);
 	}
 
@@ -114,6 +131,7 @@ class Update extends Resource {
 		if (onEvent) {
 			channel.onmessage = onEvent;
 		}
+
 		await invoke("plugin:updater|download_and_install", {
 			onEvent: channel,
 			rid: this.rid,
@@ -123,6 +141,7 @@ class Update extends Resource {
 
 	async close(): Promise<void> {
 		await this.downloadedBytes?.close();
+
 		await super.close();
 	}
 }

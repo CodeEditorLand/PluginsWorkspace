@@ -9,7 +9,9 @@ export const RTD_URI = [0x55]; // "U"
 
 export interface UriFilter {
 	scheme?: string;
+
 	host?: string;
+
 	pathPrefix?: string;
 }
 
@@ -29,12 +31,16 @@ export enum TechKind {
 export type ScanKind =
 	| {
 			type: "tag";
+
 			uri?: UriFilter;
+
 			mimeType?: string;
 	  }
 	| {
 			type: "ndef";
+
 			uri?: UriFilter;
+
 			mimeType?: string;
 			/**
 			 *  Each of the tech-lists is considered independently and the activity is considered a match if
@@ -89,21 +95,29 @@ export enum NFCTypeNameFormat {
 
 export interface TagRecord {
 	tnf: NFCTypeNameFormat;
+
 	kind: number[];
+
 	id: number[];
+
 	payload: number[];
 }
 
 export interface Tag {
 	id: number[];
+
 	kind: string[];
+
 	records: TagRecord[];
 }
 
 export interface NFCRecord {
 	format: NFCTypeNameFormat;
+
 	kind: number[];
+
 	id: number[];
+
 	payload: number[];
 }
 
@@ -136,6 +150,7 @@ export function textRecord(
 	language: string = "en",
 ): NFCRecord {
 	const payload = Array.from(new TextEncoder().encode(language + text));
+
 	payload.unshift(language.length);
 
 	return record(NFCTypeNameFormat.NfcWellKnown, RTD_TEXT, id ?? [], payload);
@@ -271,6 +286,7 @@ export async function write(
 		// @ts-expect-error map the property
 		opts.kind = mapScanKind(kind);
 	}
+
 	await invoke("plugin:nfc|write", {
 		records,
 		...opts,

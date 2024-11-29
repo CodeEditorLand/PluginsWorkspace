@@ -23,10 +23,13 @@ function openLinks(): void {
 					void invoke("plugin:shell|open", {
 						path: t.href,
 					});
+
 					e.preventDefault();
 				}
+
 				break;
 			}
+
 			target = target.parentElement;
 		}
 	});

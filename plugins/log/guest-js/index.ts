@@ -7,7 +7,9 @@ import { listen, type Event, type UnlistenFn } from "@tauri-apps/api/event";
 
 export interface LogOptions {
 	file?: string;
+
 	line?: number;
+
 	keyValues?: Record<string, string | undefined>;
 }
 
@@ -64,29 +66,39 @@ function getCallerLocation(stack?: string) {
 
 		const regex =
 			/at\s+(?<functionName>.*?)\s+\((?<fileName>.*?):(?<lineNumber>\d+):(?<columnNumber>\d+)\)/;
+
 		const match = callerLine.match(regex);
 
 		if (match) {
 			const { functionName, fileName, lineNumber, columnNumber } =
 				match.groups as {
 					functionName: string;
+
 					fileName: string;
+
 					lineNumber: string;
+
 					columnNumber: string;
 				};
+
 			return `${functionName}@${fileName}:${lineNumber}:${columnNumber}`;
 		} else {
 			// Handle cases where the regex does not match (e.g., last line without function name)
 			const regexNoFunction =
 				/at\s+(?<fileName>.*?):(?<lineNumber>\d+):(?<columnNumber>\d+)/;
+
 			const matchNoFunction = callerLine.match(regexNoFunction);
+
 			if (matchNoFunction) {
 				const { fileName, lineNumber, columnNumber } =
 					matchNoFunction.groups as {
 						fileName: string;
+
 						lineNumber: string;
+
 						columnNumber: string;
 					};
+
 				return `<anonymous>@${fileName}:${lineNumber}:${columnNumber}`;
 			}
 		}
@@ -99,6 +111,7 @@ function getCallerLocation(stack?: string) {
 		// global code@filename.js:13:4
 
 		const traces = stack.split("\n").map((line) => line.split("@"));
+
 		const filtered = traces.filter(([name, location]) => {
 			return name.length > 0 && location !== "[native code]";
 		});
@@ -239,6 +252,7 @@ export async function trace(
 
 interface RecordPayload {
 	level: LogLevel;
+
 	message: string;
 }
 
@@ -263,6 +277,7 @@ export async function attachLogger(fn: LoggerFn): Promise<UnlistenFn> {
 			/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
 			"",
 		);
+
 		fn({ message, level });
 	});
 }

@@ -21,6 +21,7 @@ import type { Options } from "./index";
 				window.Notification.permission === "granted",
 			);
 		}
+
 		return await invoke("plugin:notification|is_permission_granted");
 	}
 
@@ -28,6 +29,7 @@ import type { Options } from "./index";
 		permissionSettable = true;
 		// @ts-expect-error we can actually set this value on the webview
 		window.Notification.permission = value;
+
 		permissionSettable = false;
 	}
 
@@ -65,6 +67,7 @@ import type { Options } from "./index";
 	window.Notification = function (title, options) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const opts = options || {};
+
 		void sendNotification(
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 			Object.assign(opts, {

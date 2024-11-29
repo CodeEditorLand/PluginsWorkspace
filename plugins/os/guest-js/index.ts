@@ -15,11 +15,17 @@ declare global {
 	interface Window {
 		__TAURI_OS_PLUGIN_INTERNALS__: {
 			eol: string;
+
 			os_type: OsType;
+
 			platform: Platform;
+
 			family: Family;
+
 			version: string;
+
 			arch: Arch;
+
 			exe_extension: string;
 		};
 	}

@@ -31,6 +31,7 @@ interface ArgMatch {
  */
 interface SubcommandMatch {
 	name: string;
+
 	matches: CliMatches;
 }
 
@@ -39,6 +40,7 @@ interface SubcommandMatch {
  */
 interface CliMatches {
 	args: Record<string, ArgMatch>;
+
 	subcommand: SubcommandMatch | null;
 }
 
