@@ -49,6 +49,7 @@ pub mod bus {
 
 		pub fn custom(custom_path:&str) -> Option<Self> {
 			let name = dbus::strings::BusName::new(Self::namespaced_custom(custom_path)?).ok()?;
+
 			Some(Self(name))
 		}
 
@@ -81,6 +82,7 @@ impl DbusNotificationHandle {
 
 	pub fn close(self) {
 		let mut message = build_message("CloseNotification", Default::default());
+
 		message.append_items(&[self.id.into()]);
 
 		let _ = self.connection.send(message); // If closing fails there's nothing we could do anyway
@@ -117,7 +119,9 @@ pub fn send_notification_via_connection_at_bus(
 	bus:NotificationBus,
 ) -> Result<u32> {
 	let mut message = build_message("Notify", bus);
+
 	let timeout:i32 = notification.timeout.into();
+
 	message.append_items(&[
 		notification.appname.to_owned().into(), // appname
 		id.into(),                              // notification to update
@@ -139,6 +143,7 @@ pub fn send_notification_via_connection_at_bus(
 
 pub fn connect_and_send_notification(notification:&Notification) -> Result<DbusNotificationHandle> {
 	let bus = notification.bus.clone();
+
 	connect_and_send_notification_at_bus(notification, bus)
 }
 
@@ -147,7 +152,9 @@ pub fn connect_and_send_notification_at_bus(
 	bus:NotificationBus,
 ) -> Result<DbusNotificationHandle> {
 	let connection = Connection::get_private(BusType::Session)?;
+
 	let inner_id = notification.id.unwrap_or(0);
+
 	let id = send_notification_via_connection_at_bus(notification, inner_id, &connection, bus)?;
 
 	Ok(DbusNotificationHandle::new(id, connection, notification.clone()))
@@ -182,9 +189,11 @@ pub fn pack_hints(notification:&Notification) -> Result<MessageItem> {
 pub fn pack_actions(notification:&Notification) -> MessageItem {
 	if !notification.actions.is_empty() {
 		let mut actions = vec![];
+
 		for action in &notification.actions {
 			actions.push(action.to_owned().into());
 		}
+
 		if let Ok(array) = MessageItem::new_array(actions) {
 			return array;
 		}
@@ -197,7 +206,9 @@ pub fn get_capabilities() -> Result<Vec<String>> {
 	let mut capabilities = vec![];
 
 	let message = build_message("GetCapabilities", Default::default());
+
 	let connection = Connection::get_private(BusType::Session)?;
+
 	let reply = connection.send_with_reply_and_block(message, 2000)?;
 
 	if let Some(MessageItem::Array(items)) = reply.get_items().first() {
@@ -221,7 +232,9 @@ fn unwrap_message_string(item:Option<&MessageItem>) -> String {
 #[allow(clippy::get_first)]
 pub fn get_server_information() -> Result<ServerInformation> {
 	let message = build_message("GetServerInformation", Default::default());
+
 	let connection = Connection::get_private(BusType::Session)?;
+
 	let reply = connection.send_with_reply_and_block(message, 2000)?;
 
 	let items = reply.get_items();
@@ -240,6 +253,7 @@ pub fn get_server_information() -> Result<ServerInformation> {
 /// `Notification::show_and_wait_for_action(FnOnce(action:&str))`
 pub fn handle_action(id:u32, func:impl ActionResponseHandler) {
 	let connection = Connection::get_private(BusType::Session).unwrap();
+
 	wait_for_action_signal(&connection, id, func);
 }
 
@@ -248,6 +262,7 @@ fn wait_for_action_signal(connection:&Connection, id:u32, handler:impl ActionRes
 	connection
 		.add_match(&format!("interface='{}',member='ActionInvoked'", NOTIFICATION_INTERFACE))
 		.unwrap();
+
 	connection
 		.add_match(&format!("interface='{}',member='NotificationClosed'", NOTIFICATION_INTERFACE))
 		.unwrap();
@@ -267,6 +282,7 @@ fn wait_for_action_signal(connection:&Connection, id:u32, handler:impl ActionRes
 					.member()
 					.map_or_else(String::new, |p| p.into_cstring().to_string_lossy().into_owned()),
 			);
+
 			match (path.as_str(), interface.as_str(), member.as_str()) {
 				// match (protocol.unwrap(), iface.unwrap(), member.unwrap()) {
 				// Action Invoked
@@ -278,6 +294,7 @@ fn wait_for_action_signal(connection:&Connection, id:u32, handler:impl ActionRes
 					{
 						if nid == id {
 							handler.call(&ActionResponse::Custom(action));
+
 							break;
 						}
 					}
@@ -292,6 +309,7 @@ fn wait_for_action_signal(connection:&Connection, id:u32, handler:impl ActionRes
 					{
 						if nid == id {
 							handler.call(&ActionResponse::Closed(reason.into()));
+
 							break;
 						}
 					}

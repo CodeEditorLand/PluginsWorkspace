@@ -37,6 +37,7 @@ fn init_deep_link<R: Runtime>(
         }
 
         let app_handle = app.clone();
+
         handle.run_mobile_plugin::<()>(
             "setEventHandler",
             imp::EventHandler {
@@ -47,6 +48,7 @@ fn init_deep_link<R: Runtime>(
                                 .ok()
                                 .map(|payload| payload.url)
                         }
+
                         _ => None,
                     };
 
@@ -73,11 +75,13 @@ fn init_deep_link<R: Runtime>(
     #[cfg(desktop)]
     {
         let args = std::env::args();
+
         let deep_link = DeepLink {
             app: app.clone(),
             current: Default::default(),
             config: api.config().clone(),
         };
+
         deep_link.handle_cli_arguments(args);
 
         Ok(deep_link)
@@ -170,6 +174,7 @@ mod imp {
     };
     #[cfg(target_os = "linux")]
     use tauri::Manager;
+
     use tauri::{AppHandle, Runtime};
     #[cfg(windows)]
     use windows_registry::CURRENT_USER;
@@ -212,7 +217,9 @@ mod imp {
                 if let Some(url) = arg.and_then(|arg| arg.as_ref().parse::<url::Url>().ok()) {
                     if config.desktop.contains_scheme(&url.scheme().to_string()) {
                         let mut current = self.current.lock().unwrap();
+
                         current.replace(vec![url.clone()]);
+
                         let _ = self.app.emit("deep-link://new-url", vec![url]);
                     } else if cfg!(debug_assertions) {
                         tracing::warn!("argument {url} does not match any configured deep link scheme; skipping it");
@@ -265,13 +272,16 @@ mod imp {
                     .to_string();
 
                 let key_reg = CURRENT_USER.create(&key_base)?;
+
                 key_reg.set_string(
                     "",
                     &format!("URL:{} protocol", self.app.config().identifier),
                 )?;
+
                 key_reg.set_string("URL Protocol", "")?;
 
                 let icon_reg = CURRENT_USER.create(format!("{key_base}\\DefaultIcon"))?;
+
                 icon_reg.set_string("", &format!("{exe},0"))?;
 
                 let cmd_reg = CURRENT_USER.create(format!("{key_base}\\shell\\open\\command"))?;
@@ -284,11 +294,14 @@ mod imp {
             #[cfg(target_os = "linux")]
             {
                 let bin = tauri::utils::platform::current_exe()?;
+
                 let file_name = format!(
                     "{}-handler.desktop",
                     bin.file_name().unwrap().to_string_lossy()
                 );
+
                 let appimage = self.app.env().appimage;
+
                 let exec = appimage
                     .clone()
                     .unwrap_or_else(|| bin.into_os_string())
@@ -306,14 +319,17 @@ mod imp {
                 if let Ok(mut desktop_file) = ini::Ini::load_from_file(&target_file) {
                     if let Some(section) = desktop_file.section_mut(Some("Desktop Entry")) {
                         let old_mimes = section.remove("MimeType");
+
                         section.append(
                             "MimeType",
                             format!("{mime_type};{}", old_mimes.unwrap_or_default()),
                         );
+
                         desktop_file.write_to_file(&target_file)?;
                     }
                 } else {
                     let mut file = File::create(target_file)?;
+
                     file.write_all(
                         format!(
                             include_str!("template.desktop"),
@@ -364,6 +380,7 @@ mod imp {
             #[cfg(target_os = "linux")]
             {
                 let mimeapps_path = self.app.path().config_dir()?.join("mimeapps.list");
+
                 let mut mimeapps = ini::Ini::load_from_file(&mimeapps_path)?;
 
                 let file_name = format!(
@@ -504,6 +521,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Option<config::Config>> {
         ])
         .setup(|app, api| {
             app.manage(init_deep_link(app, api)?);
+
             Ok(())
         })
         .on_event(|_app, _event| {
@@ -512,6 +530,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Option<config::Config>> {
                 use tauri::Emitter;
 
                 let _ = _app.emit("deep-link://new-url", urls);
+
                 _app.state::<DeepLink<R>>()
                     .current
                     .lock()

@@ -116,6 +116,7 @@ impl<'a, R: Runtime, M: Manager<R>> Scope<'a, R, M> {
 
     pub fn is_url_allowed(&self, url: &str, with: Option<&str>) -> bool {
         let denied = self.denied.iter().any(|e| e.matches_url(url, with));
+
         if denied {
             false
         } else {

@@ -56,7 +56,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let clipboard = mobile::init(app, api)?;
             #[cfg(desktop)]
             let clipboard = desktop::init(app, api)?;
+
             app.manage(clipboard);
+
             Ok(())
         })
         .build()

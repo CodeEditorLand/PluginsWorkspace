@@ -48,31 +48,44 @@ pub(crate) async fn check<R: Runtime>(
     target: Option<String>,
 ) -> Result<Metadata> {
     let mut builder = webview.updater_builder();
+
     if let Some(headers) = headers {
         for (k, v) in headers {
             builder = builder.header(k, v)?;
         }
     }
+
     if let Some(timeout) = timeout {
         builder = builder.timeout(Duration::from_millis(timeout));
     }
+
     if let Some(ref proxy) = proxy {
         let url = Url::parse(proxy.as_str())?;
+
         builder = builder.proxy(url);
     }
+
     if let Some(target) = target {
         builder = builder.target(target);
     }
 
     let updater = builder.build()?;
+
     let update = updater.check().await?;
+
     let mut metadata = Metadata::default();
+
     if let Some(update) = update {
         metadata.available = true;
+
         metadata.current_version.clone_from(&update.current_version);
+
         metadata.version.clone_from(&update.version);
+
         metadata.date = update.date.map(|d| d.to_string());
+
         metadata.body.clone_from(&update.body);
+
         metadata.rid = Some(webview.resources_table().add(update));
     }
 
@@ -93,9 +106,11 @@ pub(crate) async fn download<R: Runtime>(
 
     if let Some(headers) = headers {
         let mut map = HeaderMap::new();
+
         for (k, v) in headers {
             map.append(HeaderName::from_str(&k)?, HeaderValue::from_str(&v)?);
         }
+
         update.headers = map;
     }
 
@@ -104,13 +119,16 @@ pub(crate) async fn download<R: Runtime>(
     }
 
     let mut first_chunk = true;
+
     let bytes = update
         .download(
             |chunk_length, content_length| {
                 if first_chunk {
                     first_chunk = !first_chunk;
+
                     let _ = on_event.send(DownloadEvent::Started { content_length });
                 }
+
                 let _ = on_event.send(DownloadEvent::Progress { chunk_length });
             },
             || {
@@ -129,11 +147,15 @@ pub(crate) async fn install<R: Runtime>(
     bytes_rid: ResourceId,
 ) -> Result<()> {
     let update = webview.resources_table().get::<Update>(update_rid)?;
+
     let bytes = webview
         .resources_table()
         .get::<DownloadedBytes>(bytes_rid)?;
+
     update.install(&bytes.0)?;
+
     let _ = webview.resources_table().close(bytes_rid);
+
     Ok(())
 }
 
@@ -151,9 +173,11 @@ pub(crate) async fn download_and_install<R: Runtime>(
 
     if let Some(headers) = headers {
         let mut map = HeaderMap::new();
+
         for (k, v) in headers {
             map.append(HeaderName::from_str(&k)?, HeaderValue::from_str(&v)?);
         }
+
         update.headers = map;
     }
 
@@ -168,8 +192,10 @@ pub(crate) async fn download_and_install<R: Runtime>(
             |chunk_length, content_length| {
                 if first_chunk {
                     first_chunk = !first_chunk;
+
                     let _ = on_event.send(DownloadEvent::Started { content_length });
                 }
+
                 let _ = on_event.send(DownloadEvent::Progress { chunk_length });
             },
             || {

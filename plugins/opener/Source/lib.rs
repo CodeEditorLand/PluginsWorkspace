@@ -129,6 +129,7 @@ impl Builder {
     /// Enabled by default for `http:`, `https:`, `mailto:`, `tel:` links.
     pub fn open_js_links_on_click(mut self, open: bool) -> Self {
         self.open_js_links_on_click = open;
+
         self
     }
 
@@ -147,6 +148,7 @@ impl Builder {
                     #[cfg(mobile)]
                     mobile_plugin_handle: handle,
                 });
+
                 Ok(())
             })
             .invoke_handler(tauri::generate_handler![

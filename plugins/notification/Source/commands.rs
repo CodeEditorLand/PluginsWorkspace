@@ -12,6 +12,7 @@ pub(crate) async fn is_permission_granted<R: Runtime>(
     notification: State<'_, Notification<R>>,
 ) -> Result<Option<bool>> {
     let state = notification.permission_state()?;
+
     match state {
         PermissionState::Granted => Ok(Some(true)),
         PermissionState::Denied => Ok(Some(false)),
@@ -34,6 +35,8 @@ pub(crate) async fn notify<R: Runtime>(
     options: NotificationData,
 ) -> Result<()> {
     let mut builder = notification.builder();
+
     builder.data = options;
+
     builder.show()
 }

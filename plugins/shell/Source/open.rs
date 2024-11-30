@@ -54,6 +54,7 @@ impl FromStr for Program {
             "safari" => Self::Safari,
             _ => return Err(crate::Error::UnknownProgramName(s.to_string())),
         };
+
         Ok(p)
     }
 }
@@ -64,6 +65,7 @@ impl<'de> Deserialize<'de> for Program {
         D: Deserializer<'de>,
     {
         let s = String::deserialize(deserializer)?;
+
         Program::from_str(&s).map_err(|e| serde::de::Error::custom(e.to_string()))
     }
 }

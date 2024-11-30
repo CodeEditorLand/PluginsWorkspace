@@ -63,14 +63,17 @@ fn builder<R: Runtime>(
     create_new: bool,
 ) -> Result<StoreBuilder<R>> {
     let mut builder = app.store_builder(path);
+
     if let Some(auto_save) = auto_save {
         match auto_save {
             AutoSave::DebounceDuration(duration) => {
                 builder = builder.auto_save(Duration::from_millis(duration));
             }
+
             AutoSave::Bool(false) => {
                 builder = builder.disable_auto_save();
             }
+
             _ => {}
         }
     }
@@ -80,6 +83,7 @@ fn builder<R: Runtime>(
             .serialize_fns
             .get(&serialize_fn_name)
             .ok_or_else(|| crate::Error::SerializeFunctionNotFound(serialize_fn_name))?;
+
         builder = builder.serialize(*serialize_fn);
     }
 
@@ -88,6 +92,7 @@ fn builder<R: Runtime>(
             .deserialize_fns
             .get(&deserialize_fn_name)
             .ok_or_else(|| crate::Error::DeserializeFunctionNotFound(deserialize_fn_name))?;
+
         builder = builder.deserialize(*deserialize_fn);
     }
 
@@ -117,7 +122,9 @@ async fn load<R: Runtime>(
         deserialize_fn_name,
         create_new.unwrap_or_default(),
     )?;
+
     let (_, rid) = builder.build_inner()?;
+
     Ok(rid)
 }
 
@@ -128,6 +135,7 @@ async fn get_store<R: Runtime>(
     path: PathBuf,
 ) -> Result<Option<ResourceId>> {
     let stores = store_state.stores.lock().unwrap();
+
     Ok(stores.get(&resolve_store_path(&app, path)?).copied())
 }
 
@@ -139,7 +147,9 @@ async fn set<R: Runtime>(
     value: JsonValue,
 ) -> Result<()> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     store.set(key, value);
+
     Ok(())
 }
 
@@ -150,46 +160,57 @@ async fn get<R: Runtime>(
     key: String,
 ) -> Result<(Option<JsonValue>, bool)> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     let value = store.get(key);
+
     let exists = value.is_some();
+
     Ok((value, exists))
 }
 
 #[tauri::command]
 async fn has<R: Runtime>(app: AppHandle<R>, rid: ResourceId, key: String) -> Result<bool> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     Ok(store.has(key))
 }
 
 #[tauri::command]
 async fn delete<R: Runtime>(app: AppHandle<R>, rid: ResourceId, key: String) -> Result<bool> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     Ok(store.delete(key))
 }
 
 #[tauri::command]
 async fn clear<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<()> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     store.clear();
+
     Ok(())
 }
 
 #[tauri::command]
 async fn reset<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<()> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     store.reset();
+
     Ok(())
 }
 
 #[tauri::command]
 async fn keys<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<Vec<String>> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     Ok(store.keys())
 }
 
 #[tauri::command]
 async fn values<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<Vec<JsonValue>> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     Ok(store.values())
 }
 
@@ -199,24 +220,28 @@ async fn entries<R: Runtime>(
     rid: ResourceId,
 ) -> Result<Vec<(String, JsonValue)>> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     Ok(store.entries())
 }
 
 #[tauri::command]
 async fn length<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<usize> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     Ok(store.length())
 }
 
 #[tauri::command]
 async fn reload<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<()> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     store.reload()
 }
 
 #[tauri::command]
 async fn save<R: Runtime>(app: AppHandle<R>, rid: ResourceId) -> Result<()> {
     let store = app.resources_table().get::<Store<R>>(rid)?;
+
     store.save()
 }
 
@@ -297,7 +322,9 @@ impl<R: Runtime, T: Manager<R>> StoreExt<R> for T {
 
     fn get_store(&self, path: impl AsRef<Path>) -> Option<Arc<Store<R>>> {
         let collection = self.state::<StoreState>();
+
         let stores = collection.stores.lock().unwrap();
+
         stores
             .get(&resolve_store_path(self.app_handle(), path.as_ref()).ok()?)
             .and_then(|rid| self.resources_table().get(*rid).ok())
@@ -359,12 +386,14 @@ impl Builder {
     /// ```
     pub fn register_serialize_fn(mut self, name: String, serialize_fn: SerializeFn) -> Self {
         self.serialize_fns.insert(name, serialize_fn);
+
         self
     }
 
     /// Register a deserialize function to access it from the JavaScript side
     pub fn register_deserialize_fn(mut self, name: String, deserialize_fn: DeserializeFn) -> Self {
         self.deserialize_fns.insert(name, deserialize_fn);
+
         self
     }
 
@@ -388,12 +417,14 @@ impl Builder {
     /// ```
     pub fn default_serialize_fn(mut self, serialize_fn: SerializeFn) -> Self {
         self.default_serialize = serialize_fn;
+
         self
     }
 
     /// Use this deserialize function for stores by default
     pub fn default_deserialize_fn(mut self, deserialize_fn: DeserializeFn) -> Self {
         self.default_deserialize = deserialize_fn;
+
         self
     }
 
@@ -423,12 +454,15 @@ impl Builder {
                     default_serialize: self.default_serialize,
                     default_deserialize: self.default_deserialize,
                 });
+
                 Ok(())
             })
             .on_event(|app_handle, event| {
                 if let RunEvent::Exit = event {
                     let collection = app_handle.state::<StoreState>();
+
                     let stores = collection.stores.lock().unwrap();
+
                     for (path, rid) in stores.iter() {
                         if let Ok(store) = app_handle.resources_table().get::<Store<R>>(*rid) {
                             if let Err(err) = store.save() {

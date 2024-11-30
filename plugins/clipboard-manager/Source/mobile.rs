@@ -27,6 +27,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "ClipboardPlugin")?;
     #[cfg(target_os = "ios")]
     let handle = api.register_ios_plugin(init_plugin_clipboard)?;
+
     Ok(Clipboard(handle))
 }
 
@@ -36,6 +37,7 @@ pub struct Clipboard<R: Runtime>(PluginHandle<R>);
 impl<R: Runtime> Clipboard<R> {
     pub fn write_text<'a, T: Into<Cow<'a, str>>>(&self, text: T) -> crate::Result<()> {
         let text = text.into().to_string();
+
         self.0
             .run_mobile_plugin("writeText", ClipKind::PlainText { text, label: None })
             .map_err(Into::into)
@@ -47,7 +49,9 @@ impl<R: Runtime> Clipboard<R> {
         label: T,
     ) -> crate::Result<()> {
         let text = text.into().to_string();
+
         let label = label.into().to_string();
+
         self.0
             .run_mobile_plugin(
                 "writeText",

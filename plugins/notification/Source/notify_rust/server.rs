@@ -78,9 +78,11 @@ impl NotificationServer {
 		let connection = Connection::get_private(BusType::Session).unwrap();
 
 		connection.release_name(NOTIFICATION_NAMESPACE).unwrap();
+
 		connection
 			.register_name(NOTIFICATION_NAMESPACE, NameFlag::ReplaceExisting as u32)
 			.unwrap();
+
 		connection.register_object_path(NOTIFICATION_OBJECTPATH).unwrap();
 
 		let mytex = Arc::new(Mutex::new(me.clone()));
@@ -116,7 +118,9 @@ impl NotificationServer {
 			.method("Stop", (), move |minfo| {
 				if let Ok(me) = me.lock() {
 					me.stop();
+
 					println!("STOPPING");
+
 					Ok(vec![])
 				} else {
 					Err(tree::MethodErr::failed(&String::from("nope!")))
@@ -139,19 +143,29 @@ where
 	factory
 		.method("Notify", (), move |minfo| {
 			let mut i = minfo.msg.iter_init();
+
 			let appname:String = i.read()?;
+
 			let replaces_id:u32 = i.read()?;
+
 			let icon:String = i.read()?;
+
 			let summary:String = i.read()?;
+
 			let body:String = i.read()?;
+
 			let actions:Vec<String> = i.read()?;
+
 			let hints:::std::collections::HashMap<String, arg::Variant<Box<dyn RefArg>>> =
 				i.read()?;
+
 			let timeout:i32 = i.read()?;
+
 			println!("hints {:?} ", hints);
 
 			// let arg0 = try!(d.notify(app_name, replaces_id, app_icon, summary, body,
 			// actions, hints, timeout));
+
 			let notification = Notification {
 				appname,
 				icon,
@@ -167,8 +181,11 @@ where
 			on_notification(&notification);
 
 			let arg0 = 43;
+
 			let rm = minfo.msg.method_return();
+
 			let rm = rm.append1(arg0);
+
 			Ok(vec![rm])
 		})
 		.in_arg(("app_name", "s"))
@@ -186,7 +203,9 @@ fn method_close_notification(factory:&Factory<MTFn>) -> tree::Method<MTFn<()>, (
 	factory
 		.method("CloseNotification", (), |minfo| {
 			let i = minfo.msg.iter_init();
+
 			let rm = minfo.msg.method_return();
+
 			Ok(vec![rm])
 		})
 		.in_arg(("id", "u"))
@@ -196,8 +215,11 @@ fn method_get_capabilities(factory:&Factory<MTFn>) -> tree::Method<MTFn<()>, ()>
 	factory
 		.method("GetCapabilities", (), |minfo| {
 			let caps:Vec<String> = vec![];
+
 			let rm = minfo.msg.method_return();
+
 			let rm = rm.append1(caps);
+
 			Ok(vec![rm])
 		})
 		.out_arg(("caps", "as"))
@@ -208,11 +230,17 @@ fn method_get_server_information(factory:&Factory<MTFn>) -> tree::Method<MTFn<()
 		.method("GetServerInformation", (), |minfo| {
 			let (name, vendor, version, spec_version) =
 				("notify-rust", "notify-rust", env!("CARGO_PKG_VERSION"), "0.0.0");
+
 			let rm = minfo.msg.method_return();
+
 			let rm = rm.append1(name);
+
 			let rm = rm.append1(vendor);
+
 			let rm = rm.append1(version);
+
 			let rm = rm.append1(spec_version);
+
 			Ok(vec![rm])
 		})
 		.out_arg(("name", "s"))

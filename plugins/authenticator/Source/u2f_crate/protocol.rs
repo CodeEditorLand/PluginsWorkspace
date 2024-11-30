@@ -72,6 +72,7 @@ impl U2f {
 		let mut requests:Vec<RegisterRequest> = vec![];
 
 		let request = RegisterRequest { version:U2F_V2.into(), challenge:challenge.challenge };
+
 		requests.push(request);
 
 		requests

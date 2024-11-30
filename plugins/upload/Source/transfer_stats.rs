@@ -29,16 +29,22 @@ impl TransferStats {
     // Records the transfer of a data chunk and updates both transfer speed and total progress.
     pub fn record_chunk_transfer(&mut self, chunk_len: usize) {
         let now = Instant::now();
+
         let it_took = now.duration_since(self.start_time).as_millis();
+
         self.accumulated_chunk_len += chunk_len;
+
         self.total_transferred += chunk_len as u64;
+
         self.accumulated_time += it_took;
 
         // Calculate transfer speed if accumulated time exceeds granularity.
         if self.accumulated_time >= self.granularity as u128 {
             self.transfer_speed =
                 (self.accumulated_chunk_len as u128 / self.accumulated_time * 1024) as u64;
+
             self.accumulated_chunk_len = 0;
+
             self.accumulated_time = 0;
         }
 

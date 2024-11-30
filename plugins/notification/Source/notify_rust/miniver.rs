@@ -18,6 +18,7 @@ impl FromStr for Version {
 
 	fn from_str(s:&str) -> Result<Version> {
 		let vv = s.split('.').collect::<Vec<&str>>();
+
 		match (vv.first(), vv.get(1)) {
 			(Some(maj), Some(min)) => Ok(Version { major:maj.parse()?, minor:min.parse()? }),
 			_ => Err(ErrorKind::SpecVersion(s.into()).into()),
@@ -41,10 +42,12 @@ impl Ord for Version {
 			cmp::Ordering::Equal => {},
 			r => return r,
 		}
+
 		match self.minor.cmp(&other.minor) {
 			cmp::Ordering::Equal => {},
 			r => return r,
 		}
+
 		cmp::Ordering::Equal
 	}
 }
@@ -61,8 +64,11 @@ mod tests {
 	#[test]
 	fn version_comparison() {
 		assert!(Version::new(1, 3) >= Version::new(1, 2));
+
 		assert!(Version::new(1, 2) >= Version::new(1, 2));
+
 		assert!(Version::new(1, 2) == Version::new(1, 2));
+
 		assert!(Version::new(1, 1) <= Version::new(1, 2));
 	}
 }

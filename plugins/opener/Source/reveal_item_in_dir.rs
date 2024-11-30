@@ -64,9 +64,11 @@ mod imp {
             .ok_or_else(|| crate::Error::NoParent(file.to_path_buf()))?;
 
         let dir = HSTRING::from(dir);
+
         let dir_item = unsafe { ILCreateFromPathW(&dir) };
 
         let file_h = HSTRING::from(file);
+
         let file_item = unsafe { ILCreateFromPathW(&file_h) };
 
         unsafe {
@@ -77,6 +79,7 @@ mod imp {
                 // seems to work as a fallback (although it won't select the file).
                 if e.code().0 == ERROR_FILE_NOT_FOUND.0 as i32 {
                     let is_dir = file.is_dir();
+
                     let mut info = SHELLEXECUTEINFOW {
                         cbSize: std::mem::size_of::<SHELLEXECUTEINFOW>() as _,
                         nShow: SW_SHOWNORMAL.0,
@@ -92,6 +95,7 @@ mod imp {
 
                     ShellExecuteExW(&mut info).inspect_err(|_| {
                         ILFree(Some(dir_item));
+
                         ILFree(Some(file_item));
                     })?;
                 }
@@ -100,6 +104,7 @@ mod imp {
 
         unsafe {
             ILFree(Some(dir_item));
+
             ILFree(Some(file_item));
         }
 
@@ -178,16 +183,23 @@ mod imp {
 #[cfg(target_os = "macos")]
 mod imp {
     use super::*;
+
     use objc2_app_kit::NSWorkspace;
+
     use objc2_foundation::{NSArray, NSString, NSURL};
+
     pub fn reveal_item_in_dir(path: &Path) -> crate::Result<()> {
         unsafe {
             let path = path.to_string_lossy();
+
             let path = NSString::from_str(&path);
+
             let urls = vec![NSURL::fileURLWithPath(&path)];
+
             let urls = NSArray::from_vec(urls);
 
             let workspace = NSWorkspace::new();
+
             workspace.activateFileViewerSelectingURLs(&urls);
         }
 

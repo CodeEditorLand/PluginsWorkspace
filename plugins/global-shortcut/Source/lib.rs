@@ -48,6 +48,7 @@ impl From<Shortcut> for ShortcutWrapper {
 
 impl TryFrom<&str> for ShortcutWrapper {
     type Error = global_hotkey::hotkey::HotKeyParseError;
+
     fn try_from(value: &str) -> std::result::Result<Self, Self::Error> {
         Shortcut::from_str(value).map(ShortcutWrapper)
     }
@@ -75,12 +76,16 @@ pub struct GlobalShortcut<R: Runtime> {
 macro_rules! run_main_thread {
     ($handle:expr, $manager:expr, |$m:ident| $ex:expr) => {{
         let (tx, rx) = std::sync::mpsc::channel();
+
         let manager = $manager.clone();
+
         let task = move || {
             let f = |$m: &GlobalHotKeyManager| $ex;
+
             let _ = tx.send(f(&*manager));
         };
         $handle.run_on_main_thread(task)?;
+
         rx.recv()?
     }};
 }
@@ -92,12 +97,16 @@ impl<R: Runtime> GlobalShortcut<R> {
         handler: Option<F>,
     ) -> Result<()> {
         let id = shortcut.id();
+
         let handler = handler.map(|h| Arc::new(Box::new(h) as HandlerFn<R>));
+
         run_main_thread!(self.app, self.manager, |m| m.0.register(shortcut))?;
+
         self.shortcuts
             .lock()
             .unwrap()
             .insert(id, RegisteredShortcut { shortcut, handler });
+
         Ok(())
     }
 
@@ -111,8 +120,10 @@ impl<R: Runtime> GlobalShortcut<R> {
         let hotkeys = shortcuts.into_iter().collect::<Vec<_>>();
 
         let mut shortcuts = self.shortcuts.lock().unwrap();
+
         for shortcut in hotkeys {
             run_main_thread!(self.app, self.manager, |m| m.0.register(shortcut))?;
+
             shortcuts.insert(
                 shortcut.id(),
                 RegisteredShortcut {
@@ -157,9 +168,11 @@ impl<R: Runtime> GlobalShortcut<R> {
         T::Error: std::error::Error,
     {
         let mut s = Vec::new();
+
         for shortcut in shortcuts {
             s.push(try_into_shortcut(shortcut)?);
         }
+
         self.register_multiple_internal(s, None::<fn(&AppHandle<R>, &Shortcut, ShortcutEvent)>)
     }
 
@@ -172,9 +185,11 @@ impl<R: Runtime> GlobalShortcut<R> {
         F: Fn(&AppHandle<R>, &Shortcut, ShortcutEvent) + Send + Sync + 'static,
     {
         let mut s = Vec::new();
+
         for shortcut in shortcuts {
             s.push(try_into_shortcut(shortcut)?);
         }
+
         self.register_multiple_internal(s, Some(handler))
     }
 
@@ -184,8 +199,11 @@ impl<R: Runtime> GlobalShortcut<R> {
         S::Error: std::error::Error,
     {
         let shortcut = try_into_shortcut(shortcut)?;
+
         run_main_thread!(self.app, self.manager, |m| m.0.unregister(shortcut))?;
+
         self.shortcuts.lock().unwrap().remove(&shortcut.id());
+
         Ok(())
     }
 
@@ -198,6 +216,7 @@ impl<R: Runtime> GlobalShortcut<R> {
         T::Error: std::error::Error,
     {
         let mut mapped_shortcuts = Vec::new();
+
         for shortcut in shortcuts {
             mapped_shortcuts.push(try_into_shortcut(shortcut)?);
         }
@@ -209,6 +228,7 @@ impl<R: Runtime> GlobalShortcut<R> {
         }
 
         let mut shortcuts = self.shortcuts.lock().unwrap();
+
         for s in mapped_shortcuts {
             shortcuts.remove(&s.id());
         }
@@ -219,10 +239,13 @@ impl<R: Runtime> GlobalShortcut<R> {
     /// Unregister all registered shortcuts.
     pub fn unregister_all(&self) -> Result<()> {
         let mut shortcuts = self.shortcuts.lock().unwrap();
+
         let hotkeys = std::mem::take(&mut *shortcuts);
+
         let hotkeys = hotkeys.values().map(|s| s.shortcut).collect::<Vec<_>>();
         #[rustfmt::skip]
         let res = run_main_thread!(self.app, self.manager, |m| m.0.unregister_all(hotkeys.as_slice()));
+
         res.map_err(Into::into)
     }
 
@@ -282,9 +305,12 @@ fn register<R: Runtime>(
     let mut hotkeys = Vec::new();
 
     let mut shortcut_map = HashMap::new();
+
     for shortcut in shortcuts {
         let hotkey = parse_shortcut(&shortcut)?;
+
         shortcut_map.insert(hotkey.id(), shortcut);
+
         hotkeys.push(hotkey);
     }
 
@@ -297,6 +323,7 @@ fn register<R: Runtime>(
                     state: e.state,
                     shortcut: shortcut.into_string(),
                 };
+
                 let _ = handler.send(js_event);
             },
         ),
@@ -310,9 +337,11 @@ fn unregister<R: Runtime>(
     shortcuts: Vec<String>,
 ) -> Result<()> {
     let mut hotkeys = Vec::new();
+
     for shortcut in shortcuts {
         hotkeys.push(parse_shortcut(&shortcut)?);
     }
+
     global_shortcut.unregister_multiple(hotkeys)
 }
 
@@ -359,6 +388,7 @@ impl<R: Runtime> Builder<R> {
         T::Error: std::error::Error,
     {
         self.shortcuts.push(try_into_shortcut(shortcut)?);
+
         Ok(self)
     }
 
@@ -382,12 +412,15 @@ impl<R: Runtime> Builder<R> {
         handler: F,
     ) -> Self {
         self.handler.replace(Box::new(handler));
+
         self
     }
 
     pub fn build(self) -> TauriPlugin<R> {
         let handler = self.handler;
+
         let shortcuts = self.shortcuts;
+
         PluginBuilder::new("global-shortcut")
             .invoke_handler(tauri::generate_handler![
                 register,
@@ -397,9 +430,12 @@ impl<R: Runtime> Builder<R> {
             ])
             .setup(move |app, _api| {
                 let manager = global_hotkey::GlobalHotKeyManager::new()?;
+
                 let mut store = HashMap::<HotKeyId, RegisteredShortcut<R>>::new();
+
                 for shortcut in shortcuts {
                     manager.register(shortcut)?;
+
                     store.insert(
                         shortcut.id(),
                         RegisteredShortcut {
@@ -410,14 +446,17 @@ impl<R: Runtime> Builder<R> {
                 }
 
                 let shortcuts = Arc::new(Mutex::new(store));
+
                 let shortcuts_ = shortcuts.clone();
 
                 let app_handle = app.clone();
+
                 GlobalHotKeyEvent::set_event_handler(Some(move |e: GlobalHotKeyEvent| {
                     if let Some(shortcut) = shortcuts_.lock().unwrap().get(&e.id) {
                         if let Some(handler) = &shortcut.handler {
                             handler(&app_handle, &shortcut.shortcut, e);
                         }
+
                         if let Some(handler) = &handler {
                             handler(&app_handle, &shortcut.shortcut, e);
                         }
@@ -429,6 +468,7 @@ impl<R: Runtime> Builder<R> {
                     manager: Arc::new(GlobalHotKeyManager(manager)),
                     shortcuts,
                 });
+
                 Ok(())
             })
             .build()

@@ -75,6 +75,7 @@ pub struct ScopeAllowedCommand {
 
 impl ScopeObject for ScopeAllowedCommand {
     type Error = crate::Error;
+
     fn deserialize<R: tauri::Runtime>(
         app: &tauri::AppHandle<R>,
         raw: tauri::utils::acl::Value,
@@ -89,17 +90,21 @@ impl ScopeObject for ScopeAllowedCommand {
                     crate::scope_entry::ShellAllowedArg::Fixed(fixed) => {
                         crate::scope::ScopeAllowedArg::Fixed(fixed)
                     }
+
                     crate::scope_entry::ShellAllowedArg::Var { validator, raw } => {
                         let regex = if raw {
                             validator
                         } else {
                             format!("^{validator}$")
                         };
+
                         let validator = Regex::new(&regex)
                             .unwrap_or_else(|e| panic!("invalid regex {regex}: {e}"));
+
                         crate::scope::ScopeAllowedArg::Var { validator }
                     }
                 });
+
                 Some(list.collect())
             }
         };
@@ -270,6 +275,7 @@ impl<'a> ShellScope<'a> {
                             .get(i)
                             .ok_or_else(|| Error::MissingVar(i, validator.to_string()))?
                             .to_string();
+
                         if validator.is_match(&value) {
                             Ok(value)
                         } else {
@@ -304,6 +310,7 @@ impl<'a> ShellScope<'a> {
                     .into_owned()
             })
             .unwrap_or_else(|| command.command.to_string_lossy().into_owned());
+
         let command = if command.sidecar {
             Command::new_sidecar(command_s).map_err(|e| Error::Sidecar(e.to_string()))?
         } else {

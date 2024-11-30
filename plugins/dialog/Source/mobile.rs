@@ -25,6 +25,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "DialogPlugin")?;
     #[cfg(target_os = "ios")]
     let handle = api.register_ios_plugin(init_plugin_dialog)?;
+
     Ok(Dialog(handle))
 }
 
@@ -63,6 +64,7 @@ pub fn pick_file<R: Runtime, F: FnOnce(Option<FilePath>) + Send + 'static>(
             .dialog
             .0
             .run_mobile_plugin::<FilePickerResponse>("showFilePicker", dialog.payload(false));
+
         if let Ok(response) = res {
             f(Some(response.files.into_iter().next().unwrap()))
         } else {
@@ -80,6 +82,7 @@ pub fn pick_files<R: Runtime, F: FnOnce(Option<Vec<FilePath>>) + Send + 'static>
             .dialog
             .0
             .run_mobile_plugin::<FilePickerResponse>("showFilePicker", dialog.payload(true));
+
         if let Ok(response) = res {
             f(Some(response.files))
         } else {
@@ -97,6 +100,7 @@ pub fn save_file<R: Runtime, F: FnOnce(Option<FilePath>) + Send + 'static>(
             .dialog
             .0
             .run_mobile_plugin::<SaveFileResponse>("saveFileDialog", dialog.payload(false));
+
         if let Ok(response) = res {
             f(Some(response.file))
         } else {
@@ -122,6 +126,7 @@ pub fn show_message_dialog<R: Runtime, F: FnOnce(bool) + Send + 'static>(
             .dialog
             .0
             .run_mobile_plugin::<ShowMessageDialogResponse>("showMessageDialog", dialog.payload());
+
         f(res.map(|r| r.value).unwrap_or_default())
     });
 }

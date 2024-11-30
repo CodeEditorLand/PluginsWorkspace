@@ -83,15 +83,22 @@ impl<R: Runtime> WindowExt for Window<R> {
         }
 
         let window_position = calculate_position(self, position)?;
+
         let monitor = get_monitor_for_tray_icon(self)?;
+
         if let Some(monitor) = monitor {
             let monitor_size = monitor.size();
+
             let monitor_position = monitor.position();
+
             let window_size = self.outer_size()?;
 
             let right_border_monitor = monitor_position.x as f64 + monitor_size.width as f64;
+
             let left_border_monitor = monitor_position.x as f64;
+
             let right_border_window = window_position.x as f64 + window_size.width as f64;
+
             let left_border_window = window_position.x as f64;
 
             let constrained_x = if left_border_window < left_border_monitor {
@@ -103,8 +110,11 @@ impl<R: Runtime> WindowExt for Window<R> {
             };
 
             let bottom_border_monitor = monitor_position.y as f64 + monitor_size.height as f64;
+
             let top_border_monitor = monitor_position.y as f64;
+
             let bottom_border_window = window_position.y as f64 + window_size.height as f64;
+
             let top_border_window = window_position.y as f64;
 
             let constrained_y = if top_border_window < top_border_monitor {
@@ -126,6 +136,7 @@ impl<R: Runtime> WindowExt for Window<R> {
 
     fn move_window(&self, pos: Position) -> Result<()> {
         let position = calculate_position(self, pos)?;
+
         self.set_position(position)
     }
 }
@@ -156,10 +167,12 @@ fn calculate_position<R: Runtime>(
     // Only use the screen_position for the Tray independent positioning,
     // because a tray event may not be called on the currently active monitor.
     let screen_position = screen.position();
+
     let screen_size = PhysicalSize::<i32> {
         width: screen.size().width as i32,
         height: screen.size().height as i32,
     };
+
     let window_size = PhysicalSize::<i32> {
         width: window.outer_size()?.width as i32,
         height: window.outer_size()?.height as i32,
@@ -277,6 +290,7 @@ fn calculate_position<R: Runtime>(
                 (tray_position, tray_size)
             {
                 let x = tray_x + tray_width / 2 - window_size.width / 2;
+
                 let y = tray_y - window_size.height;
                 // Choose y value based on the target OS
                 #[cfg(target_os = "windows")]

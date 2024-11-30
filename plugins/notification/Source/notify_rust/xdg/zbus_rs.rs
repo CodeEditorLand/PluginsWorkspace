@@ -41,6 +41,7 @@ pub mod bus {
 		pub fn custom(custom_path:&str) -> Option<Self> {
 			let name =
 				zbus::names::WellKnownName::try_from(Self::namespaced_custom(custom_path)?).ok()?;
+
 			Some(Self(name))
 		}
 
@@ -81,6 +82,7 @@ impl ZbusNotificationHandle {
 				&(self.id),
 			)
 			.await?;
+
 		Ok(())
 	}
 
@@ -102,6 +104,7 @@ impl ZbusNotificationHandle {
 			self.id,
 			&self.connection,
 		))?;
+
 		Ok(())
 	}
 
@@ -142,6 +145,7 @@ async fn send_notification_via_connection_at_bus(
 		.await?
 		.body()
 		.deserialize()?;
+
 	Ok(reply)
 }
 
@@ -149,6 +153,7 @@ pub async fn connect_and_send_notification(
 	notification:&Notification,
 ) -> Result<ZbusNotificationHandle> {
 	let bus = notification.bus.clone();
+
 	connect_and_send_notification_at_bus(notification, bus).await
 }
 
@@ -157,7 +162,9 @@ pub(crate) async fn connect_and_send_notification_at_bus(
 	bus:NotificationBus,
 ) -> Result<ZbusNotificationHandle> {
 	let connection = zbus::Connection::session().await?;
+
 	let inner_id = notification.id.unwrap_or(0);
+
 	let id =
 		send_notification_via_connection_at_bus(notification, inner_id, &connection, bus).await?;
 
@@ -166,6 +173,7 @@ pub(crate) async fn connect_and_send_notification_at_bus(
 
 pub async fn get_capabilities_at_bus(bus:NotificationBus) -> Result<Vec<String>> {
 	let connection = zbus::Connection::session().await?;
+
 	let info:Vec<String> = connection
 		.call_method(
 			Some(bus.into_name()),
@@ -177,6 +185,7 @@ pub async fn get_capabilities_at_bus(bus:NotificationBus) -> Result<Vec<String>>
 		.await?
 		.body()
 		.deserialize()?;
+
 	Ok(info)
 }
 
@@ -186,6 +195,7 @@ pub async fn get_capabilities() -> Result<Vec<String>> {
 
 pub async fn get_server_information_at_bus(bus:NotificationBus) -> Result<xdg::ServerInformation> {
 	let connection = zbus::Connection::session().await?;
+
 	let info:xdg::ServerInformation = connection
 		.call_method(
 			Some(bus.into_name()),
@@ -211,6 +221,7 @@ pub async fn get_server_information() -> Result<xdg::ServerInformation> {
 /// `Notification::show_and_wait_for_action(FnOnce(action:&str))`
 pub async fn handle_action(id:u32, func:impl ActionResponseHandler) {
 	let connection = zbus::Connection::session().await.unwrap();
+
 	wait_for_action_signal(&connection, id, func).await;
 }
 
@@ -228,6 +239,7 @@ async fn wait_for_action_signal(
 		.build();
 
 	let proxy = zbus::fdo::DBusProxy::new(connection).await.unwrap();
+
 	proxy.add_match_rule(action_signal_rule).await.unwrap();
 
 	let close_signal_rule = MatchRule::builder()
@@ -237,16 +249,19 @@ async fn wait_for_action_signal(
 		.member("NotificationClosed")
 		.unwrap()
 		.build();
+
 	proxy.add_match_rule(close_signal_rule).await.unwrap();
 
 	while let Ok(Some(msg)) = zbus::MessageStream::from(connection).try_next().await {
 		let header = msg.header();
+
 		if let zbus::MessageType::Signal = header.message_type() {
 			match header.member() {
 				Some(name) if name == "ActionInvoked" => {
 					match msg.body().deserialize::<(u32, String)>() {
 						Ok((nid, action)) if nid == id => {
 							handler.call(&ActionResponse::Custom(&action));
+
 							break;
 						},
 						_ => {},
@@ -256,6 +271,7 @@ async fn wait_for_action_signal(
 					match msg.body().deserialize::<(u32, u32)>() {
 						Ok((nid, reason)) if nid == id => {
 							handler.call(&ActionResponse::Closed(reason.into()));
+
 							break;
 						},
 						_ => {},

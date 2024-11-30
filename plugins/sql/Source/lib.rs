@@ -86,6 +86,7 @@ impl MigrationSource<'static> for MigrationList {
     fn resolve(self) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>> {
         Box::pin(async move {
             let mut migrations = Vec::new();
+
             for migration in self.0 {
                 if matches!(migration.kind, MigrationKind::Up) {
                     migrations.push(SqlxMigration::new(
@@ -97,6 +98,7 @@ impl MigrationSource<'static> for MigrationList {
                     ));
                 }
             }
+
             Ok(migrations)
         })
     }
@@ -131,6 +133,7 @@ impl Builder {
         self.migrations
             .get_or_insert(Default::default())
             .insert(db_url.to_string(), MigrationList(migrations));
+
         self
     }
 
@@ -147,6 +150,7 @@ impl Builder {
 
                 run_async_command(async move {
                     let instances = DbInstances::default();
+
                     let mut lock = instances.0.write().await;
 
                     for db in config.preload {
@@ -156,14 +160,17 @@ impl Builder {
                             self.migrations.as_mut().and_then(|mm| mm.remove(&db))
                         {
                             let migrator = Migrator::new(migrations).await?;
+
                             pool.migrate(&migrator).await?;
                         }
 
                         lock.insert(db, pool);
                     }
+
                     drop(lock);
 
                     app.manage(instances);
+
                     app.manage(Migrations(Mutex::new(
                         self.migrations.take().unwrap_or_default(),
                     )));
@@ -175,7 +182,9 @@ impl Builder {
                 if let RunEvent::Exit = event {
                     run_async_command(async move {
                         let instances = &*app.state::<DbInstances>();
+
                         let instances = instances.0.read().await;
+
                         for value in instances.values() {
                             value.close().await;
                         }

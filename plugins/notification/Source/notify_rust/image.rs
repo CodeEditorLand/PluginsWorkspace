@@ -8,7 +8,9 @@ use super::miniver::Version;
 
 mod constants {
 	pub const IMAGE_DATA:&str = "image-data";
+
 	pub const IMAGE_DATA_1_1:&str = "image_data";
+
 	pub const IMAGE_DATA_1_0:&str = "icon_data";
 }
 
@@ -34,6 +36,7 @@ impl Image {
 		alpha:bool,
 	) -> Result<Self, ImageError> {
 		const MAX_SIZE:i32 = 0x0FFF_FFFF;
+
 		if width > MAX_SIZE || height > MAX_SIZE {
 			return Err(ImageError::TooBig);
 		}
@@ -58,6 +61,7 @@ impl Image {
 		let channels = 3i32;
 
 		let bits_per_sample = 8;
+
 		Self::from_raw_data(width, height, data, channels, bits_per_sample, false)
 	}
 
@@ -66,12 +70,14 @@ impl Image {
 		let channels = 4i32;
 
 		let bits_per_sample = 8;
+
 		Self::from_raw_data(width, height, data, channels, bits_per_sample, true)
 	}
 
 	///  Attempts to open the given path as image
 	pub fn open<T:AsRef<Path> + Sized>(path:T) -> Result<Self, ImageError> {
 		let dyn_img = image::open(&path).map_err(ImageError::CantOpen)?;
+
 		Image::try_from(dyn_img)
 	}
 
@@ -108,6 +114,7 @@ impl TryFrom<image::RgbImage> for Image {
 		let (width, height) = img.dimensions();
 
 		let image_data = img.into_raw();
+
 		Image::from_rgb(width as i32, height as i32, image_data)
 	}
 }
@@ -119,6 +126,7 @@ impl TryFrom<image::RgbaImage> for Image {
 		let (width, height) = img.dimensions();
 
 		let image_data = img.into_raw();
+
 		Image::from_rgba(width as i32, height as i32, image_data)
 	}
 }
@@ -139,6 +147,7 @@ pub enum ImageError {
 impl Error for ImageError {
 	fn source(&self) -> Option<&(dyn Error + 'static)> {
 		use ImageError::*;
+
 		match self {
 			TooBig | WrongDataSize | CantConvert => None,
 			CantOpen(e) => Some(e),
@@ -149,6 +158,7 @@ impl Error for ImageError {
 impl fmt::Display for ImageError {
 	fn fmt(&self, f:&mut fmt::Formatter) -> fmt::Result {
 		use ImageError::*;
+
 		match self {
 			TooBig => {
 				writeln!(f, "The given image is too big. DBus only has 32 bits for width / height")

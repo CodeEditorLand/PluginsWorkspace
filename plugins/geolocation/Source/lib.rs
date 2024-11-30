@@ -74,7 +74,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let geolocation = mobile::init(app, api)?;
             #[cfg(desktop)]
             let geolocation = desktop::init(app, api)?;
+
             app.manage(geolocation);
+
             Ok(())
         })
         .build()

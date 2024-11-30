@@ -36,9 +36,11 @@ pub const WEBVIEW_TARGET: &str = "webview";
 #[cfg(target_os = "ios")]
 mod ios {
     use cocoa::base::id;
+
     use objc::*;
 
     const UTF8_ENCODING: usize = 4;
+
     pub struct NSString(pub id);
 
     impl NSString {
@@ -46,6 +48,7 @@ mod ios {
             // Safety: objc runtime calls are unsafe
             NSString(unsafe {
                 let ns_string: id = msg_send![class!(NSString), alloc];
+
                 let ns_string: id = msg_send![ns_string,
                                             initWithBytes:s.as_ptr()
                                             length:s.len()
@@ -215,6 +218,7 @@ impl Target {
         F: Fn(&log::Metadata) -> bool + Send + Sync + 'static,
     {
         self.filters.push(Box::new(filter));
+
         self
     }
 }
@@ -237,13 +241,17 @@ fn log(
     };
 
     let mut builder = RecordBuilder::new();
+
     builder.level(level).target(&target).file(file).line(line);
 
     let key_values = key_values.unwrap_or_default();
+
     let mut kv = HashMap::new();
+
     for (k, v) in key_values.iter() {
         kv.insert(k.as_str(), v.as_str());
     }
+
     builder.key_values(&kv);
 
     logger().log(&builder.args(format_args!("{message}")).build());
@@ -263,6 +271,7 @@ impl Default for Builder {
         let format =
             time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
                 .unwrap();
+
         let dispatch = fern::Dispatch::new().format(move |out, message, record| {
             out.finish(
                 #[cfg(mobile)]
@@ -277,6 +286,7 @@ impl Default for Builder {
                 ),
             )
         });
+
         Self {
             dispatch,
             rotation_strategy: DEFAULT_ROTATION_STRATEGY,
@@ -294,6 +304,7 @@ impl Builder {
 
     pub fn rotation_strategy(mut self, rotation_strategy: RotationStrategy) -> Self {
         self.rotation_strategy = rotation_strategy;
+
         self
     }
 
@@ -303,6 +314,7 @@ impl Builder {
         let format =
             time::format_description::parse("[[[year]-[month]-[day]][[[hour]:[minute]:[second]]")
                 .unwrap();
+
         self.dispatch = fern::Dispatch::new().format(move |out, message, record| {
             out.finish(format_args!(
                 "{}[{}][{}] {}",
@@ -312,11 +324,13 @@ impl Builder {
                 message
             ))
         });
+
         self
     }
 
     pub fn max_file_size(mut self, max_file_size: u128) -> Self {
         self.max_file_size = max_file_size;
+
         self
     }
 
@@ -325,16 +339,19 @@ impl Builder {
         F: Fn(FormatCallback, &Arguments, &Record) + Sync + Send + 'static,
     {
         self.dispatch = self.dispatch.format(formatter);
+
         self
     }
 
     pub fn level(mut self, level_filter: impl Into<LevelFilter>) -> Self {
         self.dispatch = self.dispatch.level(level_filter.into());
+
         self
     }
 
     pub fn level_for(mut self, module: impl Into<Cow<'static, str>>, level: LevelFilter) -> Self {
         self.dispatch = self.dispatch.level_for(module, level);
+
         self
     }
 
@@ -343,12 +360,14 @@ impl Builder {
         F: Fn(&log::Metadata) -> bool + Send + Sync + 'static,
     {
         self.dispatch = self.dispatch.filter(filter);
+
         self
     }
 
     /// Removes all targets. Useful to ignore the default targets and reconfigure them.
     pub fn clear_targets(mut self) -> Self {
         self.targets.clear();
+
         self
     }
 
@@ -361,6 +380,7 @@ impl Builder {
     /// ```
     pub fn target(mut self, target: Target) -> Self {
         self.targets.push(target);
+
         self
     }
 
@@ -378,6 +398,7 @@ impl Builder {
     /// ```
     pub fn targets(mut self, targets: impl IntoIterator<Item = Target>) -> Self {
         self.targets = Vec::from_iter(targets);
+
         self
     }
 
@@ -388,6 +409,7 @@ impl Builder {
                 .unwrap();
 
         let timezone_strategy = self.timezone_strategy.clone();
+
         self.format(move |out, message, record| {
             out.finish(format_args!(
                 "{}[{}][{}] {}",
@@ -412,6 +434,7 @@ impl Builder {
         // setup targets
         for target in targets {
             let mut target_dispatch = fern::Dispatch::new();
+
             for filter in target.filters {
                 target_dispatch = target_dispatch.filter(filter);
             }
@@ -422,6 +445,7 @@ impl Builder {
                 #[cfg(target_os = "ios")]
                 TargetKind::Stdout | TargetKind::Stderr => fern::Output::call(move |record| {
                     let message = format!("{}", record.args());
+
                     unsafe {
                         ios::tauri_log(
                             match record.level() {
@@ -456,6 +480,7 @@ impl Builder {
                 #[cfg(desktop)]
                 TargetKind::LogDir { file_name } => {
                     let path = app_handle.path().app_log_dir()?;
+
                     if !path.exists() {
                         fs::create_dir_all(&path)?;
                     }
@@ -469,6 +494,7 @@ impl Builder {
                     )?)?
                     .into()
                 }
+
                 TargetKind::Webview => {
                     let app_handle = app_handle.clone();
 
@@ -477,13 +503,16 @@ impl Builder {
                             message: record.args().to_string(),
                             level: record.level().into(),
                         };
+
                         let app_handle = app_handle.clone();
+
                         tauri::async_runtime::spawn(async move {
                             let _ = app_handle.emit("log://log", payload);
                         });
                     })
                 }
             };
+
             target_dispatch = target_dispatch.chain(logger);
 
             dispatch = dispatch.chain(target_dispatch);
@@ -502,6 +531,7 @@ impl Builder {
         app_handle: &AppHandle<R>,
     ) -> Result<(TauriPlugin<R>, log::LevelFilter, Box<dyn log::Log>), Error> {
         let plugin = Self::plugin_builder();
+
         let (max_level, log) = Self::acquire_logger(
             app_handle,
             self.dispatch,
@@ -540,7 +570,9 @@ pub fn attach_logger(
     log: Box<dyn log::Log>,
 ) -> Result<(), log::SetLoggerError> {
     log::set_boxed_logger(log)?;
+
     log::set_max_level(max_level);
+
     Ok(())
 }
 
@@ -555,6 +587,7 @@ fn get_log_file_path(
 
     if path.exists() {
         let log_size = File::open(&path)?.metadata()?.len() as u128;
+
         if log_size > max_file_size {
             match rotation_strategy {
                 RotationStrategy::KeepAll => {
@@ -567,10 +600,12 @@ fn get_log_file_path(
                                 "[year]-[month]-[day]_[hour]-[minute]-[second]"
                             )?)?,
                     ));
+
                     if to.is_file() {
                         // designated rotated log file name already exists
                         // highly unlikely but defensively handle anyway by adding .bak to filename
                         let mut to_bak = to.clone();
+
                         to_bak.set_file_name(format!(
                             "{}.bak",
                             to_bak
@@ -578,10 +613,13 @@ fn get_log_file_path(
                                 .map(|f| f.to_string_lossy())
                                 .unwrap_or_default()
                         ));
+
                         fs::rename(&to, to_bak)?;
                     }
+
                     fs::rename(&path, to)?;
                 }
+
                 RotationStrategy::KeepOne => {
                     fs::remove_file(&path)?;
                 }

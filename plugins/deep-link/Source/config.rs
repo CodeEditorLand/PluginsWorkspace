@@ -20,6 +20,7 @@ where
     D: Deserializer<'de>,
 {
     let host = String::deserialize(deserializer)?;
+
     if let Some((scheme, _host)) = host.split_once("://") {
         Err(serde::de::Error::custom(format!(
             "host `{host}` cannot start with a scheme, please remove the `{scheme}://` prefix"

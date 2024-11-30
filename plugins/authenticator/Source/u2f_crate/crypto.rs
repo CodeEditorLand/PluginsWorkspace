@@ -54,6 +54,7 @@ impl TryFrom<&[u8]> for X509PublicKey {
 	// Must be DER bytes. If you have PEM, base64decode first!
 	fn try_from(d:&[u8]) -> Result<Self, Self::Error> {
 		let pubk = x509::X509::from_der(d)?;
+
 		Ok(X509PublicKey { pubk })
 	}
 }
@@ -100,7 +101,9 @@ impl X509PublicKey {
 
 		// TODO: Should this determine the hash type from the x509 cert? Or other?
 		let mut verifier = sign::Verifier::new(hash::MessageDigest::sha256(), &pkey)?;
+
 		verifier.update(verification_data)?;
+
 		Ok(verifier.verify(signature)?)
 	}
 }
@@ -123,9 +126,11 @@ impl NISTP256Key {
 		}
 
 		let mut x:[u8; 32] = Default::default();
+
 		x.copy_from_slice(&public_key_bytes[1..=32]);
 
 		let mut y:[u8; 32] = Default::default();
+
 		y.copy_from_slice(&public_key_bytes[33..=64]);
 
 		Ok(NISTP256Key { x, y })

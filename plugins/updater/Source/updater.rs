@@ -140,11 +140,13 @@ impl UpdaterBuilder {
         f: F,
     ) -> Self {
         self.version_comparator = Some(Box::new(f));
+
         self
     }
 
     pub fn target(mut self, target: impl Into<String>) -> Self {
         self.target.replace(target.into());
+
         self
     }
 
@@ -155,11 +157,13 @@ impl UpdaterBuilder {
         )?;
 
         self.endpoints.replace(endpoints);
+
         Ok(self)
     }
 
     pub fn executable_path<P: AsRef<Path>>(mut self, p: P) -> Self {
         self.executable_path.replace(p.as_ref().into());
+
         self
     }
 
@@ -171,8 +175,10 @@ impl UpdaterBuilder {
         <HeaderValue as TryFrom<V>>::Error: Into<http::Error>,
     {
         let key: std::result::Result<HeaderName, http::Error> = key.try_into().map_err(Into::into);
+
         let value: std::result::Result<HeaderValue, http::Error> =
             value.try_into().map_err(Into::into);
+
         self.headers.insert(key?, value?);
 
         Ok(self)
@@ -180,16 +186,19 @@ impl UpdaterBuilder {
 
     pub fn timeout(mut self, timeout: Duration) -> Self {
         self.timeout = Some(timeout);
+
         self
     }
 
     pub fn proxy(mut self, proxy: Url) -> Self {
         self.proxy.replace(proxy);
+
         self
     }
 
     pub fn pubkey<S: Into<String>>(mut self, pubkey: S) -> Self {
         self.config.pubkey = pubkey.into();
+
         self
     }
 
@@ -198,6 +207,7 @@ impl UpdaterBuilder {
         S: Into<OsString>,
     {
         self.installer_args.push(arg.into());
+
         self
     }
 
@@ -207,17 +217,21 @@ impl UpdaterBuilder {
         S: Into<OsString>,
     {
         let args = args.into_iter().map(|a| a.into()).collect::<Vec<_>>();
+
         self.installer_args.extend_from_slice(&args);
+
         self
     }
 
     pub fn clear_installer_args(mut self) -> Self {
         self.installer_args.clear();
+
         self
     }
 
     pub fn on_before_exit<F: Fn() + Send + Sync + 'static>(mut self, f: F) -> Self {
         self.on_before_exit.replace(Arc::new(f));
+
         self
     }
 
@@ -231,6 +245,7 @@ impl UpdaterBuilder {
         };
 
         let arch = get_updater_arch().ok_or(Error::UnsupportedArch)?;
+
         let (target, json_target) = if let Some(target) = self.target {
             (target.clone(), target)
         } else {
@@ -274,7 +289,9 @@ impl UpdaterBuilder {
         S: Into<OsString>,
     {
         let args = args.into_iter().map(|a| a.into()).collect::<Vec<_>>();
+
         self.current_exe_args.extend_from_slice(&args);
+
         self
     }
 }
@@ -305,6 +322,7 @@ impl Updater {
     pub async fn check(&self) -> Result<Option<Update>> {
         // we want JSON only
         let mut headers = self.headers.clone();
+
         headers.insert("Accept", HeaderValue::from_str("application/json").unwrap());
 
         // Set SSL certs for linux if they aren't available.
@@ -313,13 +331,16 @@ impl Updater {
             if std::env::var_os("SSL_CERT_FILE").is_none() {
                 std::env::set_var("SSL_CERT_FILE", "/etc/ssl/certs/ca-certificates.crt");
             }
+
             if std::env::var_os("SSL_CERT_DIR").is_none() {
                 std::env::set_var("SSL_CERT_DIR", "/etc/ssl/certs");
             }
         }
 
         let mut remote_release: Option<RemoteRelease> = None;
+
         let mut last_error: Option<Error> = None;
+
         for url in &self.endpoints {
             // replace {{current_version}}, {{target}} and {{arch}} in the provided URL
             // this is useful if we need to query example
@@ -329,9 +350,13 @@ impl Updater {
             // The main objective is if the update URL is defined via the Cargo.toml
             // the URL will be generated dynamically
             let version = self.current_version.to_string();
+
             let version = version.as_bytes();
+
             const CONTROLS_ADD: &AsciiSet = &CONTROLS.add(b'+');
+
             let encoded_version = percent_encoding::percent_encode(version, CONTROLS_ADD);
+
             let encoded_version = encoded_version.to_string();
 
             let url: Url = url
@@ -347,13 +372,17 @@ impl Updater {
                 .parse()?;
 
             let mut request = ClientBuilder::new().user_agent(UPDATER_USER_AGENT);
+
             if let Some(timeout) = self.timeout {
                 request = request.timeout(timeout);
             }
+
             if let Some(ref proxy) = self.proxy {
                 let proxy = reqwest::Proxy::all(proxy.as_str())?;
+
                 request = request.proxy(proxy);
             }
+
             let response = request
                 .build()?
                 .get(url)
@@ -373,10 +402,12 @@ impl Updater {
                     {
                         Ok(release) => {
                             last_error = None;
+
                             remote_release = Some(release);
                             // we found a relase, break the loop
                             break;
                         }
+
                         Err(err) => last_error = Some(err),
                     }
                 }
@@ -474,19 +505,24 @@ impl Update {
     ) -> Result<Vec<u8>> {
         // set our headers
         let mut headers = self.headers.clone();
+
         headers.insert(
             "Accept",
             HeaderValue::from_str("application/octet-stream").unwrap(),
         );
 
         let mut request = ClientBuilder::new().user_agent(UPDATER_USER_AGENT);
+
         if let Some(timeout) = self.timeout {
             request = request.timeout(timeout);
         }
+
         if let Some(ref proxy) = self.proxy {
             let proxy = reqwest::Proxy::all(proxy.as_str())?;
+
             request = request.proxy(proxy);
         }
+
         let response = request
             .build()?
             .get(self.download_url.clone())
@@ -510,11 +546,15 @@ impl Update {
         let mut buffer = Vec::new();
 
         let mut stream = response.bytes_stream();
+
         while let Some(chunk) = stream.next().await {
             let chunk = chunk?;
+
             on_chunk(chunk.len(), content_length);
+
             buffer.extend(chunk);
         }
+
         on_download_finish();
 
         verify_signature(&buffer, &self.signature, &self.config.pubkey)?;
@@ -534,6 +574,7 @@ impl Update {
         on_download_finish: D,
     ) -> Result<()> {
         let bytes = self.download(on_chunk, on_download_finish).await?;
+
         self.install(bytes)
     }
 
@@ -594,6 +635,7 @@ impl Update {
     /// └── ...
     fn install_inner(&self, bytes: &[u8]) -> Result<()> {
         use std::iter::once;
+
         use windows_sys::{
             w,
             Win32::UI::{Shell::ShellExecuteW, WindowsAndMessaging::SW_SHOW},
@@ -602,7 +644,9 @@ impl Update {
         let updater_type = self.extract(bytes)?;
 
         let install_mode = self.config.install_mode();
+
         let current_args = &self.current_exe_args()[1..];
+
         let msi_args;
 
         let installer_args: Vec<&OsStr> = match &updater_type {
@@ -621,6 +665,7 @@ impl Update {
                     .map(escape_msi_property_arg)
                     .collect::<Vec<_>>()
                     .join(" ");
+
                 msi_args = OsString::from(format!("LAUNCHAPPARGS=\"{escaped_args}\""));
 
                 [OsStr::new("/i"), path.as_os_str()]
@@ -645,9 +690,11 @@ impl Update {
                 |p| OsString::from(format!("{p}\\System32\\msiexec.exe")),
             ),
         };
+
         let file = encode_wide(file);
 
         let parameters = installer_args.join(OsStr::new(" "));
+
         let parameters = encode_wide(parameters);
 
         unsafe {
@@ -699,13 +746,18 @@ impl Update {
         let temp_dir = self.make_temp_dir()?;
 
         let archive = Cursor::new(bytes);
+
         let mut extractor = zip::ZipArchive::new(archive)?;
+
         extractor.extract(&temp_dir)?;
 
         let paths = std::fs::read_dir(&temp_dir)?;
+
         for path in paths {
             let path = path?.path();
+
             let ext = path.extension();
+
             if ext == Some(OsStr::new("exe")) {
                 return Ok(WindowsUpdaterType::nsis(path, None));
             } else if ext == Some(OsStr::new("msi")) {
@@ -719,9 +771,11 @@ impl Update {
     fn extract_exe(&self, bytes: &[u8]) -> Result<WindowsUpdaterType> {
         if infer::app::is_exe(bytes) {
             let (path, temp) = self.write_to_temp(bytes, ".exe")?;
+
             Ok(WindowsUpdaterType::nsis(path, temp))
         } else if infer::archive::is_msi(bytes) {
             let (path, temp) = self.write_to_temp(bytes, ".msi")?;
+
             Ok(WindowsUpdaterType::msi(path, temp))
         } else {
             Err(crate::Error::InvalidUpdaterFormat)
@@ -736,14 +790,17 @@ impl Update {
         use std::io::Write;
 
         let temp_dir = self.make_temp_dir()?;
+
         let mut temp_file = tempfile::Builder::new()
             .prefix(&format!("{}-{}-installer", self.app_name, self.version))
             .suffix(ext)
             .rand_bytes(0)
             .tempfile_in(temp_dir)?;
+
         temp_file.write_all(bytes)?;
 
         let temp = temp_file.into_temp_path();
+
         Ok((temp.to_path_buf(), Some(temp)))
     }
 }
@@ -774,6 +831,7 @@ impl Update {
 
     fn install_appimage(&self, bytes: &[u8]) -> Result<()> {
         use std::os::unix::fs::{MetadataExt, PermissionsExt};
+
         let extract_path_metadata = self.extract_path.metadata()?;
 
         let tmp_dir_locations = vec![
@@ -787,11 +845,14 @@ impl Update {
                 let tmp_dir = tempfile::Builder::new()
                     .prefix("tauri_current_app")
                     .tempdir_in(tmp_dir_location)?;
+
                 let tmp_dir_metadata = tmp_dir.path().metadata()?;
 
                 if extract_path_metadata.dev() == tmp_dir_metadata.dev() {
                     let mut perms = tmp_dir_metadata.permissions();
+
                     perms.set_mode(0o700);
+
                     std::fs::set_permissions(tmp_dir.path(), perms)?;
 
                     let tmp_app_image = &tmp_dir.path().join("current_app.AppImage");
@@ -806,14 +867,18 @@ impl Update {
                         // extract the buffer to the tmp_dir
                         // we extract our signed archive into our final directory without any temp file
                         let archive = Cursor::new(bytes);
+
                         let decoder = flate2::read::GzDecoder::new(archive);
+
                         let mut archive = tar::Archive::new(decoder);
+
                         for mut entry in archive.entries()?.flatten() {
                             if let Ok(path) = entry.path() {
                                 if path.extension() == Some(OsStr::new("AppImage")) {
                                     // if something went wrong during the extraction, we should restore previous app
                                     if let Err(err) = entry.unpack(&self.extract_path) {
                                         std::fs::rename(tmp_app_image, &self.extract_path)?;
+
                                         return Err(err.into());
                                     }
                                     // early finish we have everything we need here
@@ -823,6 +888,7 @@ impl Update {
                         }
                         // if we have not returned early we should restore the backup
                         std::fs::rename(tmp_app_image, &self.extract_path)?;
+
                         return Err(Error::BinaryNotFoundInArchive);
                     }
 
@@ -832,8 +898,10 @@ impl Update {
                         Err(err) => {
                             // if something went wrong during the extraction, we should restore previous app
                             std::fs::rename(tmp_app_image, &self.extract_path)?;
+
                             Err(err.into())
                         }
+
                         Ok(_) => Ok(()),
                     };
                 }
@@ -857,6 +925,7 @@ impl Update {
 
         // Then verify it's actually a Debian-based system by checking for dpkg
         let dpkg_exists = std::path::Path::new("/var/lib/dpkg").exists();
+
         let apt_exists = std::path::Path::new("/etc/apt").exists();
 
         // Additional check for the package in dpkg database
@@ -978,6 +1047,7 @@ impl Update {
 
     fn install_with_sudo(&self, deb_path: &Path, password: &str) -> Result<bool> {
         use std::io::Write;
+
         use std::process::{Command, Stdio};
 
         let mut child = Command::new("sudo")
@@ -996,6 +1066,7 @@ impl Update {
         }
 
         let status = child.wait()?;
+
         Ok(status.success())
     }
 }
@@ -1013,6 +1084,7 @@ impl Update {
         use flate2::read::GzDecoder;
 
         let cursor = Cursor::new(bytes);
+
         let mut extracted_files: Vec<PathBuf> = Vec::new();
 
         // the first file in the tar.gz will always be
@@ -1025,6 +1097,7 @@ impl Update {
         std::fs::rename(&self.extract_path, tmp_dir.path())?;
 
         let decoder = GzDecoder::new(cursor);
+
         let mut archive = tar::Archive::new(decoder);
 
         std::fs::create_dir(&self.extract_path)?;
@@ -1034,6 +1107,7 @@ impl Update {
 
             // skip the first folder (should be the app name)
             let collected_path: PathBuf = entry.path()?.iter().skip(1).collect();
+
             let extraction_path = &self.extract_path.join(collected_path);
 
             // if something went wrong during the extraction, we should restore previous app
@@ -1046,7 +1120,9 @@ impl Update {
                         std::fs::remove_file(file)?;
                     }
                 }
+
                 std::fs::rename(tmp_dir.path(), &self.extract_path)?;
+
                 return Err(err.into());
             }
 
@@ -1188,20 +1264,26 @@ where
 fn verify_signature(data: &[u8], release_signature: &str, pub_key: &str) -> Result<bool> {
     // we need to convert the pub key
     let pub_key_decoded = base64_to_string(pub_key)?;
+
     let public_key = PublicKey::decode(&pub_key_decoded)?;
+
     let signature_base64_decoded = base64_to_string(release_signature)?;
+
     let signature = Signature::decode(&signature_base64_decoded)?;
 
     // Validate signature or bail out
     public_key.verify(data, &signature, true)?;
+
     Ok(true)
 }
 
 fn base64_to_string(base64_string: &str) -> Result<String> {
     let decoded_string = &base64::engine::general_purpose::STANDARD.decode(base64_string)?;
+
     let result = std::str::from_utf8(decoded_string)
         .map_err(|_| Error::SignatureUtf8(base64_string.into()))?
         .to_string();
+
     Ok(result)
 }
 
@@ -1225,8 +1307,11 @@ trait PathExt {
 impl PathExt for PathBuf {
     fn wrap_in_quotes(&self) -> Self {
         let mut msi_path = OsString::from("\"");
+
         msi_path.push(self.as_os_str());
+
         msi_path.push("\"");
+
         PathBuf::from(msi_path)
     }
 }
@@ -1264,6 +1349,7 @@ mod tests {
     #[cfg(windows)]
     fn it_wraps_correctly() {
         use super::PathExt;
+
         use std::path::PathBuf;
 
         assert_eq!(
@@ -1298,6 +1384,7 @@ mod tests {
             "--arg=midword\"wrapped space\"", // `./my-app --args=midword""wrapped""`
             "",            // `./my-app '""'`
         ];
+
         let cases_escaped = [
             "something",
             "--flag",

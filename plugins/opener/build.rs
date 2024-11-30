@@ -87,6 +87,7 @@ fn _f() {
             },
         },
     };
+
     match (OpenerScopeEntry::Url {
         url: String::new(),
         app: Application::Enable(true),
@@ -121,8 +122,11 @@ fn main() {
         .build();
 
     let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap();
+
     let mobile = target_os == "ios" || target_os == "android";
+
     alias("desktop", !mobile);
+
     alias("mobile", mobile);
 }
 
@@ -130,6 +134,7 @@ fn main() {
 // `alias` must be a snake case string.
 fn alias(alias: &str, has_feature: bool) {
     println!("cargo:rustc-check-cfg=cfg({alias})");
+
     if has_feature {
         println!("cargo:rustc-cfg={alias}");
     }

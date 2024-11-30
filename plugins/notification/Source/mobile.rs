@@ -27,6 +27,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "NotificationPlugin")?;
     #[cfg(target_os = "ios")]
     let handle = api.register_ios_plugin(init_plugin_notification)?;
+
     Ok(Notification(handle))
 }
 
@@ -63,7 +64,9 @@ impl<R: Runtime> Notification<R> {
 
     pub fn register_action_types(&self, types: Vec<ActionType>) -> crate::Result<()> {
         let mut args = HashMap::new();
+
         args.insert("types", types);
+
         self.0
             .run_mobile_plugin("registerActionTypes", args)
             .map_err(Into::into)
@@ -71,17 +74,21 @@ impl<R: Runtime> Notification<R> {
 
     pub fn remove_active(&self, notifications: Vec<i32>) -> crate::Result<()> {
         let mut args = HashMap::new();
+
         args.insert(
             "notifications",
             notifications
                 .into_iter()
                 .map(|id| {
                     let mut notification = HashMap::new();
+
                     notification.insert("id", id);
+
                     notification
                 })
                 .collect::<Vec<HashMap<&str, i32>>>(),
         );
+
         self.0
             .run_mobile_plugin("removeActive", args)
             .map_err(Into::into)
@@ -108,7 +115,9 @@ impl<R: Runtime> Notification<R> {
     /// Cancel pending notifications.
     pub fn cancel(&self, notifications: Vec<i32>) -> crate::Result<()> {
         let mut args = HashMap::new();
+
         args.insert("notifications", notifications);
+
         self.0.run_mobile_plugin("cancel", args).map_err(Into::into)
     }
 
@@ -127,7 +136,9 @@ impl<R: Runtime> Notification<R> {
     #[cfg(target_os = "android")]
     pub fn delete_channel(&self, id: impl Into<String>) -> crate::Result<()> {
         let mut args = HashMap::new();
+
         args.insert("id", id.into());
+
         self.0
             .run_mobile_plugin("deleteChannel", args)
             .map_err(Into::into)

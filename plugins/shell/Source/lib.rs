@@ -112,6 +112,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Option<config::Config>> {
         ])
         .setup(|app, api| {
             let default_config = config::Config::default();
+
             let config = api.config().as_ref().unwrap_or(&default_config);
 
             #[cfg(target_os = "android")]
@@ -127,15 +128,19 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Option<config::Config>> {
                 #[cfg(mobile)]
                 mobile_plugin_handle: handle,
             });
+
             Ok(())
         })
         .on_event(|app, event| {
             if let RunEvent::Exit = event {
                 let shell = app.state::<Shell<R>>();
+
                 let children = {
                     let mut lock = shell.children.lock().unwrap();
+
                     std::mem::take(&mut *lock)
                 };
+
                 for child in children.into_values() {
                     let _ = child.kill();
                 }
@@ -150,10 +155,13 @@ fn open_scope(open: &config::ShellAllowlistOpen) -> scope::OpenScope {
         config::ShellAllowlistOpen::Flag(true) => {
             Some(Regex::new(r"^((mailto:\w+)|(tel:\w+)|(https?://\w+)).+").unwrap())
         }
+
         config::ShellAllowlistOpen::Validate(validator) => {
             let regex = format!("^{validator}$");
+
             let validator =
                 Regex::new(&regex).unwrap_or_else(|e| panic!("invalid regex {regex}: {e}"));
+
             Some(validator)
         }
     };

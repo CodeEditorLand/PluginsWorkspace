@@ -32,6 +32,7 @@ pub(crate) fn open<P: AsRef<OsStr>, S: AsRef<str>>(path: P, with: Option<S>) -> 
 /// ```
 pub fn open_url<P: AsRef<str>, S: AsRef<str>>(url: P, with: Option<S>) -> crate::Result<()> {
     let url = url.as_ref();
+
     open(url, with)
 }
 
@@ -53,5 +54,6 @@ pub fn open_url<P: AsRef<str>, S: AsRef<str>>(url: P, with: Option<S>) -> crate:
 /// ```
 pub fn open_path<P: AsRef<Path>, S: AsRef<str>>(path: P, with: Option<S>) -> crate::Result<()> {
     let path = path.as_ref();
+
     open(path, with)
 }

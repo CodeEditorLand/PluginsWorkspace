@@ -84,7 +84,9 @@ pub fn get_matches(cli: &Config, package_info: &PackageInfo) -> crate::Result<Ma
         .description()
         .unwrap_or(&package_info.description.to_string())
         .to_string();
+
     let version = package_info.version.to_string();
+
     let app = get_app(
         package_info,
         version,
@@ -92,12 +94,15 @@ pub fn get_matches(cli: &Config, package_info: &PackageInfo) -> crate::Result<Ma
         Some(&about),
         cli,
     );
+
     match app.try_get_matches() {
         Ok(matches) => Ok(get_matches_internal(cli, &matches)),
         Err(e) => match e.kind() {
             ErrorKind::DisplayHelp => {
                 let mut matches = Matches::default();
+
                 let help_text = e.to_string();
+
                 matches.args.insert(
                     "help".to_string(),
                     ArgData {
@@ -105,15 +110,20 @@ pub fn get_matches(cli: &Config, package_info: &PackageInfo) -> crate::Result<Ma
                         occurrences: 0,
                     },
                 );
+
                 Ok(matches)
             }
+
             ErrorKind::DisplayVersion => {
                 let mut matches = Matches::default();
+
                 matches
                     .args
                     .insert("version".to_string(), Default::default());
+
                 Ok(matches)
             }
+
             _ => Err(e.into()),
         },
     }
@@ -121,6 +131,7 @@ pub fn get_matches(cli: &Config, package_info: &PackageInfo) -> crate::Result<Ma
 
 fn get_matches_internal(config: &Config, matches: &ArgMatches) -> Matches {
     let mut cli_matches = Matches::default();
+
     map_matches(config, matches, &mut cli_matches);
 
     if let Some((subcommand_name, subcommand_matches)) = matches.subcommand() {
@@ -148,6 +159,7 @@ fn map_matches(config: &Config, matches: &ArgMatches, cli_matches: &mut Matches)
                         .get_many::<String>(&arg.name)
                         .map(|v| {
                             let mut values = Vec::new();
+
                             for value in v {
                                 values.push(Value::String(value.into()));
                             }
@@ -184,12 +196,15 @@ fn get_app(
     if let Some(about) = about {
         app = app.about(about);
     }
+
     if let Some(long_description) = config.long_description() {
         app = app.long_about(long_description);
     }
+
     if let Some(before_help) = config.before_help() {
         app = app.before_help(before_help);
     }
+
     if let Some(after_help) = config.after_help() {
         app = app.after_help(after_help);
     }
@@ -209,6 +224,7 @@ fn get_app(
                 subcommand.description(),
                 subcommand,
             );
+
             app = app.subcommand(clap_subcommand);
         }
     }
@@ -221,12 +237,14 @@ fn get_arg(arg_name: String, arg: &Arg) -> ClapArg {
 
     if arg.index.is_none() {
         clap_arg = clap_arg.long(arg_name);
+
         if let Some(short) = arg.short {
             clap_arg = clap_arg.short(short);
         }
     }
 
     clap_arg = bind_string_arg!(arg, clap_arg, description, help);
+
     clap_arg = bind_string_arg!(arg, clap_arg, long_description, long_help);
 
     let action = if arg.multiple {
@@ -256,26 +274,38 @@ fn get_arg(arg_name: String, arg: &Arg) -> ClapArg {
         (None, Some(max)) => clap_arg.num_args(0..max),
         (None, None) => clap_arg,
     };
+
     clap_arg = clap_arg.required(arg.required);
+
     clap_arg = bind_string_arg!(
         arg,
         clap_arg,
         required_unless_present,
         required_unless_present
     );
+
     clap_arg = bind_string_slice_arg!(arg, clap_arg, required_unless_present_all);
+
     clap_arg = bind_string_slice_arg!(arg, clap_arg, required_unless_present_any);
+
     clap_arg = bind_string_arg!(arg, clap_arg, conflicts_with, conflicts_with);
+
     if let Some(value) = &arg.conflicts_with_all {
         clap_arg = clap_arg.conflicts_with_all(value);
     }
+
     clap_arg = bind_string_arg!(arg, clap_arg, requires, requires);
+
     if let Some(value) = &arg.requires_all {
         clap_arg = clap_arg.requires_all(value);
     }
+
     clap_arg = bind_if_arg!(arg, clap_arg, requires_if);
+
     clap_arg = bind_if_arg!(arg, clap_arg, required_if_eq);
+
     clap_arg = bind_value_arg!(arg, clap_arg, require_equals);
+
     clap_arg = bind_value_arg!(arg, clap_arg, index);
 
     clap_arg

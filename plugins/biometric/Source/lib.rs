@@ -64,7 +64,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "BiometricPlugin")?;
             #[cfg(target_os = "ios")]
             let handle = api.register_ios_plugin(init_plugin_biometric)?;
+
             app.manage(Biometric(handle));
+
             Ok(())
         })
         .build()

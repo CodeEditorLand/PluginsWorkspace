@@ -43,20 +43,28 @@ pub fn run() {
             #[cfg(desktop)]
             {
                 tray::create_tray(app.handle())?;
+
                 app.handle().plugin(tauri_plugin_cli::init())?;
+
                 app.handle()
                     .plugin(tauri_plugin_global_shortcut::Builder::new().build())?;
+
                 app.handle()
                     .plugin(tauri_plugin_window_state::Builder::new().build())?;
+
                 app.handle()
                     .plugin(tauri_plugin_updater::Builder::new().build())?;
             }
             #[cfg(mobile)]
             {
                 app.handle().plugin(tauri_plugin_barcode_scanner::init())?;
+
                 app.handle().plugin(tauri_plugin_nfc::init())?;
+
                 app.handle().plugin(tauri_plugin_biometric::init())?;
+
                 app.handle().plugin(tauri_plugin_geolocation::init())?;
+
                 app.handle().plugin(tauri_plugin_haptics::init())?;
             }
 
@@ -95,13 +103,17 @@ pub fn run() {
                     Ok(s) => s,
                     Err(e) => {
                         eprintln!("{}", e);
+
                         std::process::exit(1);
                     }
                 };
+
                 loop {
                     if let Ok(mut request) = server.recv() {
                         let mut body = Vec::new();
+
                         let _ = request.as_reader().read_to_end(&mut body);
+
                         let response = tiny_http::Response::new(
                             tiny_http::StatusCode(200),
                             request.headers().to_vec(),
@@ -109,6 +121,7 @@ pub fn run() {
                             request.body_length(),
                             None,
                         );
+
                         let _ = request.respond(response);
                     }
                 }
@@ -119,8 +132,10 @@ pub fn run() {
         .on_page_load(|webview, payload| {
             if payload.event() == PageLoadEvent::Finished {
                 let webview_ = webview.clone();
+
                 webview.listen("js-event", move |event| {
                     println!("got js-event with message '{:?}'", event.payload());
+
                     let reply = Reply {
                         data: "something else".to_string(),
                     };

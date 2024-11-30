@@ -36,6 +36,7 @@ pub fn init<R: Runtime, F: FnMut(&AppHandle<R>, Vec<String>, String) + Send + Sy
         if let Some(deep_link) = app.try_state::<tauri_plugin_deep_link::DeepLink<R>>() {
             deep_link.handle_cli_arguments(args.iter());
         }
+
         f(app, args, cwd)
     }))
 }

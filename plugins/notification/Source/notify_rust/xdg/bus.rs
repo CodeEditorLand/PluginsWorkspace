@@ -43,12 +43,14 @@ impl NotificationBus {
 	pub fn custom(custom_path:&str) -> Option<Self> {
 		let name =
 			zbus::names::WellKnownName::try_from(Self::namespaced_custom(custom_path)?).ok()?;
+
 		Some(Self(name.to_string().into()))
 	}
 
 	#[cfg(all(feature = "dbus", not(feature = "zbus")))]
 	pub fn custom(custom_path:&str) -> Option<Self> {
 		let name = dbus::strings::BusName::new(Self::namespaced_custom(custom_path)?).ok()?;
+
 		Some(Self(name.to_string().into()))
 	}
 

@@ -136,6 +136,7 @@ impl MigrationSource<'static> for MigrationList {
 	fn resolve(self) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>> {
 		Box::pin(async move {
 			let mut migrations = Vec::new();
+
 			for migration in self.0 {
 				if matches!(migration.kind, MigrationKind::Up) {
 					migrations.push(SqlxMigration::new(
@@ -147,6 +148,7 @@ impl MigrationSource<'static> for MigrationList {
 					));
 				}
 			}
+
 			Ok(migrations)
 		})
 	}
@@ -170,14 +172,17 @@ async fn load<R:Runtime>(
 	if !Db::database_exists(&fqdb).await.unwrap_or(false) {
 		Db::create_database(&fqdb).await?;
 	}
+
 	let pool = Pool::connect(&fqdb).await?;
 
 	if let Some(migrations) = migrations.0.lock().await.remove(&db) {
 		let migrator = Migrator::new(migrations).await?;
+
 		migrator.run(&pool).await?;
 	}
 
 	db_instances.0.lock().await.insert(db.clone(), pool);
+
 	Ok(db)
 }
 
@@ -192,6 +197,7 @@ async fn close(db_instances:State<'_, DbInstances>, db:Option<String>) -> Result
 
 	for pool in pools {
 		let db = instances.get_mut(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
+
 		db.close().await;
 	}
 
@@ -209,7 +215,9 @@ async fn execute(
 	let mut instances = db_instances.0.lock().await;
 
 	let db = instances.get_mut(&db).ok_or(Error::DatabaseNotLoaded(db))?;
+
 	let mut query = sqlx::query(&query);
+
 	for value in values {
 		if value.is_null() {
 			query = query.bind(None::<JsonValue>);
@@ -221,6 +229,7 @@ async fn execute(
 			query = query.bind(value);
 		}
 	}
+
 	let result = query.execute(&*db).await?;
 	#[cfg(feature = "sqlite")]
 	let r = Ok((result.rows_affected(), result.last_insert_rowid()));
@@ -228,6 +237,7 @@ async fn execute(
 	let r = Ok((result.rows_affected(), result.last_insert_id()));
 	#[cfg(feature = "postgres")]
 	let r = Ok((result.rows_affected(), 0));
+
 	r
 }
 
@@ -239,8 +249,11 @@ async fn select(
 	values:Vec<JsonValue>,
 ) -> Result<Vec<IndexMap<String, JsonValue>>> {
 	let mut instances = db_instances.0.lock().await;
+
 	let db = instances.get_mut(&db).ok_or(Error::DatabaseNotLoaded(db))?;
+
 	let mut query = sqlx::query(&query);
+
 	for value in values {
 		if value.is_null() {
 			query = query.bind(None::<JsonValue>);
@@ -252,10 +265,14 @@ async fn select(
 			query = query.bind(value);
 		}
 	}
+
 	let rows = query.fetch_all(&*db).await?;
+
 	let mut values = Vec::new();
+
 	for row in rows {
 		let mut value = IndexMap::default();
+
 		for (i, column) in row.columns().iter().enumerate() {
 			let v = row.try_get_raw(i)?;
 
@@ -285,6 +302,7 @@ impl Builder {
 		self.migrations
 			.get_or_insert(Default::default())
 			.insert(db_url.to_string(), MigrationList(migrations));
+
 		self
 	}
 
@@ -299,7 +317,9 @@ impl Builder {
 
 				tauri::async_runtime::block_on(async move {
 					let instances = DbInstances::default();
+
 					let mut lock = instances.0.lock().await;
+
 					for db in config.preload {
 						#[cfg(feature = "sqlite")]
 						let fqdb = path_mapper(app_path(app), &db);
@@ -309,17 +329,22 @@ impl Builder {
 						if !Db::database_exists(&fqdb).await.unwrap_or(false) {
 							Db::create_database(&fqdb).await?;
 						}
+
 						let pool = Pool::connect(&fqdb).await?;
 
 						if let Some(migrations) = self.migrations.as_mut().unwrap().remove(&db) {
 							let migrator = Migrator::new(migrations).await?;
+
 							migrator.run(&pool).await?;
 						}
+
 						lock.insert(db, pool);
 					}
+
 					drop(lock);
 
 					app.manage(instances);
+
 					app.manage(Migrations(Mutex::new(self.migrations.take().unwrap_or_default())));
 
 					Ok(())
@@ -329,7 +354,9 @@ impl Builder {
 				if let RunEvent::Exit = event {
 					tauri::async_runtime::block_on(async move {
 						let instances = &*app.state::<DbInstances>();
+
 						let instances = instances.0.lock().await;
+
 						for value in instances.values() {
 							value.close().await;
 						}

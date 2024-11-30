@@ -88,6 +88,7 @@ impl DbPool {
                 if !Sqlite::database_exists(conn_url).await.unwrap_or(false) {
                     Sqlite::create_database(conn_url).await?;
                 }
+
                 Ok(Self::Sqlite(Pool::connect(conn_url).await?))
             }
             #[cfg(feature = "mysql")]
@@ -95,6 +96,7 @@ impl DbPool {
                 if !MySql::database_exists(conn_url).await.unwrap_or(false) {
                     MySql::create_database(conn_url).await?;
                 }
+
                 Ok(Self::MySql(Pool::connect(conn_url).await?))
             }
             #[cfg(feature = "postgres")]
@@ -102,6 +104,7 @@ impl DbPool {
                 if !Postgres::database_exists(conn_url).await.unwrap_or(false) {
                     Postgres::create_database(conn_url).await?;
                 }
+
                 Ok(Self::Postgres(Pool::connect(conn_url).await?))
             }
             #[cfg(not(any(feature = "sqlite", feature = "postgres", feature = "mysql")))]
@@ -127,6 +130,7 @@ impl DbPool {
             #[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]
             DbPool::None => (),
         }
+
         Ok(())
     }
 
@@ -152,6 +156,7 @@ impl DbPool {
             #[cfg(feature = "sqlite")]
             DbPool::Sqlite(pool) => {
                 let mut query = sqlx::query(&_query);
+
                 for value in _values {
                     if value.is_null() {
                         query = query.bind(None::<JsonValue>);
@@ -163,6 +168,7 @@ impl DbPool {
                         query = query.bind(value);
                     }
                 }
+
                 let result = pool.execute(query).await?;
                 (
                     result.rows_affected(),
@@ -172,6 +178,7 @@ impl DbPool {
             #[cfg(feature = "mysql")]
             DbPool::MySql(pool) => {
                 let mut query = sqlx::query(&_query);
+
                 for value in _values {
                     if value.is_null() {
                         query = query.bind(None::<JsonValue>);
@@ -183,6 +190,7 @@ impl DbPool {
                         query = query.bind(value);
                     }
                 }
+
                 let result = pool.execute(query).await?;
                 (
                     result.rows_affected(),
@@ -192,6 +200,7 @@ impl DbPool {
             #[cfg(feature = "postgres")]
             DbPool::Postgres(pool) => {
                 let mut query = sqlx::query(&_query);
+
                 for value in _values {
                     if value.is_null() {
                         query = query.bind(None::<JsonValue>);
@@ -203,6 +212,7 @@ impl DbPool {
                         query = query.bind(value);
                     }
                 }
+
                 let result = pool.execute(query).await?;
                 (result.rows_affected(), LastInsertId::Postgres(()))
             }
@@ -220,6 +230,7 @@ impl DbPool {
             #[cfg(feature = "sqlite")]
             DbPool::Sqlite(pool) => {
                 let mut query = sqlx::query(&_query);
+
                 for value in _values {
                     if value.is_null() {
                         query = query.bind(None::<JsonValue>);
@@ -231,10 +242,14 @@ impl DbPool {
                         query = query.bind(value);
                     }
                 }
+
                 let rows = pool.fetch_all(query).await?;
+
                 let mut values = Vec::new();
+
                 for row in rows {
                     let mut value = IndexMap::default();
+
                     for (i, column) in row.columns().iter().enumerate() {
                         let v = row.try_get_raw(i)?;
 
@@ -245,11 +260,13 @@ impl DbPool {
 
                     values.push(value);
                 }
+
                 values
             }
             #[cfg(feature = "mysql")]
             DbPool::MySql(pool) => {
                 let mut query = sqlx::query(&_query);
+
                 for value in _values {
                     if value.is_null() {
                         query = query.bind(None::<JsonValue>);
@@ -261,10 +278,14 @@ impl DbPool {
                         query = query.bind(value);
                     }
                 }
+
                 let rows = pool.fetch_all(query).await?;
+
                 let mut values = Vec::new();
+
                 for row in rows {
                     let mut value = IndexMap::default();
+
                     for (i, column) in row.columns().iter().enumerate() {
                         let v = row.try_get_raw(i)?;
 
@@ -275,11 +296,13 @@ impl DbPool {
 
                     values.push(value);
                 }
+
                 values
             }
             #[cfg(feature = "postgres")]
             DbPool::Postgres(pool) => {
                 let mut query = sqlx::query(&_query);
+
                 for value in _values {
                     if value.is_null() {
                         query = query.bind(None::<JsonValue>);
@@ -291,10 +314,14 @@ impl DbPool {
                         query = query.bind(value);
                     }
                 }
+
                 let rows = pool.fetch_all(query).await?;
+
                 let mut values = Vec::new();
+
                 for row in rows {
                     let mut value = IndexMap::default();
+
                     for (i, column) in row.columns().iter().enumerate() {
                         let v = row.try_get_raw(i)?;
 
@@ -305,6 +332,7 @@ impl DbPool {
 
                     values.push(value);
                 }
+
                 values
             }
             #[cfg(not(any(feature = "sqlite", feature = "mysql", feature = "postgres")))]

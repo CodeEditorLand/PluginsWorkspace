@@ -46,7 +46,9 @@ pub(crate) async fn write_image<R: Runtime>(
     image: JsImage,
 ) -> Result<()> {
     let resources_table = webview.resources_table();
+
     let image = image.into_img(&resources_table)?;
+
     clipboard.write_image(&image)
 }
 
@@ -56,8 +58,11 @@ pub(crate) async fn read_image<R: Runtime>(
     clipboard: State<'_, Clipboard<R>>,
 ) -> Result<ResourceId> {
     let image = clipboard.read_image()?.to_owned();
+
     let mut resources_table = webview.resources_table();
+
     let rid = resources_table.add(image);
+
     Ok(rid)
 }
 

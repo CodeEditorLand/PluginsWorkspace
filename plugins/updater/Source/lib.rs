@@ -68,7 +68,9 @@ pub trait UpdaterExt<R: Runtime> {
 impl<R: Runtime, T: Manager<R>> UpdaterExt<R> for T {
     fn updater_builder(&self) -> UpdaterBuilder {
         let app = self.app_handle();
+
         let package_info = app.package_info();
+
         let UpdaterState { config, target } = self.state::<UpdaterState>().inner();
 
         let mut builder = UpdaterBuilder::new(
@@ -82,6 +84,7 @@ impl<R: Runtime, T: Manager<R>> UpdaterExt<R> for T {
         }
 
         let args = self.env().args_os;
+
         if !args.is_empty() {
             builder = builder.current_exe_args(args);
         }
@@ -95,12 +98,14 @@ impl<R: Runtime, T: Manager<R>> UpdaterExt<R> for T {
         ))]
         {
             let env = app.env();
+
             if let Some(appimage) = env.appimage {
                 builder = builder.executable_path(appimage);
             }
         }
 
         let app_handle = app.app_handle().clone();
+
         builder = builder.on_before_exit(move || {
             app_handle.cleanup_before_exit();
         });
@@ -132,11 +137,13 @@ impl Builder {
 
     pub fn target(mut self, target: impl Into<String>) -> Self {
         self.target.replace(target.into());
+
         self
     }
 
     pub fn pubkey<S: Into<String>>(mut self, pubkey: S) -> Self {
         self.pubkey.replace(pubkey.into());
+
         self
     }
 
@@ -146,7 +153,9 @@ impl Builder {
         S: Into<OsString>,
     {
         let args = args.into_iter().map(|a| a.into()).collect::<Vec<_>>();
+
         self.installer_args.extend_from_slice(&args);
+
         self
     }
 
@@ -155,28 +164,37 @@ impl Builder {
         S: Into<OsString>,
     {
         self.installer_args.push(arg.into());
+
         self
     }
 
     pub fn clear_installer_args(mut self) -> Self {
         self.installer_args.clear();
+
         self
     }
 
     pub fn build<R: Runtime>(self) -> TauriPlugin<R, Config> {
         let pubkey = self.pubkey;
+
         let target = self.target;
+
         let installer_args = self.installer_args;
+
         PluginBuilder::<R, Config>::new("updater")
             .setup(move |app, api| {
                 let mut config = api.config().clone();
+
                 if let Some(pubkey) = pubkey {
                     config.pubkey = pubkey;
                 }
+
                 if let Some(windows) = &mut config.windows {
                     windows.installer_args.extend_from_slice(&installer_args);
                 }
+
                 app.manage(UpdaterState { target, config });
+
                 Ok(())
             })
             .invoke_handler(tauri::generate_handler![

@@ -26,6 +26,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
     let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "GeolocationPlugin")?;
     #[cfg(target_os = "ios")]
     let handle = api.register_ios_plugin(init_plugin_geolocation)?;
+
     Ok(Geolocation(handle))
 }
 
@@ -64,6 +65,7 @@ impl<R: Runtime> Geolocation<R> {
 
             Ok(())
         });
+
         let id = channel.id();
 
         self.watch_position_inner(options, channel)?;

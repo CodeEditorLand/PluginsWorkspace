@@ -55,9 +55,13 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn new<M: Manager<R>, P: AsRef<Path>>(manager: &M, path: P) -> Self {
         let app = manager.app_handle().clone();
+
         let state = app.state::<StoreState>();
+
         let serialize_fn = state.default_serialize;
+
         let deserialize_fn = state.default_deserialize;
+
         Self {
             app,
             path: path.as_ref().to_path_buf(),
@@ -87,6 +91,7 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn defaults(mut self, defaults: HashMap<String, JsonValue>) -> Self {
         self.defaults = Some(defaults);
+
         self
     }
 
@@ -105,10 +110,13 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn default(mut self, key: impl Into<String>, value: impl Into<JsonValue>) -> Self {
         let key = key.into();
+
         let value = value.into();
+
         self.defaults
             .get_or_insert(HashMap::new())
             .insert(key, value);
+
         self
     }
 
@@ -127,6 +135,7 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn serialize(mut self, serialize: SerializeFn) -> Self {
         self.serialize_fn = serialize;
+
         self
     }
 
@@ -145,6 +154,7 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn deserialize(mut self, deserialize: DeserializeFn) -> Self {
         self.deserialize_fn = deserialize;
+
         self
     }
 
@@ -163,23 +173,27 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn auto_save(mut self, debounce_duration: Duration) -> Self {
         self.auto_save = Some(debounce_duration);
+
         self
     }
 
     /// Disable auto save on modified with a debounce duration.
     pub fn disable_auto_save(mut self) -> Self {
         self.auto_save = None;
+
         self
     }
 
     /// Force create a new store with default values even if it already exists.
     pub fn create_new(mut self) -> Self {
         self.create_new = true;
+
         self
     }
 
     pub(crate) fn build_inner(mut self) -> crate::Result<(Arc<Store<R>>, ResourceId)> {
         let stores = self.app.state::<StoreState>().stores.clone();
+
         let mut stores = stores.lock().unwrap();
 
         self.path = resolve_store_path(&self.app, self.path)?;
@@ -215,7 +229,9 @@ impl<R: Runtime> StoreBuilder<R> {
         };
 
         let store = Arc::new(store);
+
         let rid = self.app.resources_table().add_arc(store.clone());
+
         stores.insert(self.path, rid);
 
         Ok((store, rid))
@@ -236,6 +252,7 @@ impl<R: Runtime> StoreBuilder<R> {
     /// ```
     pub fn build(self) -> crate::Result<Arc<Store<R>>> {
         let (store, _) = self.build_inner()?;
+
         Ok(store)
     }
 }
@@ -278,6 +295,7 @@ impl<R: Runtime> StoreInner<R> {
         fs::create_dir_all(self.path.parent().expect("invalid store path"))?;
 
         let bytes = (self.serialize_fn)(&self.cache).map_err(crate::Error::Serialize)?;
+
         fs::write(&self.path, bytes)?;
 
         Ok(())
@@ -296,8 +314,11 @@ impl<R: Runtime> StoreInner<R> {
     /// Inserts a key-value pair into the store.
     pub fn set(&mut self, key: impl Into<String>, value: impl Into<JsonValue>) {
         let key = key.into();
+
         let value = value.into();
+
         self.cache.insert(key.clone(), value.clone());
+
         let _ = self.emit_change_event(&key, Some(&value));
     }
 
@@ -314,9 +335,11 @@ impl<R: Runtime> StoreInner<R> {
     /// Removes a key-value pair from the store.
     pub fn delete(&mut self, key: impl AsRef<str>) -> bool {
         let flag = self.cache.remove(key.as_ref()).is_some();
+
         if flag {
             let _ = self.emit_change_event(key.as_ref(), None);
         }
+
         flag
     }
 
@@ -325,7 +348,9 @@ impl<R: Runtime> StoreInner<R> {
     /// Note: To clear the storage and reset it to its `default` value, use [`reset`](Self::reset) instead.
     pub fn clear(&mut self) {
         let keys: Vec<String> = self.cache.keys().cloned().collect();
+
         self.cache.clear();
+
         for key in &keys {
             let _ = self.emit_change_event(key, None);
         }
@@ -341,11 +366,13 @@ impl<R: Runtime> StoreInner<R> {
                     let _ = self.emit_change_event(key, defaults.get(key));
                 }
             }
+
             for (key, value) in defaults {
                 if !self.cache.contains_key(key) {
                     let _ = self.emit_change_event(key, Some(value));
                 }
             }
+
             self.cache.clone_from(defaults);
         } else {
             self.clear()
@@ -379,8 +406,11 @@ impl<R: Runtime> StoreInner<R> {
 
     fn emit_change_event(&self, key: &str, value: Option<&JsonValue>) -> crate::Result<()> {
         let state = self.app.state::<StoreState>();
+
         let stores = state.stores.lock().unwrap();
+
         let exists = value.is_some();
+
         self.app.emit(
             "store://change",
             ChangePayload {
@@ -391,6 +421,7 @@ impl<R: Runtime> StoreInner<R> {
                 exists,
             },
         )?;
+
         Ok(())
     }
 }
@@ -413,8 +444,11 @@ pub struct Store<R: Runtime> {
 impl<R: Runtime> Resource for Store<R> {
     fn close(self: Arc<Self>) {
         let store = self.store.lock().unwrap();
+
         let state = store.app.state::<StoreState>();
+
         let mut stores = state.stores.lock().unwrap();
+
         stores.remove(&store.path);
     }
 }
@@ -430,6 +464,7 @@ impl<R: Runtime> Store<R> {
     /// Inserts a key-value pair into the store.
     pub fn set(&self, key: impl Into<String>, value: impl Into<JsonValue>) {
         self.store.lock().unwrap().set(key.into(), value.into());
+
         let _ = self.trigger_auto_save();
     }
 
@@ -446,9 +481,11 @@ impl<R: Runtime> Store<R> {
     /// Removes a key-value pair from the store.
     pub fn delete(&self, key: impl AsRef<str>) -> bool {
         let deleted = self.store.lock().unwrap().delete(key);
+
         if deleted {
             let _ = self.trigger_auto_save();
         }
+
         deleted
     }
 
@@ -457,6 +494,7 @@ impl<R: Runtime> Store<R> {
     /// Note: To clear the storage and reset it to its `default` value, use [`reset`](Self::reset) instead.
     pub fn clear(&self) {
         self.store.lock().unwrap().clear();
+
         let _ = self.trigger_auto_save();
     }
 
@@ -465,6 +503,7 @@ impl<R: Runtime> Store<R> {
     /// If no default value has been set, this method behaves identical to [`clear`](Self::clear).
     pub fn reset(&self) {
         self.store.lock().unwrap().reset();
+
         let _ = self.trigger_auto_save();
     }
 
@@ -508,18 +547,25 @@ impl<R: Runtime> Store<R> {
         if let Some(sender) = self.auto_save_debounce_sender.lock().unwrap().take() {
             let _ = sender.send(AutoSaveMessage::Cancel);
         }
+
         self.store.lock().unwrap().save()
     }
 
     /// Removes the store from the resource table
     pub fn close_resource(&self) {
         let store = self.store.lock().unwrap();
+
         let app = store.app.clone();
+
         let state = app.state::<StoreState>();
+
         let stores = state.stores.lock().unwrap();
+
         if let Some(rid) = stores.get(&store.path).copied() {
             drop(store);
+
             drop(stores);
+
             let _ = app.resources_table().close(rid);
         }
     }
@@ -528,19 +574,29 @@ impl<R: Runtime> Store<R> {
         let Some(auto_save_delay) = self.auto_save else {
             return Ok(());
         };
+
         if auto_save_delay.is_zero() {
             return self.save();
         }
+
         let mut auto_save_debounce_sender = self.auto_save_debounce_sender.lock().unwrap();
+
         if let Some(ref sender) = *auto_save_debounce_sender {
             let _ = sender.send(AutoSaveMessage::Reset);
+
             return Ok(());
         }
+
         let (sender, mut receiver) = unbounded_channel();
+
         auto_save_debounce_sender.replace(sender);
+
         drop(auto_save_debounce_sender);
+
         let store = self.store.clone();
+
         let auto_save_debounce_sender = self.auto_save_debounce_sender.clone();
+
         tauri::async_runtime::spawn(async move {
             loop {
                 select! {
@@ -549,14 +605,18 @@ impl<R: Runtime> Store<R> {
                             return;
                         }
                     }
+
                     _ = sleep(auto_save_delay) => {
                         auto_save_debounce_sender.lock().unwrap().take();
+
                         let _ = store.lock().unwrap().save();
+
                         return;
                     }
                 };
             }
         });
+
         Ok(())
     }
 
@@ -564,6 +624,7 @@ impl<R: Runtime> Store<R> {
         // Cancel and save if auto save is pending
         if let Some(sender) = self.auto_save_debounce_sender.lock().unwrap().take() {
             let _ = sender.send(AutoSaveMessage::Cancel);
+
             let _ = self.save();
         };
     }

@@ -195,18 +195,21 @@ impl<'de> serde::Deserialize<'de> for SafeFilePath {
 
 impl FromStr for FilePath {
     type Err = Infallible;
+
     fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
         if let Ok(url) = url::Url::from_str(s) {
             if url.scheme().len() != 1 {
                 return Ok(Self::Url(url));
             }
         }
+
         Ok(Self::Path(PathBuf::from(s)))
     }
 }
 
 impl FromStr for SafeFilePath {
     type Err = Error;
+
     fn from_str(s: &str) -> Result<Self> {
         if let Ok(url) = url::Url::from_str(s) {
             if url.scheme().len() != 1 {
@@ -228,6 +231,7 @@ impl From<PathBuf> for FilePath {
 
 impl TryFrom<PathBuf> for SafeFilePath {
     type Error = Error;
+
     fn try_from(value: PathBuf) -> Result<Self> {
         SafePathBuf::new(value)
             .map(SafeFilePath::Path)
@@ -243,6 +247,7 @@ impl From<&Path> for FilePath {
 
 impl TryFrom<&Path> for SafeFilePath {
     type Error = Error;
+
     fn try_from(value: &Path) -> Result<Self> {
         SafePathBuf::new(value.to_path_buf())
             .map(SafeFilePath::Path)
@@ -258,6 +263,7 @@ impl From<&PathBuf> for FilePath {
 
 impl TryFrom<&PathBuf> for SafeFilePath {
     type Error = Error;
+
     fn try_from(value: &PathBuf) -> Result<Self> {
         SafePathBuf::new(value.to_owned())
             .map(SafeFilePath::Path)
@@ -279,6 +285,7 @@ impl From<url::Url> for SafeFilePath {
 
 impl TryFrom<FilePath> for PathBuf {
     type Error = Error;
+
     fn try_from(value: FilePath) -> Result<Self> {
         value.into_path()
     }
@@ -286,6 +293,7 @@ impl TryFrom<FilePath> for PathBuf {
 
 impl TryFrom<SafeFilePath> for PathBuf {
     type Error = Error;
+
     fn try_from(value: SafeFilePath) -> Result<Self> {
         value.into_path()
     }

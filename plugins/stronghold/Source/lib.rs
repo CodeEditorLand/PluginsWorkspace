@@ -193,6 +193,7 @@ impl From<ProcedureDto> for StrongholdProcedure {
                     size_bytes,
                 })
             }
+
             ProcedureDto::SLIP10Derive {
                 chain,
                 input,
@@ -219,12 +220,14 @@ impl From<ProcedureDto> for StrongholdProcedure {
                     language: MnemonicLanguage::English,
                 })
             }
+
             ProcedureDto::PublicKey { ty, private_key } => {
                 StrongholdProcedure::PublicKey(PublicKey {
                     ty: ty.into(),
                     private_key: private_key.into(),
                 })
             }
+
             ProcedureDto::Ed25519Sign { private_key, msg } => {
                 StrongholdProcedure::Ed25519Sign(Ed25519Sign {
                     private_key: private_key.into(),
@@ -243,7 +246,9 @@ async fn initialize(
     mut password: String,
 ) -> Result<()> {
     let hash = (hash_function.0)(&password);
+
     password.zeroize();
+
     let stronghold = Stronghold::new(snapshot_path.clone(), hash)?;
 
     collection
@@ -261,21 +266,26 @@ async fn destroy(
     snapshot_path: PathBuf,
 ) -> Result<()> {
     let mut collection = collection.0.lock().unwrap();
+
     if let Some(stronghold) = collection.remove(&snapshot_path) {
         if let Err(e) = stronghold.save() {
             collection.insert(snapshot_path, stronghold);
+
             return Err(e);
         }
     }
+
     Ok(())
 }
 
 #[tauri::command]
 async fn save(collection: State<'_, StrongholdCollection>, snapshot_path: PathBuf) -> Result<()> {
     let collection = collection.0.lock().unwrap();
+
     if let Some(stronghold) = collection.get(&snapshot_path) {
         stronghold.save()?;
     }
+
     Ok(())
 }
 
@@ -286,7 +296,9 @@ async fn create_client(
     client: BytesDto,
 ) -> Result<()> {
     let stronghold = get_stronghold(collection, snapshot_path)?;
+
     stronghold.create_client(client)?;
+
     Ok(())
 }
 
@@ -297,7 +309,9 @@ async fn load_client(
     client: BytesDto,
 ) -> Result<()> {
     let stronghold = get_stronghold(collection, snapshot_path)?;
+
     stronghold.load_client(client)?;
+
     Ok(())
 }
 
@@ -309,6 +323,7 @@ async fn get_store_record(
     key: String,
 ) -> Result<Option<Vec<u8>>> {
     let client = get_client(collection, snapshot_path, client)?;
+
     client.store().get(key.as_ref()).map_err(Into::into)
 }
 
@@ -322,6 +337,7 @@ async fn save_store_record(
     lifetime: Option<Duration>,
 ) -> Result<Option<Vec<u8>>> {
     let client = get_client(collection, snapshot_path, client)?;
+
     client
         .store()
         .insert(key.as_bytes().to_vec(), value, lifetime)
@@ -336,6 +352,7 @@ async fn remove_store_record(
     key: String,
 ) -> Result<Option<Vec<u8>>> {
     let client = get_client(collection, snapshot_path, client)?;
+
     client.store().delete(key.as_ref()).map_err(Into::into)
 }
 
@@ -349,6 +366,7 @@ async fn save_secret(
     secret: Vec<u8>,
 ) -> Result<()> {
     let client = get_client(collection, snapshot_path, client)?;
+
     client
         .vault(&vault)
         .write_secret(
@@ -367,6 +385,7 @@ async fn remove_secret(
     record_path: BytesDto,
 ) -> Result<()> {
     let client = get_client(collection, snapshot_path, client)?;
+
     client
         .vault(vault)
         .delete_secret(record_path)
@@ -382,6 +401,7 @@ async fn execute_procedure(
     procedure: ProcedureDto,
 ) -> Result<Vec<u8>> {
     let client = get_client(collection, snapshot_path, client)?;
+
     client
         .execute_procedure(StrongholdProcedure::from(procedure))
         .map(Into::into)
@@ -393,6 +413,7 @@ fn get_stronghold(
     snapshot_path: PathBuf,
 ) -> Result<iota_stronghold::Stronghold> {
     let collection = collection.0.lock().unwrap();
+
     if let Some(stronghold) = collection.get(&snapshot_path) {
         Ok(stronghold.inner().clone())
     } else {
@@ -406,6 +427,7 @@ fn get_client(
     client: BytesDto,
 ) -> Result<Client> {
     let collection = collection.0.lock().unwrap();
+
     if let Some(stronghold) = collection.get(&snapshot_path) {
         stronghold.get_client(client).map_err(Into::into)
     } else {
@@ -461,13 +483,16 @@ impl Builder {
 
         let plugin_builder = PluginBuilder::new("stronghold").setup(move |app, _api| {
             app.manage(StrongholdCollection::default());
+
             app.manage(PasswordHashFunction(match password_hash_function {
                 #[cfg(feature = "kdf")]
                 PasswordHashFunctionKind::Argon2(path) => {
                     Box::new(move |p| kdf::KeyDerivation::argon2(p, &path))
                 }
+
                 PasswordHashFunctionKind::Custom(f) => f,
             }));
+
             Ok(())
         });
 

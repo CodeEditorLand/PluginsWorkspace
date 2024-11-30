@@ -106,10 +106,13 @@ pub fn init<R: Runtime>(
         .invoke_handler(tauri::generate_handler![enable, disable, is_enabled])
         .setup(move |app, _api| {
             let mut builder = AutoLaunchBuilder::new();
+
             builder.set_app_name(&app.package_info().name);
+
             if let Some(args) = args {
                 builder.set_args(&args);
             }
+
             builder.set_use_launch_agent(matches!(macos_launcher, MacosLauncher::LaunchAgent));
 
             let current_exe = current_exe()?;
@@ -124,13 +127,16 @@ pub fn init<R: Runtime>(
                 // If it didn't find exactly a single occurance of .app, it will default to
                 // exe path to not break it.
                 let exe_path = current_exe.canonicalize()?.display().to_string();
+
                 let parts: Vec<&str> = exe_path.split(".app/").collect();
+
                 let app_path =
                     if parts.len() == 2 && matches!(macos_launcher, MacosLauncher::AppleScript) {
                         format!("{}.app", parts.first().unwrap())
                     } else {
                         exe_path
                     };
+
                 builder.set_app_path(&app_path);
             }
             #[cfg(target_os = "linux")]
@@ -147,6 +153,7 @@ pub fn init<R: Runtime>(
             app.manage(AutoLaunchManager(
                 builder.build().map_err(|e| e.to_string())?,
             ));
+
             Ok(())
         })
         .build()

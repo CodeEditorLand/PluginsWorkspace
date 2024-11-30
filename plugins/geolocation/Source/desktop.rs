@@ -49,6 +49,7 @@ impl<R: Runtime> Geolocation<R> {
 
             Ok(())
         });
+
         let id = channel.id();
 
         self.watch_position_inner(options, channel)?;

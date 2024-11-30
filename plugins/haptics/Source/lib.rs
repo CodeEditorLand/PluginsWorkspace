@@ -72,7 +72,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let haptics = mobile::init(app, api)?;
             #[cfg(desktop)]
             let haptics = desktop::init(app, api)?;
+
             app.manage(haptics);
+
             Ok(())
         })
         .build()

@@ -127,6 +127,7 @@ fn _f() {
                             ShellScopeEntryAllowedArg::Fixed(fixed) => {
                                 scope_entry::ShellAllowedArg::Fixed(fixed)
                             }
+
                             ShellScopeEntryAllowedArg::Var { validator, raw } => {
                                 scope_entry::ShellAllowedArg::Var { validator, raw }
                             }
@@ -151,6 +152,7 @@ fn _f() {
                             ShellScopeEntryAllowedArg::Fixed(fixed) => {
                                 scope_entry::ShellAllowedArg::Fixed(fixed)
                             }
+
                             ShellScopeEntryAllowedArg::Var { validator, raw } => {
                                 scope_entry::ShellAllowedArg::Var { validator, raw }
                             }
@@ -174,8 +176,11 @@ fn main() {
         .build();
 
     let target_os = std::env::var("CARGO_CFG_TARGET_OS").unwrap();
+
     let mobile = target_os == "ios" || target_os == "android";
+
     alias("desktop", !mobile);
+
     alias("mobile", mobile);
 }
 
@@ -183,6 +188,7 @@ fn main() {
 // `alias` must be a snake case string.
 fn alias(alias: &str, has_feature: bool) {
     println!("cargo:rustc-check-cfg=cfg({alias})");
+
     if has_feature {
         println!("cargo:rustc-cfg={alias}");
     }

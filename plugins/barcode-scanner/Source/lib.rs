@@ -46,7 +46,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "BarcodeScannerPlugin")?;
             #[cfg(target_os = "ios")]
             let handle = api.register_ios_plugin(init_plugin_barcode_scanner)?;
+
             app.manage(BarcodeScanner(handle));
+
             Ok(())
         })
         .build()

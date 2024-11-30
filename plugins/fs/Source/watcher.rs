@@ -40,6 +40,7 @@ impl WatcherResource {
 
     fn with_lock<R, F: FnMut(&mut InnerWatcher) -> R>(&self, mut f: F) -> R {
         let mut watcher = self.0.lock().unwrap();
+
         f(&mut watcher)
     }
 }
@@ -91,6 +92,7 @@ pub async fn watch<R: Runtime>(
     command_scope: CommandScope<Entry>,
 ) -> CommandResult<ResourceId> {
     let mut resolved_paths = Vec::with_capacity(paths.capacity());
+
     for path in paths {
         resolved_paths.push(resolve_path(
             &webview,
@@ -109,19 +111,27 @@ pub async fn watch<R: Runtime>(
 
     let kind = if let Some(delay) = options.delay_ms {
         let (tx, rx) = channel();
+
         let mut debouncer = new_debouncer(Duration::from_millis(delay), None, tx)?;
+
         for path in &resolved_paths {
             debouncer.watch(path, recursive_mode)?;
         }
+
         watch_debounced(on_event, rx);
+
         WatcherKind::Debouncer(debouncer)
     } else {
         let (tx, rx) = channel();
+
         let mut watcher = RecommendedWatcher::new(tx, Config::default())?;
+
         for path in &resolved_paths {
             watcher.watch(path, recursive_mode)?;
         }
+
         watch_raw(on_event, rx);
+
         WatcherKind::Watcher(watcher)
     };
 
@@ -135,6 +145,7 @@ pub async fn watch<R: Runtime>(
 #[tauri::command]
 pub async fn unwatch<R: Runtime>(webview: Webview<R>, rid: ResourceId) -> CommandResult<()> {
     let watcher = webview.resources_table().take::<WatcherResource>(rid)?;
+
     WatcherResource::with_lock(&watcher, |watcher| {
         match &mut watcher.kind {
             WatcherKind::Debouncer(ref mut debouncer) => {
@@ -144,6 +155,7 @@ pub async fn unwatch<R: Runtime>(webview: Webview<R>, rid: ResourceId) -> Comman
                     })?;
                 }
             }
+
             WatcherKind::Watcher(ref mut w) => {
                 for path in &watcher.paths {
                     w.unwatch(path).map_err(|e| {

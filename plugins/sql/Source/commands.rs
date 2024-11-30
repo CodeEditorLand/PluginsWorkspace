@@ -20,6 +20,7 @@ pub(crate) async fn load<R: Runtime>(
 
     if let Some(migrations) = migrations.0.lock().await.remove(&db) {
         let migrator = Migrator::new(migrations).await?;
+
         pool.migrate(&migrator).await?;
     }
 
@@ -46,6 +47,7 @@ pub(crate) async fn close(
 
     for pool in pools {
         let db = instances.get(&pool).ok_or(Error::DatabaseNotLoaded(pool))?;
+
         db.close().await;
     }
 
@@ -63,6 +65,7 @@ pub(crate) async fn execute(
     let instances = db_instances.0.read().await;
 
     let db = instances.get(&db).ok_or(Error::DatabaseNotLoaded(db))?;
+
     db.execute(query, values).await
 }
 
@@ -76,5 +79,6 @@ pub(crate) async fn select(
     let instances = db_instances.0.read().await;
 
     let db = instances.get(&db).ok_or(Error::DatabaseNotLoaded(db))?;
+
     db.select(query, values).await
 }

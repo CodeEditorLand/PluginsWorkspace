@@ -31,9 +31,11 @@ impl<R: Runtime> crate::NotificationBuilder<R> {
         {
             notification = notification.title(title);
         }
+
         if let Some(body) = self.data.body {
             notification = notification.body(body);
         }
+
         if let Some(icon) = self.data.icon {
             notification = notification.icon(icon);
         }
@@ -117,6 +119,7 @@ mod imp {
         #[must_use]
         pub fn body(mut self, body: impl Into<String>) -> Self {
             self.body = Some(body.into());
+
             self
         }
 
@@ -124,6 +127,7 @@ mod imp {
         #[must_use]
         pub fn title(mut self, title: impl Into<String>) -> Self {
             self.title = Some(title.into());
+
             self
         }
 
@@ -131,6 +135,7 @@ mod imp {
         #[must_use]
         pub fn icon(mut self, icon: impl Into<String>) -> Self {
             self.icon = Some(icon.into());
+
             self
         }
 
@@ -164,12 +169,15 @@ mod imp {
         )]
         pub fn show(self) -> crate::Result<()> {
             let mut notification = notify_rust::Notification::new();
+
             if let Some(body) = self.body {
                 notification.body(&body);
             }
+
             if let Some(title) = self.title {
                 notification.summary(&title);
             }
+
             if let Some(icon) = self.icon {
                 notification.icon(&icon);
             } else {
@@ -178,7 +186,9 @@ mod imp {
             #[cfg(windows)]
             {
                 let exe = tauri::utils::platform::current_exe()?;
+
                 let exe_dir = exe.parent().expect("failed to get exe directory");
+
                 let curr_dir = exe_dir.display().to_string();
                 // set the notification's System.AppUserModel.ID only when running the installed app
                 if !(curr_dir.ends_with(format!("{SEP}target{SEP}debug").as_str())
@@ -251,17 +261,22 @@ mod imp {
         #[cfg(all(windows, feature = "windows7-compat"))]
         fn notify_win7<R: tauri::Runtime>(self, app: &tauri::AppHandle<R>) -> crate::Result<()> {
             let app_ = app.clone();
+
             let _ = app.clone().run_on_main_thread(move || {
                 let mut notification = win7_notifications::Notification::new();
+
                 if let Some(body) = self.body {
                     notification.body(&body);
                 }
+
                 if let Some(title) = self.title {
                     notification.summary(&title);
                 }
+
                 if let Some(icon) = app_.default_window_icon() {
                     notification.icon(icon.rgba().to_vec(), icon.width(), icon.height());
                 }
+
                 let _ = notification.show();
             });
 

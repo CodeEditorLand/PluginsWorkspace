@@ -54,6 +54,7 @@ impl<'a, A: RefArg> From<(&'a String, &'a A)> for HintMessage {
     fn from(pair: (&String, &A)) -> Self {
 
         let (key, variant) = pair;
+
         match (key.as_ref(), variant.as_u64(), variant.as_i64(), variant.as_str().map(String::from)) {
 
             (ACTION_ICONS,   Some(1),  _,       _          ) => Hint::ActionIcons(true),
@@ -77,6 +78,7 @@ impl<'a, A: RefArg> From<(&'a String, &'a A)> for HintMessage {
 
             other => {
                 eprintln!("Invalid Hint{:#?} ", other);
+
                 Hint::Invalid
             }
         }.into()

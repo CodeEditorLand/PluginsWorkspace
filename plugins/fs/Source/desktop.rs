@@ -30,6 +30,7 @@ impl<R: Runtime> Fs<R> {
         opts: OpenOptions,
     ) -> std::io::Result<std::fs::File> {
         let path = path_or_err(path)?;
+
         std::fs::OpenOptions::from(opts).open(path)
     }
 }

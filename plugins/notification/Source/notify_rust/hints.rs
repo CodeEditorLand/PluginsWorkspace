@@ -178,6 +178,7 @@ pub(crate) fn hints_to_map(notification: &Notification) -> HashMap::<&str, zvari
 impl<'a> From<&'a Hint> for (&'a str, zvariant::Value<'a>) {
     fn from(val: &'a Hint) -> Self {
         use self::constants::*;
+
         match val {
             Hint::ActionIcons(value)       => (ACTION_ICONS   , zvariant::Value::Bool(*value)), // bool
             Hint::Category(value)          => (CATEGORY       , zvariant::Value::Str(value.as_str().into())),
@@ -215,6 +216,7 @@ impl<'a, A: dbus::arg::RefArg> From<(&'a String, &'a A)> for Hint {
     fn from(pair: (&String, &A)) -> Self {
 
         let (key, variant) = pair;
+
         match (key.as_ref(), variant.as_u64(), variant.as_i64(), variant.as_str().map(String::from)) {
 
             (constants::ACTION_ICONS,   Some(1),  _,       _          ) => Hint::ActionIcons(true),
@@ -238,6 +240,7 @@ impl<'a, A: dbus::arg::RefArg> From<(&'a String, &'a A)> for Hint {
 
             other => {
                 eprintln!("Invalid Hint {:#?} ", other);
+
                 Hint::Invalid
             }
         }

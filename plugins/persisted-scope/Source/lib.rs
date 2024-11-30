@@ -109,10 +109,12 @@ fn allow_path(scope: &tauri::fs::Scope, path: &str) {
         TargetType::File => {
             let _ = scope.allow_file(Path::new(path));
         }
+
         TargetType::Directory => {
             // We remove the '*' at the end of it, else it will be escaped by the pattern.
             let _ = scope.allow_directory(fix_directory(path), false);
         }
+
         TargetType::RecursiveDirectory => {
             // We remove the '**' at the end of it, else it will be escaped by the pattern.
             let _ = scope.allow_directory(fix_directory(path), true);
@@ -127,9 +129,11 @@ fn forbid_path(scope: &tauri::fs::Scope, path: &str) {
         TargetType::File => {
             let _ = scope.forbid_file(Path::new(path));
         }
+
         TargetType::Directory => {
             let _ = scope.forbid_directory(fix_directory(path), false);
         }
+
         TargetType::RecursiveDirectory => {
             let _ = scope.forbid_directory(fix_directory(path), true);
         }
@@ -165,7 +169,9 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
             let fs_scope = app.try_fs_scope();
             #[cfg(feature = "protocol-asset")]
             let asset_protocol_scope = app.asset_protocol_scope();
+
             let app = app.clone();
+
             let app_dir = app.path().app_data_dir();
 
             if let Ok(app_dir) = app_dir {
@@ -195,10 +201,13 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
 
                     for allowed in &scope.allowed_paths {
                         let allowed = fix_pattern(&ac, allowed);
+
                         allow_path(fs_scope, &allowed);
                     }
+
                     for forbidden in &scope.forbidden_patterns {
                         let forbidden = fix_pattern(&ac, forbidden);
+
                         forbid_path(fs_scope, &forbidden);
                     }
 
@@ -217,10 +226,13 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
 
                     for allowed in &scope.allowed_paths {
                         let allowed = fix_pattern(&ac, allowed);
+
                         allow_path(&asset_protocol_scope, &allowed);
                     }
+
                     for forbidden in &scope.forbidden_patterns {
                         let forbidden = fix_pattern(&ac, forbidden);
+
                         forbid_path(&asset_protocol_scope, &forbidden);
                     }
 
@@ -233,6 +245,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
 
                 if let Some(fs_scope) = &fs_scope {
                     let app_ = app.clone();
+
                     fs_scope.listen(move |event| {
                         if let tauri::fs::Event::PathAllowed(_) = event {
                             save_scopes(&app_.fs_scope(), &app_dir, &fs_scope_state_path);
@@ -243,6 +256,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
                 #[cfg(feature = "protocol-asset")]
                 {
                     let asset_protocol_scope_ = asset_protocol_scope.clone();
+
                     asset_protocol_scope.listen(move |event| {
                         if let tauri::scope::fs::Event::PathAllowed(_) = event {
                             save_scopes(&asset_protocol_scope_, &app_dir_, &asset_scope_state_path);
@@ -250,6 +264,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
                     });
                 }
             }
+
             Ok(())
         })
         .build()

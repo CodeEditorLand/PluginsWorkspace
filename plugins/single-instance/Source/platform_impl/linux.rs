@@ -32,8 +32,11 @@ impl<R: Runtime> SingleInstanceDBus<R> {
 #[cfg(feature = "semver")]
 fn dbus_id(config: &Config, version: semver::Version) -> String {
     let mut id = config.identifier.replace(['.', '-'], "_");
+
     id.push('_');
+
     id.push_str(semver_compat_string(version).as_str());
+
     id
 }
 
@@ -54,7 +57,9 @@ pub fn init<R: Runtime>(f: Box<SingleInstanceCallback<R>>) -> TauriPlugin<R> {
                 callback: f,
                 app_handle: app.clone(),
             };
+
             let dbus_name = format!("org.{id}.SingleInstance");
+
             let dbus_path = format!("/org/{id}/SingleInstance");
 
             match Builder::session()
@@ -68,6 +73,7 @@ pub fn init<R: Runtime>(f: Box<SingleInstanceCallback<R>>) -> TauriPlugin<R> {
                 Ok(connection) => {
                     app.manage(ConnectionHandle(connection));
                 }
+
                 Err(zbus::Error::NameTaken) => {
                     if let Ok(connection) = Connection::session() {
                         let _ = connection.call_method(
@@ -84,9 +90,12 @@ pub fn init<R: Runtime>(f: Box<SingleInstanceCallback<R>>) -> TauriPlugin<R> {
                             ),
                         );
                     }
+
                     app.cleanup_before_exit();
+
                     std::process::exit(0);
                 }
+
                 _ => {}
             }
 
@@ -111,6 +120,7 @@ pub fn destroy<R: Runtime, M: Manager<R>>(manager: &M) {
         let id = dbus_id(manager.config());
 
         let dbus_name = format!("org.{id}.SingleInstance",);
+
         let _ = connection.0.release_name(dbus_name);
     }
 }

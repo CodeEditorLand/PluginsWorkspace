@@ -53,6 +53,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Config> {
         .invoke_handler(tauri::generate_handler![cli_matches])
         .setup(|app, api| {
             app.manage(Cli(api));
+
             Ok(())
         })
         .build()

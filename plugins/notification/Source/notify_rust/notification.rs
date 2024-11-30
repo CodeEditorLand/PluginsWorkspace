@@ -103,6 +103,7 @@ impl Notification {
 	#[deprecated(note = "this is a test only feature")]
 	pub fn at_bus(sub_bus:&str) -> Notification {
 		let bus = xdg::NotificationBus::custom(sub_bus).ok_or("invalid subpath").unwrap();
+
 		Notification { bus, ..Notification::default() }
 	}
 
@@ -113,6 +114,7 @@ impl Notification {
 	/// set the application via [`set_application()`](fn.set_application.html)
 	pub fn appname(&mut self, appname:&str) -> &mut Notification {
 		appname.clone_into(&mut self.appname);
+
 		self
 	}
 
@@ -122,6 +124,7 @@ impl Notification {
 	/// the `body` field.
 	pub fn summary(&mut self, summary:&str) -> &mut Notification {
 		summary.clone_into(&mut self.summary);
+
 		self
 	}
 
@@ -131,6 +134,7 @@ impl Notification {
 	/// will therefore be eaten by gremlins under your CPU 😈🤘.
 	pub fn subtitle(&mut self, subtitle:&str) -> &mut Notification {
 		self.subtitle = Some(subtitle.to_owned());
+
 		self
 	}
 
@@ -138,6 +142,7 @@ impl Notification {
 	#[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 	pub fn image_data(&mut self, image:Image) -> &mut Notification {
 		self.hint(Hint::ImageData(image));
+
 		self
 	}
 
@@ -145,6 +150,7 @@ impl Notification {
 	#[cfg(all(unix, not(target_os = "macos")))]
 	pub fn image_path(&mut self, path:&str) -> &mut Notification {
 		self.hint(Hint::ImagePath(path.to_string()));
+
 		self
 	}
 
@@ -152,6 +158,7 @@ impl Notification {
 	#[cfg(target_os = "windows")]
 	pub fn image_path(&mut self, path:&str) -> &mut Notification {
 		self.path_to_image = Some(path.to_string());
+
 		self
 	}
 
@@ -159,6 +166,7 @@ impl Notification {
 	#[cfg(target_os = "windows")]
 	pub fn app_id(&mut self, app_id:&str) -> &mut Notification {
 		self.app_id = Some(app_id.to_string());
+
 		self
 	}
 
@@ -166,7 +174,9 @@ impl Notification {
 	#[cfg(all(feature = "images", unix, not(target_os = "macos")))]
 	pub fn image<T:AsRef<std::path::Path> + Sized>(&mut self, path:T) -> Result<&mut Notification> {
 		let img = Image::open(&path)?;
+
 		self.hint(Hint::ImageData(img));
+
 		Ok(self)
 	}
 
@@ -174,6 +184,7 @@ impl Notification {
 	#[cfg(all(unix, not(target_os = "macos")))]
 	pub fn sound_name(&mut self, name:&str) -> &mut Notification {
 		self.hint(Hint::SoundName(name.to_owned()));
+
 		self
 	}
 
@@ -181,6 +192,7 @@ impl Notification {
 	#[cfg(any(target_os = "macos", target_os = "windows"))]
 	pub fn sound_name(&mut self, name:&str) -> &mut Notification {
 		self.sound_name = Some(name.to_owned());
+
 		self
 	}
 
@@ -192,6 +204,7 @@ impl Notification {
 	/// implementation.
 	pub fn body(&mut self, body:&str) -> &mut Notification {
 		body.clone_into(&mut self.body);
+
 		self
 	}
 
@@ -207,6 +220,7 @@ impl Notification {
 	/// [`set_application()`](fn.set_application.html)
 	pub fn icon(&mut self, icon:&str) -> &mut Notification {
 		icon.clone_into(&mut self.icon);
+
 		self
 	}
 
@@ -220,6 +234,7 @@ impl Notification {
 	/// [`set_application()`](fn.set_application.html)
 	pub fn auto_icon(&mut self) -> &mut Notification {
 		self.icon = exe_name();
+
 		self
 	}
 
@@ -254,6 +269,7 @@ impl Notification {
 				self.hints.insert(hint);
 			},
 		}
+
 		self
 	}
 
@@ -284,6 +300,7 @@ impl Notification {
 	/// the timeout.
 	pub fn timeout<T:Into<Timeout>>(&mut self, timeout:T) -> &mut Notification {
 		self.timeout = timeout.into();
+
 		self
 	}
 
@@ -317,6 +334,7 @@ impl Notification {
 	#[deprecated(note = "please use .action() only")]
 	pub fn actions(&mut self, actions:Vec<String>) -> &mut Notification {
 		self.actions = actions;
+
 		self
 	}
 
@@ -327,7 +345,9 @@ impl Notification {
 	/// (xdg only)
 	pub fn action(&mut self, identifier:&str, label:&str) -> &mut Notification {
 		self.actions.push(identifier.to_owned());
+
 		self.actions.push(label.to_owned());
+
 		self
 	}
 
@@ -341,6 +361,7 @@ impl Notification {
 	/// (xdg only)
 	pub fn id(&mut self, id:u32) -> &mut Notification {
 		self.id = Some(id);
+
 		self
 	}
 
@@ -395,6 +416,7 @@ impl Notification {
 	// #[cfg(test)]
 	pub async fn show_async_at_bus(&self, sub_bus:&str) -> Result<xdg::NotificationHandle> {
 		let bus = xdg::NotificationBus::custom(sub_bus).ok_or("invalid subpath")?;
+
 		xdg::show_notification_async_at_bus(self, bus).await
 	}
 
@@ -424,6 +446,7 @@ impl Notification {
 			hints = self.hints,
 			icon = self.icon,
 		);
+
 		self.show()
 	}
 }

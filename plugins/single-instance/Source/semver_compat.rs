@@ -9,6 +9,7 @@ pub fn semver_compat_string(version: semver::Version) -> String {
     if !version.pre.is_empty() {
         return version.to_string().replace(['.', '-'], "_");
     }
+
     match version.major {
         0 => match version.minor {
             0 => format!("0_0_{}", version.patch),

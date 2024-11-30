@@ -25,13 +25,16 @@ impl Default for Timeout {
 #[test]
 fn timeout_from_i32() {
 	assert_eq!(Timeout::from(234), Timeout::Milliseconds(234));
+
 	assert_eq!(Timeout::from(-234), Timeout::Default);
+
 	assert_eq!(Timeout::from(0), Timeout::Never);
 }
 
 impl From<i32> for Timeout {
 	fn from(int:i32) -> Timeout {
 		use std::cmp::Ordering::*;
+
 		match int.cmp(&0) {
 			Greater => Timeout::Milliseconds(int as u32),
 			Less => Timeout::Default,

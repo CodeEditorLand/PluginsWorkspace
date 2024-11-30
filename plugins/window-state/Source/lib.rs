@@ -49,10 +49,15 @@ bitflags! {
     #[derive(Clone, Copy, Debug)]
     pub struct StateFlags: u32 {
         const SIZE        = 1 << 0;
+
         const POSITION    = 1 << 1;
+
         const MAXIMIZED   = 1 << 2;
+
         const VISIBLE     = 1 << 3;
+
         const DECORATIONS = 1 << 4;
+
         const FULLSCREEN  = 1 << 5;
     }
 }
@@ -116,9 +121,13 @@ impl<R: Runtime> AppHandleExt for tauri::AppHandle<R> {
     fn save_window_state(&self, flags: StateFlags) -> Result<()> {
         if let Ok(app_dir) = self.path().app_config_dir() {
             let plugin_state = self.state::<PluginState>();
+
             let state_path = app_dir.join(&plugin_state.filename);
+
             let windows = self.webview_windows();
+
             let cache = self.state::<WindowStateCache>();
+
             let mut state = cache.0.lock().unwrap();
 
             for (label, s) in state.iter_mut() {
@@ -161,6 +170,7 @@ impl<R: Runtime> WindowExt for WebviewWindow<R> {
 impl<R: Runtime> WindowExt for Window<R> {
     fn restore_state(&self, flags: StateFlags) -> tauri::Result<()> {
         let plugin_state = self.app_handle().state::<PluginState>();
+
         let label = plugin_state
             .map_label
             .as_ref()
@@ -168,8 +178,11 @@ impl<R: Runtime> WindowExt for Window<R> {
             .unwrap_or_else(|| self.label());
 
         let restoring_window_state = self.state::<RestoringWindowState>();
+
         let _restoring_window_lock = restoring_window_state.0.lock().unwrap();
+
         let cache = self.state::<WindowStateCache>();
+
         let mut c = cache.0.lock().unwrap();
 
         let mut should_show = true;
@@ -191,6 +204,7 @@ impl<R: Runtime> WindowExt for Window<R> {
 
             if flags.contains(StateFlags::POSITION) {
                 let position = (state.x, state.y).into();
+
                 let size = (state.width, state.height).into();
                 // restore position to saved value if saved monitor exists
                 // otherwise, let the OS decide where to place the window
@@ -226,13 +240,17 @@ impl<R: Runtime> WindowExt for Window<R> {
 
             if flags.contains(StateFlags::SIZE) {
                 let size = self.inner_size()?;
+
                 metadata.width = size.width;
+
                 metadata.height = size.height;
             }
 
             if flags.contains(StateFlags::POSITION) {
                 let pos = self.outer_position()?;
+
                 metadata.x = pos.x;
+
                 metadata.y = pos.y;
             }
 
@@ -257,6 +275,7 @@ impl<R: Runtime> WindowExt for Window<R> {
 
         if flags.contains(StateFlags::VISIBLE) && should_show {
             self.show()?;
+
             self.set_focus()?;
         }
 
@@ -279,6 +298,7 @@ impl<R: Runtime> WindowExtInternal for Window<R> {
         let is_maximized = flags
             .intersects(StateFlags::MAXIMIZED | StateFlags::POSITION | StateFlags::SIZE)
             && self.is_maximized()?;
+
         let is_minimized =
             flags.intersects(StateFlags::POSITION | StateFlags::SIZE) && self.is_minimized()?;
 
@@ -303,13 +323,16 @@ impl<R: Runtime> WindowExtInternal for Window<R> {
             // It doesn't make sense to save a window with 0 height or width
             if size.width > 0 && size.height > 0 {
                 state.width = size.width;
+
                 state.height = size.height;
             }
         }
 
         if flags.contains(StateFlags::POSITION) && !is_maximized && !is_minimized {
             let position = self.outer_position()?;
+
             state.x = position.x;
+
             state.y = position.y;
         }
 
@@ -334,12 +357,14 @@ impl Builder {
     /// Sets the state flags to control what state gets restored and saved.
     pub fn with_state_flags(mut self, flags: StateFlags) -> Self {
         self.state_flags = flags;
+
         self
     }
 
     /// Sets a custom filename to use when saving and restoring window states from disk.
     pub fn with_filename(mut self, filename: impl Into<String>) -> Self {
         self.filename.replace(filename.into());
+
         self
     }
 
@@ -347,12 +372,14 @@ impl Builder {
     /// for example splash screen windows.
     pub fn with_denylist(mut self, denylist: &[&str]) -> Self {
         self.denylist = denylist.iter().map(|l| l.to_string()).collect();
+
         self
     }
 
     /// Adds the given window label to a list of windows to skip initial state restore.
     pub fn skip_initial_state(mut self, label: &str) -> Self {
         self.skip_initial_state.insert(label.into());
+
         self
     }
 
@@ -364,12 +391,15 @@ impl Builder {
         F: Fn(&str) -> &str + Sync + Send + 'static,
     {
         self.map_label = Some(Box::new(map_fn));
+
         self
     }
 
     pub fn build<R: Runtime>(self) -> TauriPlugin<R> {
         let flags = self.state_flags;
+
         let filename = self.filename.unwrap_or_else(|| DEFAULT_FILENAME.into());
+
         let map_label = self.map_label;
 
         PluginBuilder::new("window-state")
@@ -382,6 +412,7 @@ impl Builder {
                 let cache: Arc<Mutex<HashMap<String, WindowState>>> =
                     if let Ok(app_dir) = app.path().app_config_dir() {
                         let state_path = app_dir.join(&filename);
+
                         if state_path.exists() {
                             Arc::new(Mutex::new(
                                 std::fs::read(state_path)
@@ -397,16 +428,21 @@ impl Builder {
                     } else {
                         Default::default()
                     };
+
                 app.manage(WindowStateCache(cache));
+
                 app.manage(RestoringWindowState(Mutex::new(())));
+
                 app.manage(PluginState {
                     filename,
                     map_label,
                 });
+
                 Ok(())
             })
             .on_window_ready(move |window| {
                 let plugin_state = window.app_handle().state::<PluginState>();
+
                 let label = plugin_state
                     .map_label
                     .as_ref()
@@ -422,9 +458,13 @@ impl Builder {
                 }
 
                 let cache = window.state::<WindowStateCache>();
+
                 let cache = cache.0.clone();
+
                 let label = label.to_string();
+
                 let window_clone = window.clone();
+
                 let flags = self.state_flags;
 
                 // insert a default state if this window should be tracked and
@@ -440,6 +480,7 @@ impl Builder {
                 window.on_window_event(move |e| match e {
                     WindowEvent::CloseRequested { .. } => {
                         let mut c = cache.lock().unwrap();
+
                         if let Some(state) = c.get_mut(&label) {
                             let _ = window_clone.update_state(state, flags);
                         }
@@ -454,15 +495,19 @@ impl Builder {
                             && !window_clone.is_minimized().unwrap_or_default()
                         {
                             let mut c = cache.lock().unwrap();
+
                             if let Some(state) = c.get_mut(&label) {
                                 state.prev_x = state.x;
+
                                 state.prev_y = state.y;
 
                                 state.x = position.x;
+
                                 state.y = position.y;
                             }
                         }
                     }
+
                     WindowEvent::Resized(size) if flags.contains(StateFlags::SIZE) => {
                         if window_clone
                             .state::<RestoringWindowState>()
@@ -482,13 +527,16 @@ impl Builder {
 
                             if !window_clone.is_minimized().unwrap_or_default() && !is_maximized {
                                 let mut c = cache.lock().unwrap();
+
                                 if let Some(state) = c.get_mut(&label) {
                                     state.width = size.width;
+
                                     state.height = size.height;
                                 }
                             }
                         }
                     }
+
                     _ => {}
                 });
             })
@@ -508,11 +556,15 @@ trait MonitorExt {
 impl MonitorExt for Monitor {
     fn intersects(&self, position: PhysicalPosition<i32>, size: PhysicalSize<u32>) -> bool {
         let PhysicalPosition { x, y } = *self.position();
+
         let PhysicalSize { width, height } = *self.size();
 
         let left = x;
+
         let right = x + width as i32;
+
         let top = y;
+
         let bottom = y + height as i32;
 
         [

@@ -114,8 +114,11 @@ fn prepare_cmd<R: Runtime>(
 
     let mut command = if options.sidecar {
         let program = PathBuf::from(program);
+
         let program_as_string = program.display().to_string();
+
         let program_no_ext_as_string = program.with_extension("").display().to_string();
+
         let configured_sidecar = window
             .config()
             .bundle
@@ -126,6 +129,7 @@ fn prepare_cmd<R: Runtime>(
                     .find(|b| b == &&program_as_string || b == &&program_no_ext_as_string)
             })
             .cloned();
+
         if let Some(sidecar) = configured_sidecar {
             scope.prepare_sidecar(&program.to_string_lossy(), &sidecar, args)?
         } else {
@@ -137,13 +141,16 @@ fn prepare_cmd<R: Runtime>(
             Err(e) => {
                 #[cfg(debug_assertions)]
                 eprintln!("{e}");
+
                 return Err(crate::Error::ProgramNotAllowed(PathBuf::from(program)));
             }
         }
     };
+
     if let Some(cwd) = options.cwd {
         command = command.current_dir(cwd);
     }
+
     if let Some(env) = options.env {
         command = command.envs(env);
     } else {
@@ -155,8 +162,10 @@ fn prepare_cmd<R: Runtime>(
         Some(encoding) => match encoding.as_str() {
             "raw" => {
                 command = command.set_raw_out(true);
+
                 EncodingWrapper::Raw
             }
+
             _ => {
                 if let Some(text_encoding) = Encoding::for_label(encoding.as_bytes()) {
                     EncodingWrapper::Text(Some(text_encoding))
@@ -199,6 +208,7 @@ pub async fn execute<R: Runtime>(
         prepare_cmd(window, program, args, options, command_scope, global_scope)?;
 
     let mut command: std::process::Command = command.into();
+
     let output = command.output()?;
 
     let (stdout, stderr) = match encoding {
@@ -245,7 +255,9 @@ pub fn spawn<R: Runtime>(
     let (mut rx, child) = command.spawn()?;
 
     let pid = child.pid();
+
     shell.children.lock().unwrap().insert(pid, child);
+
     let children = shell.children.clone();
 
     tauri::async_runtime::spawn(async move {
@@ -253,6 +265,7 @@ pub fn spawn<R: Runtime>(
             if matches!(event, crate::process::CommandEvent::Terminated(_)) {
                 children.lock().unwrap().remove(&pid);
             };
+
             let js_event = JSCommandEvent::new(event, encoding);
 
             if on_event.send(js_event.clone()).is_err() {
@@ -262,11 +275,13 @@ pub fn spawn<R: Runtime>(
                 ) -> Pin<Box<dyn Future<Output = ()> + Send + 'a>> {
                     Box::pin(async move {
                         tokio::time::sleep(std::time::Duration::from_millis(15)).await;
+
                         if on_event.send(js_event.clone()).is_err() {
                             send(on_event, js_event).await;
                         }
                     })
                 }
+
                 send(&on_event, &js_event).await;
             }
         }
@@ -288,6 +303,7 @@ pub fn stdin_write<R: Runtime>(
             Buffer::Raw(r) => child.write(&r)?,
         }
     }
+
     Ok(())
 }
 
@@ -300,6 +316,7 @@ pub fn kill<R: Runtime>(
     if let Some(child) = shell.children.lock().unwrap().remove(&pid) {
         child.kill()?;
     }
+
     Ok(())
 }
 

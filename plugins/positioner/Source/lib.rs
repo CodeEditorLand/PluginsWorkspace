@@ -41,6 +41,7 @@ pub fn on_tray_event<R: Runtime>(app: &AppHandle<R>, event: &TrayIconEvent) {
             | TrayIconEvent::Move { rect, .. } => {
                 // tray-icon emits PhysicalSize so the scale factor should not matter.
                 let size = rect.size.to_physical(1.0);
+
                 let position = rect.position.to_physical(1.0);
                 (position, size)
             }
@@ -97,6 +98,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
     #[cfg(feature = "tray-icon")]
     let plugin = plugin.setup(|app_handle, _api| {
         app_handle.manage(Tray(std::sync::Mutex::new(None)));
+
         Ok(())
     });
 

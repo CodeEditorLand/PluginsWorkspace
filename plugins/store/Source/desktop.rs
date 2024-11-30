@@ -23,6 +23,7 @@ impl<R:Runtime> Store<R> {
 		let bytes = (self.serialize)(&self.cache).map_err(Error::Serialize)?;
 
 		let mut f = File::create(&store_path)?;
+
 		f.write_all(&bytes)?;
 
 		Ok(())

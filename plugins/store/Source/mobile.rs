@@ -46,6 +46,7 @@ impl<R:Runtime> Store<R> {
 			.run_mobile_plugin("load", self.path.to_string_lossy().to_string())?;
 
 		let map = serde_json::from_value::<HashMap<String, Value>>(result)?;
+
 		self.cache.extend(map);
 
 		Ok(())

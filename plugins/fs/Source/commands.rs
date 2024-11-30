@@ -91,13 +91,16 @@ pub fn create<R: Runtime>(
         path,
         options.and_then(|o| o.base_dir),
     )?;
+
     let file = File::create(&resolved_path).map_err(|e| {
         format!(
             "failed to create file at path: {} with error: {e}",
             resolved_path.display()
         )
     })?;
+
     let rid = webview.resources_table().add(StdFileResource::new(file));
+
     Ok(rid)
 }
 
@@ -178,6 +181,7 @@ pub async fn copy_file<R: Runtime>(
         from_path,
         options.as_ref().and_then(|o| o.from_path_base_dir),
     )?;
+
     let resolved_to_path = resolve_path(
         &webview,
         &global_scope,
@@ -185,6 +189,7 @@ pub async fn copy_file<R: Runtime>(
         to_path,
         options.as_ref().and_then(|o| o.to_path_base_dir),
     )?;
+
     std::fs::copy(&resolved_from_path, &resolved_to_path).map_err(|e| {
         format!(
             "failed to copy file from path: {}, to path: {} with error: {e}",
@@ -192,6 +197,7 @@ pub async fn copy_file<R: Runtime>(
             resolved_to_path.display()
         )
     })?;
+
     Ok(())
 }
 
@@ -221,12 +227,15 @@ pub fn mkdir<R: Runtime>(
     )?;
 
     let mut builder = std::fs::DirBuilder::new();
+
     builder.recursive(options.as_ref().and_then(|o| o.recursive).unwrap_or(false));
 
     #[cfg(unix)]
     {
         use std::os::unix::fs::DirBuilderExt;
+
         let mode = options.as_ref().and_then(|o| o.mode).unwrap_or(0o777) & 0o777;
+
         builder.mode(mode);
     }
 
@@ -277,8 +286,11 @@ pub async fn read_dir<R: Runtime>(
     let entries = entries
         .filter_map(|entry| {
             let entry = entry.ok()?;
+
             let name = entry.file_name().into_string().ok()?;
+
             let metadata = entry.file_type();
+
             macro_rules! method_or_false {
                 ($method:ident) => {
                     if let Ok(metadata) = &metadata {
@@ -288,6 +300,7 @@ pub async fn read_dir<R: Runtime>(
                     }
                 };
             }
+
             Some(DirEntry {
                 name,
                 is_file: method_or_false!(is_file),
@@ -307,7 +320,9 @@ pub async fn read<R: Runtime>(
     len: usize,
 ) -> CommandResult<tauri::ipc::Response> {
     let mut data = vec![0; len];
+
     let file = webview.resources_table().get::<StdFileResource>(rid)?;
+
     let nread = StdFileResource::with_lock(&file, |mut file| file.read(&mut data))
         .map_err(|e| format!("faied to read bytes from file with error: {e}"))?;
 
@@ -317,15 +332,21 @@ pub async fn read<R: Runtime>(
     #[cfg(target_pointer_width = "16")]
     let nread = {
         let nread = nread.to_be_bytes();
+
         let mut out = [0; 8];
+
         out[6..].copy_from_slice(&nread);
+
         out
     };
     #[cfg(target_pointer_width = "32")]
     let nread = {
         let nread = nread.to_be_bytes();
+
         let mut out = [0; 8];
+
         out[4..].copy_from_slice(&nread);
+
         out
     };
     #[cfg(target_pointer_width = "64")]
@@ -408,6 +429,7 @@ pub fn read_text_file_lines<R: Runtime>(
     })?;
 
     let lines = BufReader::new(file);
+
     let rid = webview.resources_table().add(StdLinesResource::new(lines));
 
     Ok(rid)
@@ -419,6 +441,7 @@ pub async fn read_text_file_lines_next<R: Runtime>(
     rid: ResourceId,
 ) -> CommandResult<tauri::ipc::Response> {
     let mut resource_table = webview.resources_table();
+
     let lines = resource_table.get::<StdLinesResource>(rid)?;
 
     let ret = StdLinesResource::with_lock(&lines, |lines| -> CommandResult<Vec<u8>> {
@@ -428,11 +451,14 @@ pub async fn read_text_file_lines_next<R: Runtime>(
         match lines.next() {
             Some(Ok(mut bytes)) => {
                 bytes.push(false as u8);
+
                 Ok(bytes)
             }
+
             Some(Err(_)) => Ok(vec![false as u8]),
             None => {
                 resource_table.close(rid)?;
+
                 Ok(vec![true as u8])
             }
         }
@@ -486,7 +512,9 @@ pub fn remove<R: Runtime>(
         #[cfg(not(unix))]
         {
             use std::os::windows::fs::MetadataExt;
+
             const FILE_ATTRIBUTE_DIRECTORY: u32 = 0x00000010;
+
             if metadata.file_attributes() & FILE_ATTRIBUTE_DIRECTORY != 0 {
                 std::fs::remove_dir(&resolved_path)
             } else {
@@ -532,6 +560,7 @@ pub fn rename<R: Runtime>(
         old_path,
         options.as_ref().and_then(|o| o.old_path_base_dir),
     )?;
+
     let resolved_new_path = resolve_path(
         &webview,
         &global_scope,
@@ -539,6 +568,7 @@ pub fn rename<R: Runtime>(
         new_path,
         options.as_ref().and_then(|o| o.new_path_base_dir),
     )?;
+
     std::fs::rename(&resolved_old_path, &resolved_new_path)
         .map_err(|e| {
             format!(
@@ -566,7 +596,9 @@ pub async fn seek<R: Runtime>(
     whence: SeekMode,
 ) -> CommandResult<u64> {
     use std::io::{Seek, SeekFrom};
+
     let file = webview.resources_table().get::<StdFileResource>(rid)?;
+
     StdFileResource::with_lock(&file, |mut file| {
         file.seek(match whence {
             SeekMode::Start => SeekFrom::Start(offset as u64),
@@ -602,6 +634,7 @@ fn get_metadata<R: Runtime, F: FnOnce(&PathBuf) -> std::io::Result<std::fs::Meta
                     },
                 },
             )?;
+
             file.metadata().map_err(|e| {
                 format!(
                     "failed to get metadata of path: {} with error: {e}",
@@ -610,6 +643,7 @@ fn get_metadata<R: Runtime, F: FnOnce(&PathBuf) -> std::io::Result<std::fs::Meta
                 .into()
             })
         }
+
         SafeFilePath::Path(p) => get_fs_metadata(
             metadata_fn,
             webview,
@@ -655,12 +689,14 @@ fn get_fs_metadata<R: Runtime, F: FnOnce(&PathBuf) -> std::io::Result<std::fs::M
         path,
         options.as_ref().and_then(|o| o.base_dir),
     )?;
+
     let metadata = metadata_fn(&resolved_path).map_err(|e| {
         format!(
             "failed to get metadata of path: {} with error: {e}",
             resolved_path.display()
         )
     })?;
+
     Ok(metadata)
 }
 
@@ -700,14 +736,17 @@ pub fn lstat<R: Runtime>(
         path,
         options,
     )?;
+
     Ok(get_stat(metadata))
 }
 
 #[tauri::command]
 pub fn fstat<R: Runtime>(webview: Webview<R>, rid: ResourceId) -> CommandResult<FileInfo> {
     let file = webview.resources_table().get::<StdFileResource>(rid)?;
+
     let metadata = StdFileResource::with_lock(&file, |file| file.metadata())
         .map_err(|e| format!("failed to get metadata of file with error: {e}"))?;
+
     Ok(get_stat(metadata))
 }
 
@@ -727,6 +766,7 @@ pub async fn truncate<R: Runtime>(
         path,
         options.as_ref().and_then(|o| o.base_dir),
     )?;
+
     let f = std::fs::OpenOptions::new()
         .write(true)
         .open(&resolved_path)
@@ -736,6 +776,7 @@ pub async fn truncate<R: Runtime>(
                 resolved_path.display()
             )
         })?;
+
     f.set_len(len.unwrap_or(0))
         .map_err(|e| {
             format!(
@@ -753,6 +794,7 @@ pub async fn ftruncate<R: Runtime>(
     len: Option<u64>,
 ) -> CommandResult<()> {
     let file = webview.resources_table().get::<StdFileResource>(rid)?;
+
     StdFileResource::with_lock(&file, |file| file.set_len(len.unwrap_or(0)))
         .map_err(|e| format!("failed to truncate file with error: {e}"))
         .map_err(Into::into)
@@ -765,6 +807,7 @@ pub async fn write<R: Runtime>(
     data: Vec<u8>,
 ) -> CommandResult<usize> {
     let file = webview.resources_table().get::<StdFileResource>(rid)?;
+
     StdFileResource::with_lock(&file, |mut file| file.write(&data))
         .map_err(|e| format!("failed to write bytes to file with error: {e}"))
         .map_err(Into::into)
@@ -816,6 +859,7 @@ pub async fn write_file<R: Runtime>(
                 .map_err(|_| anyhow::anyhow!("path is not a valid UTF-8").into())
         })
         .and_then(|p| SafeFilePath::from_str(&p).map_err(CommandError::from))?;
+
     let options: Option<WriteFileOptions> = request
         .headers()
         .get("options")
@@ -894,6 +938,7 @@ pub fn exists<R: Runtime>(
         path,
         options.as_ref().and_then(|o| o.base_dir),
     )?;
+
     Ok(resolved_path.exists())
 }
 
@@ -934,6 +979,7 @@ fn get_dir_size(path: &PathBuf) -> CommandResult<u64> {
 
     for entry in std::fs::read_dir(path)? {
         let entry = entry?;
+
         let metadata = entry.metadata()?;
 
         if metadata.is_file() {
@@ -980,6 +1026,7 @@ fn resolve_file_in_fs<R: Runtime>(
                 path.display()
             )
         })?;
+
     Ok((file, path))
 }
 
@@ -996,11 +1043,14 @@ pub fn resolve_file<R: Runtime>(
     match path {
         SafeFilePath::Url(url) => {
             let path = url.as_str().into();
+
             let file = webview
                 .fs()
                 .open(SafeFilePath::Url(url), open_options.options)?;
+
             Ok((file, path))
         }
+
         SafeFilePath::Path(path) => resolve_file_in_fs(
             webview,
             global_scope,
@@ -1019,6 +1069,7 @@ pub fn resolve_path<R: Runtime>(
     base_dir: Option<BaseDirectory>,
 ) -> CommandResult<PathBuf> {
     let path = path.into_path()?;
+
     let path = if let Some(base_dir) = base_dir {
         webview.path().resolve(&path, base_dir)?
     } else {
@@ -1067,6 +1118,7 @@ fn is_forbidden<P: AsRef<Path>>(
     require_literal_leading_dot: bool,
 ) -> bool {
     let path = path.as_ref();
+
     let path = if path.is_symlink() {
         match std::fs::read_link(path) {
             Ok(p) => p,
@@ -1075,6 +1127,7 @@ fn is_forbidden<P: AsRef<Path>>(
     } else {
         path.to_path_buf()
     };
+
     let path = if !path.exists() {
         crate::Result::Ok(path)
     } else {
@@ -1083,6 +1136,7 @@ fn is_forbidden<P: AsRef<Path>>(
 
     if let Ok(path) = path {
         let path: PathBuf = path.components().collect();
+
         scope.forbidden_patterns().iter().any(|p| {
             p.matches_path_with(
                 &path,
@@ -1109,6 +1163,7 @@ impl StdFileResource {
 
     fn with_lock<R, F: FnMut(&File) -> R>(&self, mut f: F) -> R {
         let file = self.0.lock().unwrap();
+
         f(&file)
     }
 }
@@ -1123,17 +1178,21 @@ impl<B: BufRead> Iterator for LinesBytes<B> {
 
     fn next(&mut self) -> Option<std::io::Result<Vec<u8>>> {
         let mut buf = Vec::new();
+
         match self.0.read_until(b'\n', &mut buf) {
             Ok(0) => None,
             Ok(_n) => {
                 if buf.last() == Some(&b'\n') {
                     buf.pop();
+
                     if buf.last() == Some(&b'\r') {
                         buf.pop();
                     }
                 }
+
                 Some(Ok(buf))
             }
+
             Err(e) => Some(Err(e)),
         }
     }
@@ -1148,6 +1207,7 @@ impl StdLinesResource {
 
     fn with_lock<R, F: FnMut(&mut LinesBytes<BufReader<File>>) -> R>(&self, mut f: F) -> R {
         let mut lines = self.0.lock().unwrap();
+
         f(&mut lines)
     }
 }
@@ -1163,8 +1223,10 @@ fn to_msec(maybe_time: std::result::Result<SystemTime, std::io::Error>) -> Optio
                 .duration_since(UNIX_EPOCH)
                 .map(|t| t.as_millis() as u64)
                 .unwrap_or_else(|err| err.duration().as_millis() as u64);
+
             Some(msec)
         }
+
         Err(_) => None,
     }
 }
@@ -1217,6 +1279,7 @@ fn get_stat(metadata: std::fs::Metadata) -> FileInfo {
     use std::os::unix::fs::MetadataExt;
     #[cfg(windows)]
     use std::os::windows::fs::MetadataExt;
+
     FileInfo {
         is_file: metadata.is_file(),
         is_directory: metadata.is_dir(),
@@ -1259,6 +1322,7 @@ mod test {
             serde_json::from_str::<SafeFilePath>("\"C:/Users\""),
             Ok(SafeFilePath::Path(_))
         ));
+
         assert!(matches!(
             serde_json::from_str::<SafeFilePath>("\"file:///C:/Users\""),
             Ok(SafeFilePath::Url(_))
@@ -1268,20 +1332,25 @@ mod test {
     #[test]
     fn test_lines_bytes() {
         let base = String::from("line 1\nline2\nline 3\nline 4");
+
         let bytes = base.as_bytes();
 
         let string1 = base.lines().collect::<String>();
+
         let string2 = BufReader::new(bytes)
             .lines()
             .map_while(Result::ok)
             .collect::<String>();
+
         let string3 = LinesBytes(BufReader::new(bytes))
             .flatten()
             .flat_map(String::from_utf8)
             .collect::<String>();
 
         assert_eq!(string1, string2);
+
         assert_eq!(string1, string3);
+
         assert_eq!(string2, string3);
     }
 }

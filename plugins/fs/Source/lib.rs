@@ -79,9 +79,11 @@ impl From<OpenOptions> for std::fs::OpenOptions {
         #[cfg(unix)]
         {
             use std::os::unix::fs::OpenOptionsExt;
+
             if let Some(mode) = open_options.mode {
                 opts.mode(mode);
             }
+
             if let Some(flags) = open_options.custom_flags {
                 opts.custom_flags(flags);
             }
@@ -130,6 +132,7 @@ impl OpenOptions {
     /// ```
     pub fn read(&mut self, read: bool) -> &mut Self {
         self.read = read;
+
         self
     }
 
@@ -150,6 +153,7 @@ impl OpenOptions {
     /// ```
     pub fn write(&mut self, write: bool) -> &mut Self {
         self.write = write;
+
         self
     }
 
@@ -202,6 +206,7 @@ impl OpenOptions {
     /// ```
     pub fn append(&mut self, append: bool) -> &mut Self {
         self.append = append;
+
         self
     }
 
@@ -221,6 +226,7 @@ impl OpenOptions {
     /// ```
     pub fn truncate(&mut self, truncate: bool) -> &mut Self {
         self.truncate = truncate;
+
         self
     }
 
@@ -239,6 +245,7 @@ impl OpenOptions {
     /// ```
     pub fn create(&mut self, create: bool) -> &mut Self {
         self.create = create;
+
         self
     }
 
@@ -275,6 +282,7 @@ impl OpenOptions {
     /// ```
     pub fn create_new(&mut self, create_new: bool) -> &mut Self {
         self.create_new = create_new;
+
         self
     }
 }
@@ -283,11 +291,13 @@ impl OpenOptions {
 impl std::os::unix::fs::OpenOptionsExt for OpenOptions {
     fn custom_flags(&mut self, flags: i32) -> &mut Self {
         self.custom_flags.replace(flags);
+
         self
     }
 
     fn mode(&mut self, mode: u32) -> &mut Self {
         self.mode.replace(mode);
+
         self
     }
 }
@@ -300,12 +310,15 @@ impl OpenOptions {
         if self.read {
             mode.push('r');
         }
+
         if self.write {
             mode.push('w');
         }
+
         if self.truncate {
             mode.push('t');
         }
+
         if self.append {
             mode.push('a');
         }
@@ -317,6 +330,7 @@ impl OpenOptions {
 impl<R: Runtime> Fs<R> {
     pub fn read_to_string<P: Into<FilePath>>(&self, path: P) -> std::io::Result<String> {
         let mut s = String::new();
+
         self.open(
             path,
             OpenOptions {
@@ -325,11 +339,13 @@ impl<R: Runtime> Fs<R> {
             },
         )?
         .read_to_string(&mut s)?;
+
         Ok(s)
     }
 
     pub fn read<P: Into<FilePath>>(&self, path: P) -> std::io::Result<Vec<u8>> {
         let mut buf = Vec::new();
+
         self.open(
             path,
             OpenOptions {
@@ -338,6 +354,7 @@ impl<R: Runtime> Fs<R> {
             },
         )?
         .read_to_end(&mut buf)?;
+
         Ok(buf)
     }
 }
@@ -346,6 +363,7 @@ impl<R: Runtime> Fs<R> {
 // and we don't want to add tauri as a build dependency
 impl ScopeObject for scope::Entry {
     type Error = Error;
+
     fn deserialize<R: Runtime>(
         app: &AppHandle<R>,
         raw: Value,
@@ -371,6 +389,7 @@ pub(crate) struct Scope {
 
 pub trait FsExt<R: Runtime> {
     fn fs_scope(&self) -> tauri::fs::Scope;
+
     fn try_fs_scope(&self) -> Option<tauri::fs::Scope>;
 
     /// Cross platform file system APIs that also support manipulating Android files.
@@ -435,12 +454,14 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Option<config::Config>> {
             #[cfg(target_os = "android")]
             {
                 let fs = mobile::init(app, api)?;
+
                 app.manage(fs);
             }
             #[cfg(not(target_os = "android"))]
             app.manage(Fs(app.clone()));
 
             app.manage(scope);
+
             Ok(())
         })
         .on_event(|app, event| {
@@ -451,6 +472,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R, Option<config::Config>> {
             } = event
             {
                 let scope = app.fs_scope();
+
                 for path in paths {
                     if path.is_file() {
                         let _ = scope.allow_file(path);

@@ -60,6 +60,7 @@ impl Builder {
     // Change the host the plugin binds to. Defaults to `localhost`.
     pub fn host<H: Into<String>>(mut self, host: H) -> Self {
         self.host = Some(host.into());
+
         self
     }
 
@@ -68,20 +69,25 @@ impl Builder {
         f: F,
     ) -> Self {
         self.on_request.replace(Box::new(f));
+
         self
     }
 
     pub fn build<R: Runtime>(mut self) -> TauriPlugin<R> {
         let port = self.port;
+
         let host = self.host.unwrap_or("localhost".to_string());
+
         let on_request = self.on_request.take();
 
         PluginBuilder::new("localhost")
             .setup(move |app, _api| {
                 let asset_resolver = app.asset_resolver();
+
                 std::thread::spawn(move || {
                     let server =
                         Server::http(format!("{host}:{port}")).expect("Unable to spawn server");
+
                     for req in server.incoming_requests() {
                         let path = req
                             .url()
@@ -94,11 +100,13 @@ impl Builder {
                             let request = Request {
                                 url: req.url().into(),
                             };
+
                             let mut response = Response {
                                 headers: Default::default(),
                             };
 
                             response.add_header("Content-Type", asset.mime_type);
+
                             if let Some(csp) = asset.csp_header {
                                 response
                                     .headers
@@ -110,15 +118,18 @@ impl Builder {
                             }
 
                             let mut resp = HttpResponse::from_data(asset.bytes);
+
                             for (header, value) in response.headers {
                                 if let Ok(h) = Header::from_bytes(header.as_bytes(), value) {
                                     resp.add_header(h);
                                 }
                             }
+
                             req.respond(resp).expect("unable to setup response");
                         }
                     }
                 });
+
                 Ok(())
             })
             .build()
