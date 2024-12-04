@@ -229,7 +229,7 @@ impl OpenScope {
     }
 }
 
-impl<'a> ShellScope<'a> {
+impl ShellScope<'_> {
     /// Validates argument inputs and creates a Tauri sidecar [`Command`].
     pub fn prepare_sidecar(
         &self,
