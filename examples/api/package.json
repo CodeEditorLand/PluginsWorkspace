@@ -4,7 +4,7 @@
 		"@tauri-apps/plugin-barcode-scanner": "2.0.0",
 		"@tauri-apps/plugin-biometric": "2.0.0",
 		"@tauri-apps/plugin-cli": "2.0.0",
-		"@tauri-apps/plugin-clipboard-manager": "2.0.1",
+		"@tauri-apps/plugin-clipboard-manager": "2.1.0-beta.6",
 		"@tauri-apps/plugin-dialog": "2.0.1",
 		"@tauri-apps/plugin-fs": "2.0.3",
 		"@tauri-apps/plugin-geolocation": "2.0.0",
@@ -21,11 +21,11 @@
 		"@tauri-apps/plugin-updater": "2.0.0"
 	},
 	"devDependencies": {
-		"@iconify-json/codicon": "^1.1.37",
-		"@iconify-json/ph": "^1.1.8",
+		"@iconify-json/codicon": "^1.2.4",
+		"@iconify-json/ph": "^1.2.1",
 		"@tauri-apps/cli": "2.1.0",
-		"@unocss/extractor-svelte": "^0.65.0",
-		"unocss": "^0.65.0"
+		"@unocss/extractor-svelte": "^0.65.1",
+		"unocss": "^0.65.1"
 	},
 	"name": "api",
 	"scripts": {
