@@ -5,7 +5,7 @@ version = "2.0.6"
 description = "An example Tauri Application showcasing the api"
 edition = "2021"
 rust-version = { workspace = true }
-license = "Apache-2.0 OR MIT"
+license-file = "LICENSE"
 
 [lib]
 name = "api_lib"
