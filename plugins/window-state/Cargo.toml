@@ -29,4 +29,4 @@ serde_json = { workspace = true }
 tauri = { workspace = true }
 log = { workspace = true }
 thiserror = { workspace = true }
-bitflags = "2"
+bitflags = { version = "2" }

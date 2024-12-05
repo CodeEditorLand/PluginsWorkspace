@@ -37,7 +37,7 @@ thiserror = { workspace = true }
 url = { workspace = true }
 
 [target."cfg(windows)".dependencies]
-dunce = "1"
+dunce = { version = "1" }
 windows-registry = "0.3"
 windows-result = "0.2"
 

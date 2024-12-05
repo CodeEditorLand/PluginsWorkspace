@@ -30,10 +30,10 @@ serde_json = { workspace = true }
 tauri = { workspace = true }
 log = { workspace = true }
 thiserror = { workspace = true }
-rand = "0.8"
+rand = { version = "0.8" }
 time = { version = "0.3", features = ["serde", "parsing", "formatting"] }
 url = { version = "2", features = ["serde"] }
-serde_repr = "0.1"
+serde_repr = { version = "0.1" }
 
 [target.'cfg(target_os = "ios")'.dependencies]
 tauri = { workspace = true, features = ["wry"] }
@@ -47,8 +47,8 @@ notify-rust = "4.11"
 
 [dev-dependencies]
 color-backtrace = "0.6"
-ctor = "0.2"
-maplit = "1"
+ctor = { version = "0.2" }
+maplit = { version = "1" }
 
 [features]
 windows7-compat = ["win7-notifications", "windows-version"]

@@ -29,7 +29,7 @@ serde_json = { workspace = true }
 tauri = { workspace = true }
 log = { workspace = true }
 thiserror = { workspace = true }
-os_info = "3"
+os_info = { version = "3" }
 sys-locale = "0.3"
-gethostname = "0.5"
+gethostname = { version = "0.5" }
 serialize-to-javascript = "0.1.1"

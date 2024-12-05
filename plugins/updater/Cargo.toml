@@ -30,20 +30,20 @@ tauri = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
-tokio = "1"
+tokio = { version = "1" }
 reqwest = { version = "0.12", default-features = false, features = [
 	"json",
 	"stream",
 ] }
 url = { workspace = true }
-http = "1"
+http = { version = "1" }
 minisign-verify = "0.2"
 time = { version = "0.3", features = ["parsing", "formatting"] }
-base64 = "0.22"
+base64 = { version = "0.22" }
 semver = { version = "1", features = ["serde"] }
 futures-util = "0.3"
-tempfile = "3"
-infer = "0.16"
+tempfile = { version = "3" }
+infer = { version = "0.16" }
 percent-encoding = "2.3"
 
 [target."cfg(target_os = \"windows\")".dependencies]
@@ -55,13 +55,13 @@ windows-sys = { version = "0.59.0", features = [
 ] }
 
 [target."cfg(target_os = \"linux\")".dependencies]
-dirs = "5"
+dirs = { version = "5" }
 tar = { version = "0.4", optional = true }
 flate2 = { version = "1", optional = true }
 
 [target."cfg(target_os = \"macos\")".dependencies]
-tar = "0.4"
-flate2 = "1"
+tar = { version = "0.4" }
+flate2 = { version = "1" }
 
 [features]
 default = ["rustls-tls", "zip"]
