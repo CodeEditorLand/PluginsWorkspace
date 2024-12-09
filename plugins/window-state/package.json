@@ -3,9 +3,10 @@
 		"Tauri Programme within The Commons Conservancy"
 	],
 	"dependencies": {
-		"@tauri-apps/api": "2.1.1"
+		"@codeeditorland/api": "2.1.1"
 	},
 	"description": "Save window positions and sizes and restore them when the app is reopened.",
+	"devDependencies": {},
 	"exports": {
 		"import": "./dist-js/index.js",
 		"require": "./dist-js/index.cjs",
@@ -18,7 +19,7 @@
 	],
 	"main": "./dist-js/index.cjs",
 	"module": "./dist-js/index.js",
-	"name": "@tauri-apps/plugin-window-state",
+	"name": "@codeeditorland/plugin-window-state",
 	"scripts": {
 		"build": "rollup -c"
 	},

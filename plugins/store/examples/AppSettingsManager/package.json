@@ -1,11 +1,1 @@
-{
-	"devDependencies": {
-		"@tauri-apps/cli": "2.1.0"
-	},
-	"scripts": {
-		"build": "tsc && vite build",
-		"dev": "vite",
-		"preview": "vite preview",
-		"tauri": "tauri"
-	}
-}
+"Cannot index string with string \"devDependencies\""
