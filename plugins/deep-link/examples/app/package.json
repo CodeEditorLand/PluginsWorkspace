@@ -1,16 +1,16 @@
 {
-	"dependencies": {
-		"@codeeditorland/api": "2.1.1",
-		"@codeeditorland/plugin-deep-link": "2.0.1"
-	},
-	"devDependencies": {
-		"@codeeditorland/cli": "2.1.0"
-	},
 	"name": "deep-link-example",
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite",
 		"preview": "vite preview",
 		"tauri": "tauri"
+	},
+	"dependencies": {
+		"@codeeditorland/api": "0.0.1",
+		"@codeeditorland/plugin-deep-link": "0.0.1"
+	},
+	"devDependencies": {
+		"@codeeditorland/cli": "0.0.1"
 	}
 }
