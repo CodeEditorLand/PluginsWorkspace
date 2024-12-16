@@ -1,44 +1,37 @@
 {
-  "name": "api",
-  "private": true,
-  "version": "2.0.8",
-  "type": "module",
-  "scripts": {
-    "dev": "vite --clearScreen false",
-    "build": "vite build",
-    "serve": "vite preview",
-    "tauri": "tauri"
-  },
-  "dependencies": {
-    "@tauri-apps/api": "2.1.1",
-    "@tauri-apps/plugin-barcode-scanner": "2.2.0",
-    "@tauri-apps/plugin-biometric": "2.2.0",
-    "@tauri-apps/plugin-cli": "2.2.0",
-    "@tauri-apps/plugin-clipboard-manager": "2.2.0",
-    "@tauri-apps/plugin-dialog": "2.2.0",
-    "@tauri-apps/plugin-fs": "2.2.0",
-    "@tauri-apps/plugin-geolocation": "2.2.0",
-    "@tauri-apps/plugin-global-shortcut": "2.2.0",
-    "@tauri-apps/plugin-opener": "2.2.2",
-    "@tauri-apps/plugin-haptics": "2.2.0",
-    "@tauri-apps/plugin-http": "2.2.0",
-    "@tauri-apps/plugin-nfc": "2.2.0",
-    "@tauri-apps/plugin-notification": "2.2.0",
-    "@tauri-apps/plugin-os": "2.2.0",
-    "@tauri-apps/plugin-process": "2.2.0",
-    "@tauri-apps/plugin-shell": "2.2.0",
-    "@tauri-apps/plugin-store": "2.2.0",
-    "@tauri-apps/plugin-updater": "2.3.0",
-    "@zerodevx/svelte-json-view": "1.0.11"
-  },
-  "devDependencies": {
-    "@iconify-json/codicon": "^1.2.6",
-    "@iconify-json/ph": "^1.2.1",
-    "@sveltejs/vite-plugin-svelte": "^5.0.1",
-    "@tauri-apps/cli": "2.1.0",
-    "@unocss/extractor-svelte": "^0.65.1",
-    "svelte": "^5.10.0",
-    "unocss": "^0.65.1",
-    "vite": "^6.0.3"
-  }
+	"name": "api",
+	"scripts": {
+		"build": "vite build",
+		"dev": "vite --clearScreen false",
+		"serve": "vite preview",
+		"tauri": "tauri"
+	},
+	"dependencies": {
+		"@codeeditorland/api": "2.1.1",
+		"@codeeditorland/plugin-barcode-scanner": "2.2.0",
+		"@codeeditorland/plugin-biometric": "2.2.0",
+		"@codeeditorland/plugin-cli": "2.2.0",
+		"@codeeditorland/plugin-clipboard-manager": "2.2.0",
+		"@codeeditorland/plugin-dialog": "2.2.0",
+		"@codeeditorland/plugin-fs": "2.2.0",
+		"@codeeditorland/plugin-geolocation": "2.2.0",
+		"@codeeditorland/plugin-global-shortcut": "2.2.0",
+		"@codeeditorland/plugin-haptics": "2.2.0",
+		"@codeeditorland/plugin-http": "2.2.0",
+		"@codeeditorland/plugin-nfc": "2.2.0",
+		"@codeeditorland/plugin-notification": "2.2.0",
+		"@codeeditorland/plugin-opener": "2.2.2",
+		"@codeeditorland/plugin-os": "2.2.0",
+		"@codeeditorland/plugin-process": "2.2.0",
+		"@codeeditorland/plugin-shell": "2.2.0",
+		"@codeeditorland/plugin-store": "2.2.0",
+		"@codeeditorland/plugin-updater": "2.3.0"
+	},
+	"devDependencies": {
+		"@codeeditorland/cli": "2.1.0",
+		"@iconify-json/codicon": "^1.2.6",
+		"@iconify-json/ph": "^1.2.1",
+		"@unocss/extractor-svelte": "^0.65.1",
+		"unocss": "^0.65.1"
+	}
 }
