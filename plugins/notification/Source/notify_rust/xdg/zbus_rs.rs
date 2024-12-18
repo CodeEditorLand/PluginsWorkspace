@@ -1,11 +1,11 @@
-use zbus::{export::futures_util::TryStreamExt, MatchRule};
+use zbus::{MatchRule, export::futures_util::TryStreamExt};
 
 use super::{
 	super::{error::*, notification::Notification, xdg},
-	bus::NotificationBus,
 	ActionResponse,
 	ActionResponseHandler,
 	CloseReason,
+	bus::NotificationBus,
 };
 
 pub mod bus {

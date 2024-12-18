@@ -9,28 +9,26 @@ use serde::Deserialize;
 #[derive(Deserialize, Debug)]
 #[serde(untagged)]
 pub enum Application {
-    Default,
-    Enable(bool),
-    App(String),
+	Default,
+	Enable(bool),
+	App(String),
 }
 
 impl Default for Application {
-    fn default() -> Self {
-        Self::Default
-    }
+	fn default() -> Self { Self::Default }
 }
 
 #[derive(Deserialize)]
 #[serde(untagged, rename_all = "camelCase")]
 pub(crate) enum EntryRaw {
-    Url {
-        url: String,
-        #[serde(default)]
-        app: Application,
-    },
-    Path {
-        path: PathBuf,
-        #[serde(default)]
-        app: Application,
-    },
+	Url {
+		url:String,
+		#[serde(default)]
+		app:Application,
+	},
+	Path {
+		path:PathBuf,
+		#[serde(default)]
+		app:Application,
+	},
 }

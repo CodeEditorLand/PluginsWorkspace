@@ -1,7 +1,7 @@
 use dbus::{
+	Message,
 	arg::messageitem::{MessageItem, MessageItemArray},
 	ffidisp::{BusType, Connection, ConnectionItem},
-	Message,
 };
 
 use super::{
@@ -9,13 +9,13 @@ use super::{
 		error::*,
 		hints::message::HintMessage,
 		notification::Notification,
-		xdg::{ServerInformation, NOTIFICATION_OBJECTPATH},
+		xdg::{NOTIFICATION_OBJECTPATH, ServerInformation},
 	},
-	bus::NotificationBus,
 	ActionResponse,
 	ActionResponseHandler,
 	CloseReason,
 	NOTIFICATION_INTERFACE,
+	bus::NotificationBus,
 };
 
 pub mod bus {

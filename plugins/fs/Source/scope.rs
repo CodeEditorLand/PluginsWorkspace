@@ -8,12 +8,12 @@ use serde::Deserialize;
 
 #[derive(Debug)]
 pub struct Entry {
-    pub path: Option<PathBuf>,
+	pub path:Option<PathBuf>,
 }
 
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub(crate) enum EntryRaw {
-    Value(PathBuf),
-    Object { path: PathBuf },
+	Value(PathBuf),
+	Object { path:PathBuf },
 }

@@ -13,43 +13,43 @@ mod app;
 use app::settings::AppSettings;
 
 fn main() {
-    tauri::Builder::default()
-        .plugin(tauri_plugin_store::Builder::new().build())
-        .setup(|app| {
-            // Init store and load it from disk
-            let store = app.store("settings.json")?;
+	tauri::Builder::default()
+		.plugin(tauri_plugin_store::Builder::new().build())
+		.setup(|app| {
+			// Init store and load it from disk
+			let store = app.store("settings.json")?;
 
-            app.listen("store://change", |event| {
-                dbg!(event);
-            });
+			app.listen("store://change", |event| {
+				dbg!(event);
+			});
 
-            let app_settings = AppSettings::load_from_store(&store);
+			let app_settings = AppSettings::load_from_store(&store);
 
-            match app_settings {
-                Ok(app_settings) => {
-                    let theme = app_settings.theme;
+			match app_settings {
+				Ok(app_settings) => {
+					let theme = app_settings.theme;
 
-                    let launch_at_login = app_settings.launch_at_login;
+					let launch_at_login = app_settings.launch_at_login;
 
-                    println!("theme {theme}");
+					println!("theme {theme}");
 
-                    println!("launch_at_login {launch_at_login}");
+					println!("launch_at_login {launch_at_login}");
 
-                    store.set(
-                        "appSettings",
-                        json!({ "theme": theme, "launchAtLogin": launch_at_login }),
-                    );
-                }
+					store.set(
+						"appSettings",
+						json!({ "theme": theme, "launchAtLogin": launch_at_login }),
+					);
+				},
 
-                Err(err) => {
-                    eprintln!("Error loading settings: {err}");
-                    // Handle the error case if needed
-                    return Err(err); // Convert the error to a Box<dyn Error> and return Err(err) here
-                }
-            }
+				Err(err) => {
+					eprintln!("Error loading settings: {err}");
+					// Handle the error case if needed
+					return Err(err); // Convert the error to a Box<dyn Error> and return Err(err) here
+				},
+			}
 
-            Ok(())
-        })
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+			Ok(())
+		})
+		.run(tauri::generate_context!())
+		.expect("error while running tauri application");
 }

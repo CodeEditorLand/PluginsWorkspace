@@ -5,166 +5,152 @@
 //! Save filesystem and asset scopes and restore them when the app is reopened.
 
 #![doc(
-    html_logo_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png",
-    html_favicon_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png"
+	html_logo_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png",
+	html_favicon_url = "https://github.com/tauri-apps/tauri/raw/dev/app-icon.png"
 )]
+
+use std::{
+	fs::{File, create_dir_all},
+	io::Write,
+	path::Path,
+};
 
 use aho_corasick::AhoCorasick;
 use serde::{Deserialize, Serialize};
-
 use tauri::{
-    plugin::{Builder, TauriPlugin},
-    Manager, Runtime,
+	Manager,
+	Runtime,
+	plugin::{Builder, TauriPlugin},
 };
 use tauri_plugin_fs::FsExt;
 
-use std::{
-    fs::{create_dir_all, File},
-    io::Write,
-    path::Path,
-};
-
-// Using 2 separate files so that we don't have to think about write conflicts and not break backwards compat.
-const SCOPE_STATE_FILENAME: &str = ".persisted-scope";
+// Using 2 separate files so that we don't have to think about write conflicts
+// and not break backwards compat.
+const SCOPE_STATE_FILENAME:&str = ".persisted-scope";
 #[cfg(feature = "protocol-asset")]
-const ASSET_SCOPE_STATE_FILENAME: &str = ".persisted-scope-asset";
+const ASSET_SCOPE_STATE_FILENAME:&str = ".persisted-scope-asset";
 
 // Most of these patterns are just added to try to fix broken files in the wild.
-// After a while we can hopefully reduce it to something like [r"[?]", r"[*]", r"\\?\\\?\"]
-const PATTERNS: &[&str] = &[
-    r"[[]",
-    r"[]]",
-    r"[?]",
-    r"[*]",
-    r"\?\?",
-    r"\\?\\?\",
-    r"\\?\\\?\",
-];
-const REPLACE_WITH: &[&str] = &[r"[", r"]", r"?", r"*", r"\?", r"\\?\", r"\\?\"];
+// After a while we can hopefully reduce it to something like [r"[?]", r"[*]",
+// r"\\?\\\?\"]
+const PATTERNS:&[&str] = &[r"[[]", r"[]]", r"[?]", r"[*]", r"\?\?", r"\\?\\?\", r"\\?\\\?\"];
+const REPLACE_WITH:&[&str] = &[r"[", r"]", r"?", r"*", r"\?", r"\\?\", r"\\?\"];
 
 #[derive(Debug, thiserror::Error)]
 enum Error {
-    #[error(transparent)]
-    Io(#[from] std::io::Error),
-    #[error(transparent)]
-    Tauri(#[from] tauri::Error),
-    #[error(transparent)]
-    Bincode(#[from] Box<bincode::ErrorKind>),
+	#[error(transparent)]
+	Io(#[from] std::io::Error),
+	#[error(transparent)]
+	Tauri(#[from] tauri::Error),
+	#[error(transparent)]
+	Bincode(#[from] Box<bincode::ErrorKind>),
 }
 
 #[derive(Debug, Default, Deserialize, Serialize, Eq, PartialEq, Hash)]
 enum TargetType {
-    #[default]
-    File,
-    Directory,
-    RecursiveDirectory,
+	#[default]
+	File,
+	Directory,
+	RecursiveDirectory,
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 struct Scope {
-    allowed_paths: Vec<String>,
-    forbidden_patterns: Vec<String>,
+	allowed_paths:Vec<String>,
+	forbidden_patterns:Vec<String>,
 }
 
-fn fix_pattern(ac: &AhoCorasick, s: &str) -> String {
-    let s = ac.replace_all(s, REPLACE_WITH);
+fn fix_pattern(ac:&AhoCorasick, s:&str) -> String {
+	let s = ac.replace_all(s, REPLACE_WITH);
 
-    if ac.find(&s).is_some() {
-        return fix_pattern(ac, &s);
-    }
+	if ac.find(&s).is_some() {
+		return fix_pattern(ac, &s);
+	}
 
-    s
+	s
 }
 
-const RESURSIVE_DIRECTORY_SUFFIX: &str = "**";
-const DIRECTORY_SUFFIX: &str = "*";
+const RESURSIVE_DIRECTORY_SUFFIX:&str = "**";
+const DIRECTORY_SUFFIX:&str = "*";
 
-fn detect_scope_type(scope_state_path: &str) -> TargetType {
-    if scope_state_path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
-        TargetType::RecursiveDirectory
-    } else if scope_state_path.ends_with(DIRECTORY_SUFFIX) {
-        TargetType::Directory
-    } else {
-        TargetType::File
-    }
+fn detect_scope_type(scope_state_path:&str) -> TargetType {
+	if scope_state_path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
+		TargetType::RecursiveDirectory
+	} else if scope_state_path.ends_with(DIRECTORY_SUFFIX) {
+		TargetType::Directory
+	} else {
+		TargetType::File
+	}
 }
 
-fn fix_directory(path_str: &str) -> &Path {
-    let mut path = Path::new(path_str);
+fn fix_directory(path_str:&str) -> &Path {
+	let mut path = Path::new(path_str);
 
-    if path.ends_with(DIRECTORY_SUFFIX) || path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
-        path = match path.parent() {
-            Some(value) => value,
-            None => return path,
-        };
-    }
+	if path.ends_with(DIRECTORY_SUFFIX) || path.ends_with(RESURSIVE_DIRECTORY_SUFFIX) {
+		path = match path.parent() {
+			Some(value) => value,
+			None => return path,
+		};
+	}
 
-    path
+	path
 }
 
-fn allow_path(scope: &tauri::fs::Scope, path: &str) {
-    let target_type = detect_scope_type(path);
+fn allow_path(scope:&tauri::fs::Scope, path:&str) {
+	let target_type = detect_scope_type(path);
 
-    match target_type {
-        TargetType::File => {
-            let _ = scope.allow_file(Path::new(path));
-        }
+	match target_type {
+		TargetType::File => {
+			let _ = scope.allow_file(Path::new(path));
+		},
 
-        TargetType::Directory => {
-            // We remove the '*' at the end of it, else it will be escaped by the pattern.
-            let _ = scope.allow_directory(fix_directory(path), false);
-        }
+		TargetType::Directory => {
+			// We remove the '*' at the end of it, else it will be escaped by the pattern.
+			let _ = scope.allow_directory(fix_directory(path), false);
+		},
 
-        TargetType::RecursiveDirectory => {
-            // We remove the '**' at the end of it, else it will be escaped by the pattern.
-            let _ = scope.allow_directory(fix_directory(path), true);
-        }
-    }
+		TargetType::RecursiveDirectory => {
+			// We remove the '**' at the end of it, else it will be escaped by the pattern.
+			let _ = scope.allow_directory(fix_directory(path), true);
+		},
+	}
 }
 
-fn forbid_path(scope: &tauri::fs::Scope, path: &str) {
-    let target_type = detect_scope_type(path);
+fn forbid_path(scope:&tauri::fs::Scope, path:&str) {
+	let target_type = detect_scope_type(path);
 
-    match target_type {
-        TargetType::File => {
-            let _ = scope.forbid_file(Path::new(path));
-        }
+	match target_type {
+		TargetType::File => {
+			let _ = scope.forbid_file(Path::new(path));
+		},
 
-        TargetType::Directory => {
-            let _ = scope.forbid_directory(fix_directory(path), false);
-        }
+		TargetType::Directory => {
+			let _ = scope.forbid_directory(fix_directory(path), false);
+		},
 
-        TargetType::RecursiveDirectory => {
-            let _ = scope.forbid_directory(fix_directory(path), true);
-        }
-    }
+		TargetType::RecursiveDirectory => {
+			let _ = scope.forbid_directory(fix_directory(path), true);
+		},
+	}
 }
 
-fn save_scopes(scope: &tauri::fs::Scope, app_dir: &Path, scope_state_path: &Path) {
-    let scope = Scope {
-        allowed_paths: scope
-            .allowed_patterns()
-            .into_iter()
-            .map(|p| p.to_string())
-            .collect(),
-        forbidden_patterns: scope
-            .forbidden_patterns()
-            .into_iter()
-            .map(|p| p.to_string())
-            .collect(),
-    };
+fn save_scopes(scope:&tauri::fs::Scope, app_dir:&Path, scope_state_path:&Path) {
+	let scope = Scope {
+		allowed_paths:scope.allowed_patterns().into_iter().map(|p| p.to_string()).collect(),
+		forbidden_patterns:scope.forbidden_patterns().into_iter().map(|p| p.to_string()).collect(),
+	};
 
-    let _ = create_dir_all(app_dir)
-        .and_then(|_| File::create(scope_state_path))
-        .map_err(Error::Io)
-        .and_then(|mut f| {
-            f.write_all(&bincode::serialize(&scope).map_err(Error::from)?)
-                .map_err(Into::into)
-        });
+	let _ = create_dir_all(app_dir)
+		.and_then(|_| File::create(scope_state_path))
+		.map_err(Error::Io)
+		.and_then(|mut f| {
+			f.write_all(&bincode::serialize(&scope).map_err(Error::from)?)
+				.map_err(Into::into)
+		});
 }
 
-pub fn init<R: Runtime>() -> TauriPlugin<R> {
-    Builder::new("persisted-scope")
+pub fn init<R:Runtime>() -> TauriPlugin<R> {
+	Builder::new("persisted-scope")
         .setup(|app, _api| {
             let fs_scope = app.try_fs_scope();
             #[cfg(feature = "protocol-asset")]

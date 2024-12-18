@@ -8,9 +8,12 @@ use std::{fs::create_dir_all, path::PathBuf};
 
 use futures_core::future::BoxFuture;
 use indexmap::IndexMap;
-use serde::{ser::Serializer, Deserialize, Serialize};
+use serde::{Deserialize, Serialize, ser::Serializer};
 use serde_json::Value as JsonValue;
 use sqlx::{
+	Column,
+	Pool,
+	Row,
 	error::BoxDynError,
 	migrate::{
 		MigrateDatabase,
@@ -19,18 +22,15 @@ use sqlx::{
 		MigrationType,
 		Migrator,
 	},
-	Column,
-	Pool,
-	Row,
 };
 use tauri::{
-	command,
-	plugin::{Builder as PluginBuilder, TauriPlugin},
 	AppHandle,
 	Manager,
 	RunEvent,
 	Runtime,
 	State,
+	command,
+	plugin::{Builder as PluginBuilder, TauriPlugin},
 };
 use tokio::sync::Mutex;
 

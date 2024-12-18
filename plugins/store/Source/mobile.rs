@@ -7,7 +7,7 @@ use std::collections::HashMap;
 use serde_json::Value;
 use tauri::Runtime;
 
-use crate::{error::Result, Store};
+use crate::{Store, error::Result};
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]

@@ -3,11 +3,7 @@
 // SPDX-License-Identifier: MIT
 
 #[tauri::command]
-pub fn locale() -> Option<String> {
-    crate::locale()
-}
+pub fn locale() -> Option<String> { crate::locale() }
 
 #[tauri::command]
-pub fn hostname() -> String {
-    crate::hostname()
-}
+pub fn hostname() -> String { crate::hostname() }
