@@ -1,14 +1,12 @@
 {
-  "name": "app",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "tauri": "tauri"
-  },
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "@tauri-apps/cli": "2.2.2"
-  }
+	"name": "app",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"tauri": "tauri"
+	},
+	"dependencies": {},
+	"devDependencies": {
+		"@codeeditorland/cli": "2.2.2"
+	}
 }
