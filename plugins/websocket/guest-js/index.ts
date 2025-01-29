@@ -59,12 +59,19 @@ export type Message =
 	| MessageKind<"Close", CloseFrame | null>;
 
 export default class WebSocket {
-	id: number;
+  id: number
+  private readonly listeners: Set<(arg: Message) => void>
 
-	private readonly listeners: Array<(arg: Message) => void>;
+  constructor(id: number, listeners: Set<(arg: Message) => void>) {
+    this.id = id
+    this.listeners = listeners
+  }
 
-	constructor(id: number, listeners: Array<(arg: Message) => void>) {
-		this.id = id;
+  static async connect(
+    url: string,
+    config?: ConnectionConfig
+  ): Promise<WebSocket> {
+    const listeners: Set<(arg: Message) => void> = new Set()
 
 		this.listeners = listeners;
 	}
@@ -77,11 +84,13 @@ export default class WebSocket {
 
 		const onMessage = new Channel<Message>();
 
-		onMessage.onmessage = (message: Message): void => {
-			listeners.forEach((l) => {
-				l(message);
-			});
-		};
+  addListener(cb: (arg: Message) => void): () => void {
+    this.listeners.add(cb)
+
+    return () => {
+      this.listeners.delete(cb)
+    }
+  }
 
 		if (config?.headers) {
 			config.headers = Array.from(new Headers(config.headers).entries());

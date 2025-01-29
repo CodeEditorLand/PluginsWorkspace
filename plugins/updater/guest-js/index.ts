@@ -37,17 +37,13 @@ interface DownloadOptions {
 }
 
 interface UpdateMetadata {
-	rid: number;
-
-	available: boolean;
-
-	currentVersion: string;
-
-	version: string;
-
-	date?: string;
-
-	body?: string;
+  rid: number
+  available: boolean
+  currentVersion: string
+  version: string
+  date?: string
+  body?: string
+  rawJson: Record<string, unknown>
 }
 
 /** Updater download event */
@@ -57,9 +53,23 @@ type DownloadEvent =
 	| { event: "Finished" };
 
 class Update extends Resource {
-	available: boolean;
+  available: boolean
+  currentVersion: string
+  version: string
+  date?: string
+  body?: string
+  rawJson: Record<string, unknown>
+  private downloadedBytes?: Resource
 
-	currentVersion: string;
+  constructor(metadata: UpdateMetadata) {
+    super(metadata.rid)
+    this.available = metadata.available
+    this.currentVersion = metadata.currentVersion
+    this.version = metadata.version
+    this.date = metadata.date
+    this.body = metadata.body
+    this.rawJson = metadata.rawJson
+  }
 
 	version: string;
 
