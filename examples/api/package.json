@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@codeeditorland/cli": "2.2.7",
-		"@iconify-json/codicon": "^1.2.8",
+		"@iconify-json/codicon": "^1.2.10",
 		"@iconify-json/ph": "^1.2.2",
 		"@unocss/extractor-svelte": "^65.4.3",
 		"unocss": "^65.4.3"

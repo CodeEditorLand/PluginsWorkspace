@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if git diff --quiet --ignore-submodules HEAD
 then
