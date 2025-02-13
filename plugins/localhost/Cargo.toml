@@ -25,5 +25,5 @@ serde_json = { workspace = true }
 tauri = { workspace = true }
 log = { workspace = true }
 thiserror = { workspace = true }
-tiny_http = { version = "0.12" }
-http = { version = "1" }
+tiny_http = "0.12"
+http = "1"
