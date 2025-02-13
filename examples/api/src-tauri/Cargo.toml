@@ -1,11 +1,11 @@
 [package]
 name = "api"
 publish = false
-version = "2.0.16"
+version = "2.0.17"
 description = "An example Tauri Application showcasing the api"
 edition = "2021"
 rust-version = { workspace = true }
-license-file = "LICENSE"
+license = "Apache-2.0 OR MIT"
 
 [lib]
 name = "api_lib"
@@ -17,7 +17,7 @@ tauri-build = { workspace = true, features = ["codegen", "isolation"] }
 [dependencies]
 serde_json = { workspace = true }
 serde = { workspace = true }
-tiny_http = { version = "0.12" }
+tiny_http = "0.12"
 log = { workspace = true }
 tauri-plugin-log = { path = "../../../plugins/log", version = "2.2.1" }
 tauri-plugin-fs = { path = "../../../plugins/fs", version = "2.2.0", features = [
@@ -40,20 +40,20 @@ tauri-plugin-store = { path = "../../../plugins/store", version = "2.2.0" }
 [dependencies.tauri]
 workspace = true
 features = [
-	"wry",
-	"compression",
-	"image-ico",
-	"image-png",
-	"isolation",
-	"macos-private-api",
-	"tray-icon",
-	"protocol-asset",
+  "wry",
+  "compression",
+  "image-ico",
+  "image-png",
+  "isolation",
+  "macos-private-api",
+  "tray-icon",
+  "protocol-asset",
 ]
 
 [target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\", target_os = \"dragonfly\", target_os = \"freebsd\", target_os = \"openbsd\", target_os = \"netbsd\"))".dependencies]
 tauri-plugin-cli = { path = "../../../plugins/cli", version = "2.2.0" }
 tauri-plugin-global-shortcut = { path = "../../../plugins/global-shortcut", version = "2.2.0" }
-tauri-plugin-updater = { path = "../../../plugins/updater", version = "2.4.0" }
+tauri-plugin-updater = { path = "../../../plugins/updater", version = "2.5.0" }
 tauri-plugin-window-state = { path = "../../../plugins/window-state", version = "2.2.0" }
 
 [target."cfg(any(target_os = \"android\", target_os = \"ios\"))".dependencies]
