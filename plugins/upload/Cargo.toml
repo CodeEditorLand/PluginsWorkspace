@@ -1,6 +1,6 @@
 [package]
 name = "tauri-plugin-upload"
-version = "2.2.0"
+version = "2.2.1"
 description = "Upload files from disk to a remote server over HTTP."
 authors = { workspace = true }
 license = { workspace = true }
@@ -32,17 +32,19 @@ thiserror = { workspace = true }
 tokio = { version = "1", features = ["fs"] }
 tokio-util = { version = "0.7", features = ["codec"] }
 reqwest = { version = "0.12", default-features = false, features = [
-	"json",
-	"stream",
+  "macos-system-configuration",
+  "json",
+  "stream",
 ] }
 futures-util = "0.3"
 read-progress-stream = "1.0.0"
 
 [features]
+default = ["rustls-tls"]
 native-tls = ["reqwest/native-tls"]
 native-tls-vendored = ["reqwest/native-tls-vendored"]
 rustls-tls = ["reqwest/rustls-tls"]
 
 [dev-dependencies]
-mockito = { version = "1.6.1" }
+mockito = "1.6.1"
 tokio = { version = "1", features = ["macros"] }
