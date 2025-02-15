@@ -1,46 +1,79 @@
+[build-dependencies]
+schemars = { workspace = true }
+serde = { workspace = true }
+tauri-plugin = { workspace = true, features = ["build"] }
+
+[dependencies]
+glob = { workspace = true }
+open = { version = "5", features = ["shellexecute-on-windows"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri = { workspace = true }
+thiserror = { workspace = true }
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "tauri-plugin-opener"
-version = "2.2.5"
+authors = { workspace = true }
 description = "Open files and URLs using their default application."
 edition = { workspace = true }
-authors = { workspace = true }
-license = { workspace = true }
-repository = { workspace = true }
+license-file = { workspace = true }
 links = "tauri-plugin-opener"
+name = "tauri-plugin-opener"
+repository = { workspace = true }
+version = "2.2.5"
+
+[package.metadata]
+
+[package.metadata.docs]
 
 [package.metadata.docs.rs]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
-# Platforms supported by the plugin
-# Support levels are "full", "partial", "none", "unknown"
-# Details of the support level are left to plugin maintainer
+[package.metadata.platforms]
+
 [package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
 android = { level = "partial", notes = "Only allows to open URLs via `open`" }
 ios = { level = "partial", notes = "Only allows to open URLs via `open`" }
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }
 
+[target]
 
-[build-dependencies]
-tauri-plugin = { workspace = true, features = ["build"] }
-schemars = { workspace = true }
-serde = { workspace = true }
+[target.'cfg(any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd"))']
 
-[dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tauri = { workspace = true }
-thiserror = { workspace = true }
-open = { version = "5", features = ["shellexecute-on-windows"] }
-glob = { workspace = true }
+[target.'cfg(any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "netbsd", target_os = "openbsd"))'.dependencies]
+url = { workspace = true }
+zbus = { workspace = true }
+
+[target.'cfg(target_os = "ios")']
+
+[target.'cfg(target_os = "ios")'.dependencies]
+tauri = { workspace = true, features = ["wry"] }
+
+[target.'cfg(target_os = "macos")']
+
+[target.'cfg(target_os = "macos")'.dependencies]
+
+[target.'cfg(target_os = "macos")'.dependencies.objc2-app-kit]
+default-features = false
+features = ["std", "NSWorkspace"]
+version = "0.2"
+
+[target.'cfg(target_os = "macos")'.dependencies.objc2-foundation]
+default-features = false
+features = ["std", "NSURL", "NSArray", "NSString"]
+version = "0.2"
+
+[target."cfg(windows)"]
 
 [target."cfg(windows)".dependencies]
 dunce = { workspace = true }
 
 [target."cfg(windows)".dependencies.windows]
-version = "0.58"
 features = [
   "Win32_Foundation",
   "Win32_UI_Shell_Common",
@@ -48,20 +81,4 @@ features = [
   "Win32_System_Com",
   "Win32_System_Registry",
 ]
-
-[target."cfg(any(target_os = \"linux\", target_os = \"dragonfly\", target_os = \"freebsd\", target_os = \"netbsd\", target_os = \"openbsd\"))".dependencies]
-zbus = { workspace = true }
-url = { workspace = true }
-
-[target."cfg(target_os = \"macos\")".dependencies.objc2-app-kit]
-version = "0.2"
-default-features = false
-features = ["std", "NSWorkspace"]
-
-[target."cfg(target_os = \"macos\")".dependencies.objc2-foundation]
-version = "0.2"
-default-features = false
-features = ["std", "NSURL", "NSArray", "NSString"]
-
-[target.'cfg(target_os = "ios")'.dependencies]
-tauri = { workspace = true, features = ["wry"] }
+version = "0.58"

@@ -1,33 +1,42 @@
+[dependencies]
+aho-corasick = "1"
+bincode = "1"
+log = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri = { workspace = true }
+tauri-plugin-fs = { path = "../fs", version = "2.2.0" }
+thiserror = { workspace = true }
+
+[features]
+protocol-asset = ["tauri/protocol-asset"]
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "tauri-plugin-persisted-scope"
-version = "2.2.0"
-description = "Save filesystem and asset scopes and restore them when the app is reopened."
 authors = { workspace = true }
-license = { workspace = true }
+description = "Save filesystem and asset scopes and restore them when the app is reopened."
 edition = { workspace = true }
-rust-version = { workspace = true }
+license-file = { workspace = true }
+name = "tauri-plugin-persisted-scope"
 repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.2.0"
+
+[package.metadata]
+
+[package.metadata.docs]
 
 [package.metadata.docs.rs]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.platforms]
+
 [package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
 android = { level = "full", notes = "" }
 ios = { level = "full", notes = "" }
-
-[dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tauri = { workspace = true }
-log = { workspace = true }
-thiserror = { workspace = true }
-aho-corasick = "1"
-bincode = "1"
-tauri-plugin-fs = { path = "../fs", version = "2.2.0" }
-
-[features]
-protocol-asset = ["tauri/protocol-asset"]
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }

@@ -1,32 +1,41 @@
+[build-dependencies]
+tauri-plugin = { workspace = true, features = ["build"] }
+
+[dependencies]
+bitflags = "2"
+log = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri = { workspace = true }
+thiserror = { workspace = true }
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "tauri-plugin-window-state"
-version = "2.2.1"
-description = "Save window positions and sizes and restore them when the app is reopened."
 authors = { workspace = true }
-license = { workspace = true }
+description = "Save window positions and sizes and restore them when the app is reopened."
 edition = { workspace = true }
-rust-version = { workspace = true }
-repository = { workspace = true }
+license-file = { workspace = true }
 links = "tauri-plugin-window-state"
+name = "tauri-plugin-window-state"
+repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.2.1"
+
+[package.metadata]
+
+[package.metadata.docs]
 
 [package.metadata.docs.rs]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.platforms]
+
 [package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
 android = { level = "none", notes = "" }
 ios = { level = "none", notes = "" }
-
-[build-dependencies]
-tauri-plugin = { workspace = true, features = ["build"] }
-
-[dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tauri = { workspace = true }
-log = { workspace = true }
-thiserror = { workspace = true }
-bitflags = "2"
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }

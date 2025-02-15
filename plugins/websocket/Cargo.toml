@@ -1,38 +1,15 @@
-[package]
-name = "tauri-plugin-websocket"
-version = "2.3.0"
-description = "Expose a WebSocket server to your Tauri frontend."
-authors = { workspace = true }
-license = { workspace = true }
-edition = { workspace = true }
-rust-version = { workspace = true }
-repository = { workspace = true }
-links = "tauri-plugin-websocket"
-exclude = ["/examples"]
-
-[package.metadata.docs.rs]
-rustc-args = ["--cfg", "docsrs"]
-rustdoc-args = ["--cfg", "docsrs"]
-
-[package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
-android = { level = "full", notes = "" }
-ios = { level = "full", notes = "" }
-
 [build-dependencies]
 tauri-plugin = { workspace = true, features = ["build"] }
 
 [dependencies]
+futures-util = "0.3"
+http = "1"
+log = { workspace = true }
+rand = "0.8"
 serde = { workspace = true }
 serde_json = { workspace = true }
 tauri = { workspace = true }
-log = { workspace = true }
 thiserror = { workspace = true }
-http = "1"
-rand = "0.8"
-futures-util = "0.3"
 tokio = { version = "1", features = ["net", "sync"] }
 tokio-tungstenite = { version = "0.26" }
 
@@ -42,3 +19,35 @@ native-tls = ["tokio-tungstenite/native-tls"]
 native-tls-vendored = ["native-tls", "tokio-tungstenite/native-tls-vendored"]
 rustls-tls = ["tokio-tungstenite/rustls-tls-webpki-roots"]
 rustls-tls-native-roots = ["tokio-tungstenite/rustls-tls-native-roots"]
+
+[lib]
+path = "Source/lib.rs"
+
+[package]
+authors = { workspace = true }
+description = "Expose a WebSocket server to your Tauri frontend."
+edition = { workspace = true }
+exclude = ["/examples"]
+license-file = { workspace = true }
+links = "tauri-plugin-websocket"
+name = "tauri-plugin-websocket"
+repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.3.0"
+
+[package.metadata]
+
+[package.metadata.docs]
+
+[package.metadata.docs.rs]
+rustc-args = ["--cfg", "docsrs"]
+rustdoc-args = ["--cfg", "docsrs"]
+
+[package.metadata.platforms]
+
+[package.metadata.platforms.support]
+android = { level = "full", notes = "" }
+ios = { level = "full", notes = "" }
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }

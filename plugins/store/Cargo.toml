@@ -1,39 +1,52 @@
+[build-dependencies]
+tauri-plugin = { workspace = true, features = ["build"] }
+
+[dependencies]
+dunce = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri = { workspace = true }
+thiserror = { workspace = true }
+tokio = { version = "1", features = ["sync", "time", "macros"] }
+tracing = { workspace = true }
+
+[dev-dependencies]
+tauri = { workspace = true, features = ["wry"] }
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "tauri-plugin-store"
-version = "2.2.0"
-description = "Simple, persistent key-value store."
 authors = { workspace = true }
-license = { workspace = true }
+description = "Simple, persistent key-value store."
 edition = { workspace = true }
-rust-version = { workspace = true }
-repository = { workspace = true }
+license-file = { workspace = true }
 links = "tauri-plugin-store"
+name = "tauri-plugin-store"
+repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.2.0"
+
+[package.metadata]
+
+[package.metadata.docs]
 
 [package.metadata.docs.rs]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.platforms]
+
 [package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
 android = { level = "full", notes = "" }
 ios = { level = "full", notes = "" }
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }
 
-[build-dependencies]
-tauri-plugin = { workspace = true, features = ["build"] }
+[target]
 
-[dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tauri = { workspace = true }
-tracing = { workspace = true }
-thiserror = { workspace = true }
-dunce = { workspace = true }
-tokio = { version = "1", features = ["sync", "time", "macros"] }
+[target.'cfg(target_os = "ios")']
 
 [target.'cfg(target_os = "ios")'.dependencies]
-tauri = { workspace = true, features = ["wry"] }
-
-[dev-dependencies]
 tauri = { workspace = true, features = ["wry"] }

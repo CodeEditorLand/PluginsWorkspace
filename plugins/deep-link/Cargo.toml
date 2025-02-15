@@ -1,45 +1,60 @@
-[package]
-name = "tauri-plugin-deep-link"
-version = "2.2.0"
-description = "Set your Tauri application as the default handler for an URL"
-authors = { workspace = true }
-license = { workspace = true }
-edition = { workspace = true }
-rust-version = { workspace = true }
-repository = { workspace = true }
-links = "tauri-plugin-deep-link"
-
-[package.metadata.docs.rs]
-rustc-args = ["--cfg", "docsrs"]
-rustdoc-args = ["--cfg", "docsrs"]
-targets = ["x86_64-linux-android"]
-
-[package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "partial", notes = "Runtime deep link registration is not supported" }
-android = { level = "partial", notes = "Runtime deep link registration is not supported" }
-ios = { level = "partial", notes = "Runtime deep link registration is not supported" }
-
 [build-dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
-tauri-utils = { workspace = true }
 tauri-plugin = { workspace = true, features = ["build"] }
+tauri-utils = { workspace = true }
 
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
 tauri = { workspace = true }
 tauri-utils = { workspace = true }
-tracing = { workspace = true }
 thiserror = { workspace = true }
+tracing = { workspace = true }
 url = { workspace = true }
+
+[lib]
+path = "Source/lib.rs"
+
+[package]
+authors = { workspace = true }
+description = "Set your Tauri application as the default handler for an URL"
+edition = { workspace = true }
+license-file = { workspace = true }
+links = "tauri-plugin-deep-link"
+name = "tauri-plugin-deep-link"
+repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.2.0"
+
+[package.metadata]
+
+[package.metadata.docs]
+
+[package.metadata.docs.rs]
+rustc-args = ["--cfg", "docsrs"]
+rustdoc-args = ["--cfg", "docsrs"]
+targets = ["x86_64-linux-android"]
+
+[package.metadata.platforms]
+
+[package.metadata.platforms.support]
+android = { level = "partial", notes = "Runtime deep link registration is not supported" }
+ios = { level = "partial", notes = "Runtime deep link registration is not supported" }
+linux = { level = "full", notes = "" }
+macos = { level = "partial", notes = "Runtime deep link registration is not supported" }
+windows = { level = "full", notes = "" }
+
+[target]
+
+[target.'cfg(target_os = "linux")']
+
+[target.'cfg(target_os = "linux")'.dependencies]
+rust-ini = "0.21"
+
+[target."cfg(windows)"]
 
 [target."cfg(windows)".dependencies]
 dunce = "1"
 windows-registry = "0.4"
 windows-result = "0.3"
-
-[target."cfg(target_os = \"linux\")".dependencies]
-rust-ini = "0.21"

@@ -1,21 +1,25 @@
-[package]
+[[bin]]
 name = "single-instance-example"
-version = "0.1.0"
-description = "A Tauri App"
-authors = ["You"]
-repository = ""
-edition = "2021"
-rust-version = "1.77.2"
+path = "Source/main.rs"
+
+[build-dependencies]
+tauri-build = { workspace = true }
 
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true }
 tauri = { workspace = true, features = ["wry", "compression"] }
-tauri-plugin-single-instance = { path = "../../../" }
 tauri-plugin-cli = { path = "../../../../cli" }
-
-[build-dependencies]
-tauri-build = { workspace = true }
+tauri-plugin-single-instance = { path = "../../../" }
 
 [features]
 prod = ["tauri/custom-protocol"]
+
+[package]
+authors = ["You"]
+description = "A Tauri App"
+edition = "2021"
+name = "single-instance-example"
+repository = ""
+rust-version = "1.77.2"
+version = "0.1.0"

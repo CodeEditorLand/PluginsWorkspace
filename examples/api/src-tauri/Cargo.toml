@@ -1,44 +1,30 @@
-[package]
-name = "api"
-publish = false
-version = "2.0.17"
-description = "An example Tauri Application showcasing the api"
-edition = "2021"
-rust-version = { workspace = true }
-license = "Apache-2.0 OR MIT"
-
-[lib]
-name = "api_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
-
 [build-dependencies]
 tauri-build = { workspace = true, features = ["codegen", "isolation"] }
 
 [dependencies]
-serde_json = { workspace = true }
-serde = { workspace = true }
-tiny_http = "0.12"
 log = { workspace = true }
-tauri-plugin-log = { path = "../../../plugins/log", version = "2.2.1" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri-plugin-clipboard-manager = { path = "../../../plugins/clipboard-manager", version = "2.2.1" }
+tauri-plugin-dialog = { path = "../../../plugins/dialog", version = "2.2.0" }
 tauri-plugin-fs = { path = "../../../plugins/fs", version = "2.2.0", features = [
   "watch",
 ] }
-tauri-plugin-clipboard-manager = { path = "../../../plugins/clipboard-manager", version = "2.2.1" }
-tauri-plugin-dialog = { path = "../../../plugins/dialog", version = "2.2.0" }
 tauri-plugin-http = { path = "../../../plugins/http", features = [
   "multipart",
 ], version = "2.3.0" }
+tauri-plugin-log = { path = "../../../plugins/log", version = "2.2.1" }
 tauri-plugin-notification = { path = "../../../plugins/notification", version = "2.2.1", features = [
   "windows7-compat",
 ] }
+tauri-plugin-opener = { path = "../../../plugins/opener", version = "2.2.5" }
 tauri-plugin-os = { path = "../../../plugins/os", version = "2.2.0" }
 tauri-plugin-process = { path = "../../../plugins/process", version = "2.2.0" }
-tauri-plugin-opener = { path = "../../../plugins/opener", version = "2.2.5" }
 tauri-plugin-shell = { path = "../../../plugins/shell", version = "2.2.0" }
 tauri-plugin-store = { path = "../../../plugins/store", version = "2.2.0" }
+tiny_http = "0.12"
 
 [dependencies.tauri]
-workspace = true
 features = [
   "wry",
   "compression",
@@ -49,19 +35,40 @@ features = [
   "tray-icon",
   "protocol-asset",
 ]
+workspace = true
 
-[target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\", target_os = \"dragonfly\", target_os = \"freebsd\", target_os = \"openbsd\", target_os = \"netbsd\"))".dependencies]
+[features]
+prod = ["tauri/custom-protocol"]
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+name = "api_lib"
+path = "Source/lib.rs"
+
+[package]
+description = "An example Tauri Application showcasing the api"
+edition = "2021"
+license-file = "LICENSE"
+name = "api"
+publish = false
+rust-version = { workspace = true }
+version = "2.0.17"
+
+[target]
+
+[target.'cfg(any(target_os = "android", target_os = "ios"))']
+
+[target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
+tauri-plugin-barcode-scanner = { path = "../../../plugins/barcode-scanner/", version = "2.2.0" }
+tauri-plugin-biometric = { path = "../../../plugins/biometric/", version = "2.2.0" }
+tauri-plugin-geolocation = { path = "../../../plugins/geolocation/", version = "2.2.3" }
+tauri-plugin-haptics = { path = "../../../plugins/haptics/", version = "2.2.3" }
+tauri-plugin-nfc = { path = "../../../plugins/nfc", version = "2.2.0" }
+
+[target.'cfg(any(target_os = "macos", windows, target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd", target_os = "netbsd"))']
+
+[target.'cfg(any(target_os = "macos", windows, target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd", target_os = "netbsd"))'.dependencies]
 tauri-plugin-cli = { path = "../../../plugins/cli", version = "2.2.0" }
 tauri-plugin-global-shortcut = { path = "../../../plugins/global-shortcut", version = "2.2.0" }
 tauri-plugin-updater = { path = "../../../plugins/updater", version = "2.5.0" }
 tauri-plugin-window-state = { path = "../../../plugins/window-state", version = "2.2.0" }
-
-[target."cfg(any(target_os = \"android\", target_os = \"ios\"))".dependencies]
-tauri-plugin-barcode-scanner = { path = "../../../plugins/barcode-scanner/", version = "2.2.0" }
-tauri-plugin-nfc = { path = "../../../plugins/nfc", version = "2.2.0" }
-tauri-plugin-biometric = { path = "../../../plugins/biometric/", version = "2.2.0" }
-tauri-plugin-geolocation = { path = "../../../plugins/geolocation/", version = "2.2.3" }
-tauri-plugin-haptics = { path = "../../../plugins/haptics/", version = "2.2.3" }
-
-[features]
-prod = ["tauri/custom-protocol"]

@@ -1,31 +1,40 @@
+[build-dependencies]
+tauri-plugin = { workspace = true, features = ["build"] }
+
+[dependencies]
+auto-launch = "0.5"
+serde = { workspace = true }
+serde_json = { workspace = true }
+tauri = { workspace = true }
+thiserror = { workspace = true }
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "tauri-plugin-autostart"
-version = "2.2.0"
-description = "Automatically launch your application at startup."
 authors = { workspace = true }
-license = { workspace = true }
+description = "Automatically launch your application at startup."
 edition = { workspace = true }
-rust-version = { workspace = true }
-repository = { workspace = true }
+license-file = { workspace = true }
 links = "tauri-plugin-autostart"
+name = "tauri-plugin-autostart"
+repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.2.0"
+
+[package.metadata]
+
+[package.metadata.docs]
 
 [package.metadata.docs.rs]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.platforms]
+
 [package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
 android = { level = "none", notes = "" }
 ios = { level = "none", notes = "" }
-
-[build-dependencies]
-tauri-plugin = { workspace = true, features = ["build"] }
-
-[dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tauri = { workspace = true }
-thiserror = { workspace = true }
-auto-launch = "0.5"
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }

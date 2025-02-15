@@ -1,3 +1,12 @@
+[profile]
+
+[profile.release]
+codegen-units = 1
+incremental = false
+lto = true
+opt-level = "s"
+panic = "abort"
+
 [workspace]
 members = [
 	"plugins/*",
@@ -9,33 +18,25 @@ members = [
 resolver = "2"
 
 [workspace.dependencies]
-serde = { version = "1", features = ["derive"] }
-tracing = { version = "0.1" }
+dunce = "1"
+glob = "0.3"
 log = { version = "0.4" }
+schemars = "0.8"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+specta = "^2.0.0-rc.16"
 tauri = { version = "2", default-features = false }
 tauri-build = "2"
 tauri-plugin = "2"
 tauri-utils = "2"
-serde_json = "1"
 thiserror = "2"
+tracing = { version = "0.1" }
 url = "2"
-schemars = "0.8"
-dunce = "1"
-specta = "^2.0.0-rc.16"
-glob = "0.3"
 zbus = "5"
 
 [workspace.package]
-edition = "2021"
 authors = ["Tauri Programme within The Commons Conservancy"]
+edition = "2021"
 license-file = "LICENSE"
-rust-version = "1.77.2"
 repository = "https://github.com/tauri-apps/plugins-workspace"
-
-# default to small, optimized release binaries
-[profile.release]
-panic = "abort"
-codegen-units = 1
-lto = true
-incremental = false
-opt-level = "s"
+rust-version = "1.77.2"

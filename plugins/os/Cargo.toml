@@ -1,35 +1,44 @@
+[build-dependencies]
+tauri-plugin = { workspace = true, features = ["build"] }
+
+[dependencies]
+gethostname = "1.0"
+log = { workspace = true }
+os_info = "3"
+serde = { workspace = true }
+serde_json = { workspace = true }
+serialize-to-javascript = "=0.1.1"
+sys-locale = "0.3"
+tauri = { workspace = true }
+thiserror = { workspace = true }
+
+[lib]
+path = "Source/lib.rs"
+
 [package]
-name = "tauri-plugin-os"
-version = "2.2.0"
+authors = { workspace = true }
 description = "Read information about the operating system."
 edition = { workspace = true }
-authors = { workspace = true }
-license = { workspace = true }
-rust-version = { workspace = true }
-repository = { workspace = true }
+license-file = { workspace = true }
 links = "tauri-plugin-os"
+name = "tauri-plugin-os"
+repository = { workspace = true }
+rust-version = { workspace = true }
+version = "2.2.0"
+
+[package.metadata]
+
+[package.metadata.docs]
 
 [package.metadata.docs.rs]
 rustc-args = ["--cfg", "docsrs"]
 rustdoc-args = ["--cfg", "docsrs"]
 
+[package.metadata.platforms]
+
 [package.metadata.platforms.support]
-windows = { level = "full", notes = "" }
-linux = { level = "full", notes = "" }
-macos = { level = "full", notes = "" }
 android = { level = "full", notes = "" }
 ios = { level = "full", notes = "" }
-
-[build-dependencies]
-tauri-plugin = { workspace = true, features = ["build"] }
-
-[dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tauri = { workspace = true }
-log = { workspace = true }
-thiserror = { workspace = true }
-os_info = "3"
-sys-locale = "0.3"
-gethostname = "1.0"
-serialize-to-javascript = "=0.1.1"
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+windows = { level = "full", notes = "" }
