@@ -17,7 +17,7 @@ prod = ["tauri/custom-protocol"]
 [package]
 authors = ["you"]
 description = "A Tauri App"
-edition = "2021"
+edition = "2024"
 license-file = "LICENSE"
 name = "app_settings_manager"
 repository = ""

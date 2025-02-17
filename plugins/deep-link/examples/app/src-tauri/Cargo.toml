@@ -6,10 +6,10 @@ log = "0.4"
 serde = { workspace = true }
 serde_json = { workspace = true }
 tauri = { workspace = true, features = ["wry", "compression"] }
-tauri-plugin-deep-link = { path = "../../../" }
-tauri-plugin-log = { path = "../../../../log" }
-tauri-plugin-single-instance = { path = "../../../../single-instance", features = [
-  "deep-link",
+tauri-plugin-deep-link = { version = "2.2.0" }
+tauri-plugin-log = { version = "2.2.1" }
+tauri-plugin-single-instance = { version = "2.2.1", features = [
+	"deep-link",
 ] }
 
 [features]
@@ -22,9 +22,9 @@ path = "Source/lib.rs"
 [package]
 authors = ["you"]
 description = "A Tauri App"
-edition = "2021"
+edition = "2024"
 license-file = "LICENSE"
 name = "deep-link-example"
 repository = ""
-rust-version = "1.77.2"
+rust-version = "1.85.0"
 version = "0.0.0"

@@ -19,6 +19,6 @@ prod = ["tauri/custom-protocol"]
 
 [package]
 description = "A Tauri App"
-edition = "2021"
+edition = "2024"
 name = "websocket-example"
 version = "0.1.0"

@@ -47,7 +47,7 @@ path = "Source/lib.rs"
 
 [package]
 description = "An example Tauri Application showcasing the api"
-edition = "2021"
+edition = "2024"
 license-file = "LICENSE"
 name = "api"
 publish = false

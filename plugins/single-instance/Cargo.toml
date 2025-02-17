@@ -55,12 +55,12 @@ zbus = { workspace = true }
 
 [target.'cfg(target_os = "windows")'.dependencies.windows-sys]
 features = [
-  "Win32_System_Threading",
-  "Win32_System_DataExchange",
-  "Win32_Foundation",
-  "Win32_UI_WindowsAndMessaging",
-  "Win32_Security",
-  "Win32_System_LibraryLoader",
-  "Win32_Graphics_Gdi",
+	"Win32_System_Threading",
+	"Win32_System_DataExchange",
+	"Win32_Foundation",
+	"Win32_UI_WindowsAndMessaging",
+	"Win32_Security",
+	"Win32_System_LibraryLoader",
+	"Win32_Graphics_Gdi",
 ]
 version = "0.59"
