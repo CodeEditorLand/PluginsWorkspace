@@ -1,3 +1,27 @@
+[package]
+name = "tauri-plugin-updater"
+version = "2.5.0"
+description = "In-app updates for Tauri applications."
+edition = { workspace = true }
+authors = { workspace = true }
+license = { workspace = true }
+rust-version = { workspace = true }
+repository = { workspace = true }
+links = "tauri-plugin-updater"
+
+[package.metadata.docs.rs]
+rustc-args = ["--cfg", "docsrs"]
+rustdoc-args = ["--cfg", "docsrs"]
+no-default-features = true
+features = ["zip"]
+
+[package.metadata.platforms.support]
+windows = { level = "full", notes = "" }
+linux = { level = "full", notes = "" }
+macos = { level = "full", notes = "" }
+android = { level = "none", notes = "" }
+ios = { level = "none", notes = "" }
+
 [build-dependencies]
 tauri-plugin = { workspace = true, features = ["build"] }
 
@@ -86,4 +110,20 @@ windows-sys = { version = "0.59.0", features = [
   "Win32_UI_WindowsAndMessaging",
   "Win32_UI_Shell",
 ] }
-zip = { version = "2", default-features = false, optional = true }
+
+[target."cfg(target_os = \"linux\")".dependencies]
+dirs = "6"
+tar = { version = "0.4", optional = true }
+flate2 = { version = "1", optional = true }
+
+[target."cfg(target_os = \"macos\")".dependencies]
+tar = "0.4"
+flate2 = "1"
+osakit = { version = "0.3", features = ["full"] }
+
+[features]
+default = ["rustls-tls", "zip"]
+zip = ["dep:zip", "dep:tar", "dep:flate2"]
+native-tls = ["reqwest/native-tls"]
+native-tls-vendored = ["reqwest/native-tls-vendored"]
+rustls-tls = ["reqwest/rustls-tls"]

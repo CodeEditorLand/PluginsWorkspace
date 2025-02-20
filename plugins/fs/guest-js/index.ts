@@ -627,12 +627,12 @@ async function copyFile(
 	toPath: string | URL,
 	options?: CopyFileOptions,
 ): Promise<void> {
-	if (
-		(fromPath instanceof URL && fromPath.protocol !== "file:") ||
-		(toPath instanceof URL && toPath.protocol !== "file:")
-	) {
-		throw new TypeError("Must be a file URL.");
-	}
+  if (
+    (fromPath instanceof URL && fromPath.protocol !== 'file:')
+    || (toPath instanceof URL && toPath.protocol !== 'file:')
+  ) {
+    throw new TypeError('Must be a file URL.')
+  }
 
 	await invoke("plugin:fs|copy_file", {
 		fromPath: fromPath instanceof URL ? fromPath.toString() : fromPath,
@@ -955,12 +955,12 @@ async function rename(
 	newPath: string | URL,
 	options?: RenameOptions,
 ): Promise<void> {
-	if (
-		(oldPath instanceof URL && oldPath.protocol !== "file:") ||
-		(newPath instanceof URL && newPath.protocol !== "file:")
-	) {
-		throw new TypeError("Must be a file URL.");
-	}
+  if (
+    (oldPath instanceof URL && oldPath.protocol !== 'file:')
+    || (newPath instanceof URL && newPath.protocol !== 'file:')
+  ) {
+    throw new TypeError('Must be a file URL.')
+  }
 
 	await invoke("plugin:fs|rename", {
 		oldPath: oldPath instanceof URL ? oldPath.toString() : oldPath,

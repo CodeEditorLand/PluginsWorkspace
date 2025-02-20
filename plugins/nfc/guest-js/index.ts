@@ -198,14 +198,14 @@ const protocols = [
 function encodeURI(uri: string): number[] {
 	let prefix = "";
 
-	protocols.slice(1).forEach(function (protocol) {
-		if (
-			(prefix.length === 0 || prefix === "urn:") &&
-			uri.indexOf(protocol) === 0
-		) {
-			prefix = protocol;
-		}
-	});
+  protocols.slice(1).forEach(function (protocol) {
+    if (
+      (prefix.length === 0 || prefix === 'urn:')
+      && uri.indexOf(protocol) === 0
+    ) {
+      prefix = protocol
+    }
+  })
 
 	if (prefix.length === 0) {
 		prefix = "";
